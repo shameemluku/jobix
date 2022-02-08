@@ -1,0 +1,96 @@
+  <div class="container-fluid w-100">
+    <div class="row whole">
+
+      <!-- LEFT SIDE -->
+
+      <div class="col-md-3 h-100 d-flex justify-content-center align-items-center left">
+        
+        <div class="container">
+  
+          
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-stars" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">Proof of quality</span>
+                <br>Check any pro’s work samples, client reviews, and identity verification.
+            </div>
+          </div>
+
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-badge-dollar" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">No cost until you hire</span>
+                <br>Interview potential fits for your job, negotiate rates, and only pay for work you approve.
+            </div>
+          </div>
+
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-check-circle" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">Safe and secure</span>
+                <br>Focus on your work knowing we help protect your data and privacy. We’re here with 24/7 support if you need it.
+            </div>
+          </div>
+        
+        </div>
+      
+      
+      </div>
+
+      <!-- RIGHT SIDE -->
+
+      <div class="col-md-9 d-flex justify-content-center align-items-center right">
+        
+        <div class="container form-container p-5">
+
+          <div class="row d-flex justify-content-center mb-2">
+            <a href=""><img src="images/site/logo-dark.svg"></a>
+          </div>
+
+ 
+          <div class="container">
+              
+
+              <div class="row login-form mt-4">
+                <form class="w-100" action="/signup-skills" method="post" name="otpForm" onSubmit="return checkOtp('{{userData.otp}}')">
+                  
+                  <div class="field w-100">
+                    <span class="elabel"></span>
+                    <p>An OTP is sent to your number <b> {{userData.phone}}</b></p>
+                  </div>
+
+                  <div class="alert alert-danger" id="error-otp" role="alert">Invalid OTP. Please try again</div>
+
+                  <div class="field">
+                    <span class="elabel"></span>
+                    <input type="text" id="otp" name="otp" placeholder="Enter the OTP">
+                  </div>
+
+
+                  {{!-- User Data --}}
+                  <div class="d-none">
+                  <input type="text" name="name" value="{{userData.name}}">
+                  <input type="text" name="email" value="{{userData.email}}">
+                  <input type="text" name="password" value="{{userData.password}}">
+                  <input type="text" name="phone" value="{{userData.phone}}">
+                  <input type="text" name="userType" value="{{userData.userType}}">     
+                  <input type="text" name="genOtp" value="{{userData.otp}}">  
+                  </div>
+                  {{!-- Ends --}}
+
+                  <button id="submitOtpBtn" class="mt-4 w-100 submitBtn" type="submit" value="Submit">VARIFY</button>
+                
+                  
+                </form> 
+              </div>
+
+          
+        
+              
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>

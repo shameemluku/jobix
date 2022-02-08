@@ -1,0 +1,382 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;1,500&display=swap');
+
+body{
+    font-family: 'Red Hat Display', sans-serif;
+}
+.check{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.whole{
+    height: 100vh;
+}
+
+.left{
+    background-color: #003049;
+}
+
+.right{
+    background-color: #EAE2B7;
+}
+
+/* /////// Right side ////////// */
+
+.introHead{
+    color: #FCBF49;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 1;
+}
+
+.introTxt{
+    width: 60%;
+    color: rgb(255, 255, 255);
+    font-size: 15px;
+}
+
+/* /////// Right side ////////// */
+
+/* ------ sign container -------- */
+
+.form-container{
+    width: 50%;
+    background-color: white;
+    border-radius: 30px;
+}
+.headText p{
+    font-weight: 600;
+    font-size: 20px;
+}
+
+/* .toggle-btn a{
+    text-decoration: none;
+    color: #;
+} */
+
+
+/* ---Toggle ------- */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 150px;
+    height: 34px;
+  }
+  
+  .switch input {display:none;}
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ca2222;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2ab934;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(115px);
+    -ms-transform: translateX(115px);
+    transform: translateX(115px);
+  }
+  
+  /*------ ADDED CSS ---------*/
+  .on
+  {
+    display: none;
+  }
+  
+  .on, .off
+  {
+    color: white;
+    position: absolute;
+    transform: translate(-60%,-50%);
+    top: 50%;
+    left: 50%;
+    font-size: 15px;
+    font-family: Verdana, sans-serif;
+  }
+  
+  input:checked+ .slider .on
+  {display: block;}
+  
+  input:checked + .slider .off
+  {display: none;}
+  
+  /*--------- END --------*/
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 14px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;}
+
+
+
+
+/* Toggle endssss */
+
+
+
+
+.login-form input[type=text],
+input[type=password]{
+    width: 100%;
+}
+
+
+.field{
+    margin-top: 10px;
+}
+
+.elabel{
+    transition: 0.2s ease all;
+}
+
+.field input{
+    border: 2px solid #DFDFDF;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.forgotPass{
+    color: #FCBF49;
+    text-decoration: none;
+}
+
+.forgotPass:hover{
+    color: #003049;
+    text-decoration: none;
+}
+
+.submitBtn{
+    padding: 10px;
+    background-color: #D62828;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: all 0.3s ease-out;
+}
+
+
+
+.google-fb a{
+    width: 98%;
+    background-color: #bebebe;
+    color: #ffffff;
+    border-radius: 10px;
+    padding:10px;
+}
+
+
+.line{
+    width: 100%;
+    height: 1px;
+    background-color: #a1a1a1;
+}
+
+.vertical-line{
+    width: 1.5px;
+    height: 60px;
+    background-color: #FCBF49;
+}
+
+/* --- OTP ------ */
+
+#error-otp{
+    display: none;
+}
+
+/* ---- Country --------- */
+
+.countries select{
+    height:50px !important;
+    box-shadow: none !important;
+    border-radius: 10px !important;
+}
+
+/* --- Ends Country --- */
+
+/* ------- SKILLS SELECT ------ */
+
+.select-box {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .select-box .options-container {
+    background: #2f3640;
+    color: #f5f6fa;
+    max-height: 0;
+    width: 100%;
+    opacity: 0;
+    transition: all 0.4s;
+    border-radius: 8px;
+    overflow: hidden;
+    border-top: 12px solid rgb(102, 102, 102);
+  
+    order: 1;
+  }
+  
+  .selected {
+    background: #2f3640;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    color: #f5f6fa;
+    position: relative;
+  
+    order: 0;
+  }
+  
+  .selected::after {
+    content: "";
+    background: url("img/arrow-down.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+  
+    position: absolute;
+    height: 100%;
+    width: 32px;
+    right: 10px;
+    top: 5px;
+  
+    transition: all 0.4s;
+  }
+  
+  .select-box .options-container.active {
+    max-height: 240px;
+    opacity: 1;
+    overflow-y: scroll;
+    margin-top: 54px;
+  }
+  
+  .select-box .options-container.active + .selected::after {
+    transform: rotateX(180deg);
+    top: -6px;
+  }
+  
+  .select-box .options-container::-webkit-scrollbar {
+    width: 8px;
+    background: #0d141f;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .select-box .options-container::-webkit-scrollbar-thumb {
+    background: #525861;
+  }
+  
+  .select-box .option,
+  .selected {
+    padding: 12px 24px;
+    cursor: pointer;
+  }
+  
+  .select-box .option:hover {
+    background: #414b57;
+  }
+  
+  .select-box label {
+    cursor: pointer;
+  }
+  
+  .select-box .option .radio {
+      height: 10px;
+  }
+  
+  /* Searchbox */
+  
+  .search-box input {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: "Roboto", sans-serif;
+    color: white;
+    font-size: 16px;
+    position: absolute;
+    border-radius: 8px 8px 0 0;
+    z-index: 100;
+    border: 8px solid #2f3640;
+    background-color: #2f3640;
+  
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s;
+  }
+  
+  .search-box input:focus {
+    outline: none;
+  }
+  
+  .select-box .options-container.active ~ .search-box input {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+
+
+
+
+/* skills end */
+
+
+
+
+/* /////// Media  Queries ///////// */
+
+@media (max-width: 768px) {
+
+    .left{
+        display: none !important;
+    }
+
+    .right{
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .form-container{
+        width: 90%;
+    }
+    
+    .google-fb a{
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+
+

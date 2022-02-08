@@ -1,0 +1,453 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;1,500&display=swap');
+
+body{
+    font-family: 'Red Hat Display', sans-serif;
+    background-color: #f0efef;
+}
+
+.pColor{
+    color:#003049;
+}
+
+/* //////////// NAVBAR ///////////////// */
+.nav-cont{
+    padding-top: 5px;
+    background-color: #003049 !important;
+    height: 90px !important;
+}
+.navbar{
+    color: white !important;
+    background-color: #003049 !important;
+}
+.nav-link{
+    color: white;
+}
+.logo{
+    height: 42px;
+    width: 65px;
+    margin-right: 20px;
+}
+
+/* ////////////// Search Box /////////////////// */
+
+.searchForm{
+    padding: 0 !important;
+    margin-top: 15px !important;
+}
+.searchBox{
+    width: 100% !important;
+    border-radius: 20px;
+    background-color: #688899;
+    border: none;
+    padding-left: 40px;
+}
+
+.searchBox::placeholder {
+    color: white;
+}
+
+.searchBox:focus {
+    border: none !important;
+    background-color: #688899 !important;
+    color: rgb(255, 255, 255);
+  }
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    margin-left: 20px;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: rgb(255, 255, 255);
+}
+
+
+/* /////////// SEARCH END //////////////// */
+
+.postBtn{
+    padding: 10px 25px 10px 25px;
+    font-size: 13px;
+    color: #003049;
+    font-weight: 500;
+    background-color: #FCBF49;
+    margin-right: 25px;
+}
+
+.notiBtn{
+    font-size: 25px;
+    color: white;
+    margin-right: 25px;
+}
+
+.profileImg{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* /////////// NAVBAR /////////// */
+
+/* ////////// SEC NAV /////////// */
+
+.secNav{
+    height: 50px;
+    background-color: white;
+    padding: 3px;
+    margin-top: 90px;
+    box-shadow: 0 2px solid black 10px 0 rgba(63, 63, 63, 0.19);
+}
+
+.l-links{
+    margin-left: 50px;
+}
+
+.l-links a{
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #003049
+}
+
+.r-link{
+    margin-right: 50px;
+}
+
+.r-link i{
+    font-weight: 400;
+    color: #003049;
+    margin-right: 10px;
+}
+.r-link span{
+    color: #003049;
+}
+
+.bal{
+    font-weight: 500;
+    color: #003049;
+}
+
+
+/* /////////// Main Content //////////// */
+
+.wrapper{
+    margin-top: 25px;
+}
+
+.windowHeading{
+    font-size: 24px;
+    color: #003049;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.windowHeading i{
+    font-size: 20px;
+    color: #003049;
+    margin-right: 10px;
+}
+
+/* -----heading card ---------*/
+
+.card-head{
+    border-radius: 10px 10px 0px 0px;
+    height: 45px;
+    margin-bottom: 20px;
+    background-color: white;
+    border: 1px solid rgb(209, 209, 209);
+}
+
+.card-head .activePending{
+    font-weight: 500;
+}
+
+.activeBtn{
+    padding: 10px;
+    border-bottom: 4px solid #D62828;
+    text-decoration: none !important;
+}
+
+.PendingBtn{
+    padding: 10px;
+    text-decoration: none !important;
+}
+
+.searchJob{
+    border: 1px solid rgb(209, 209, 209);
+    padding-left: 10px;
+}
+
+.searchJob:focus{
+    border: 1px solid rgb(209, 209, 209);
+    outline: none;
+}
+
+/* heading card ends */
+
+/* ---------- Cards ------------- */
+
+.card-custom{
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.card-custom:hover{
+    transition: 0.1s all ease-in-out;
+    background-color: #f8f8f8;
+}
+
+.proTitle{
+    color: #F77F00;
+    font-weight: 500;
+    font-size: 20px;
+    margin-top: 10;
+}
+.thumb img:hover{
+    transform: scale(1.5);
+}
+.thumb{
+    width: 120px;
+    height: 120px;
+    background-color: #D62828;
+    overflow: hidden;
+}
+
+.thumb img{
+    width: 100%;
+    height: 100%;
+    transition: 0.5s all ease-in-out;
+}
+
+.p-desc{
+    margin-bottom: 0px !important;
+}
+
+
+/* -------- Sidebar --------*/
+.project-contest{
+    position: relative;
+    overflow-y: scroll;
+    padding-right: 5px;
+    
+}
+
+/* scroll */
+
+ .project-contest::-webkit-scrollbar {
+     width: 3px;
+ }
+ 
+ 
+ .project-contest::-webkit-scrollbar-thumb {
+     border-radius: 10px;
+     background-color: #dfdfdf;
+ }
+
+/* scroll ends */
+.sticky{
+    position: sticky;
+    position: -webkit-sticky;
+    top: 90px;
+    bottom:0;
+}
+
+.line{
+    width: 100%;
+    height: 1px;
+    background: #D6D6D6;
+}
+
+.panel-title a{
+    font-size: 18px;
+    color: #003049 !important;
+    margin-left: 20px;
+}
+
+.panel-body{
+    margin-left: 35px;
+}
+
+.panel-title .count{
+    padding: 1px 5px 1px 5px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    background-color: #999999;
+}
+
+/* //////////////////////////////////// */
+
+
+/* /////// BROWSER PAGE ////////////////// */
+
+/* ------- Project Card ----------*/
+
+.heartBtn i{
+    font-size: 30px;
+    color: #003049;
+}
+
+.skills-list{
+    padding-left: 15px;
+    margin-top: 10px;
+}
+
+.skills-list span{
+    padding: 5px 15px 5px 15px;
+    background-color: #E9E9E9;
+    color: #7E7E7E;
+    font-size: 13px;
+    border-radius: 30px;
+}
+
+.descTxt p{
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 17px !important;
+}
+
+.amount h4{
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.bidsCount i{
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.bidsCount p{
+    margin-bottom: 10px !important;
+}
+
+/* Project card End */
+
+/* ------- Side Nav -------- */
+
+.filterHead{
+    color: #003049;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.filterHead i{
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+.subTitle{
+    font-weight: 500 ;
+}
+
+/*  Search  */
+
+.searchIco i{
+    color: #636363;
+}
+
+.sec-search .secondSearch{
+    position: absolute;
+    z-index: 2;
+    margin-left: 0px;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: rgb(255, 255, 255);
+}
+
+.sec-search input{
+    padding-left: 35px;
+    border-radius: 0;
+}
+
+.sec-search input:focus{
+   
+    box-shadow: none;
+}
+
+/* search end */
+
+/* -----Skill ------- */
+
+.skill-select label{
+    font-size: 15px;
+}
+
+
+
+/* ///////// PRODUCT DETAILS //////////////// */
+
+/* --------- Product card ---------- */
+.certification .cer{
+    padding: 30px;
+    text-align: center;
+}
+.certification span{
+    color: #003049;
+    font-weight: 500;
+}
+
+.certification i{
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+/* Card end */
+
+/* ---- Side button ------ */
+
+.pBtn{
+    height: 50px;
+    text-align: center;
+    padding: 15px 30px 10px 30px;
+    font-size: 14px;
+    border-radius: 30px;
+    background-color: #00B548;
+    color: white;
+    font-weight: 500;
+}
+
+
+.saveBtn{
+    height: 50px;
+    text-align: center;
+    padding: 15px 30px 10px 30px;
+    font-size: 14px;
+    border-radius: 30px;
+    border: 2px solid #7E7E7E;
+    color: #00B548;
+    font-weight: 500;
+}
+
+.pBtn:hover{
+    transform: scale(1.02);
+    transition: all 0.2s;
+    color: white;
+    text-decoration: none;
+}
+
+.saveBtn:hover{
+    transform: scale(1.02);
+    transition: all 0.2s;
+    color: #00B548;
+    text-decoration: none;
+}
+
+/* start */
+
+.stars i{
+    color: #F77F00;
+}
+
+.client-details{
+    color: #003049;
+}
+.client-details span{
+    font-weight: 500;
+}

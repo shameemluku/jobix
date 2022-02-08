@@ -1,0 +1,123 @@
+
+  <div class="container-fluid w-100">
+    <div class="row whole">
+
+      <!-- LEFT SIDE -->
+
+      <div class="col-md-3 h-100 d-flex justify-content-center align-items-center left">
+        
+        <div class="container">
+  
+          
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-stars" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">Basic details</span>
+                <br>Check any pro’s work samples, client reviews, and identity verification.
+            </div>
+          </div>
+          
+
+      
+
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-badge-dollar" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">OTP</span>
+                <br>Interview potential fits for your job, negotiate rates, and only pay for work you approve.
+            </div>
+          </div>
+
+          <div class="intro d-flex justify-content-center row w-100 mt-5"> 
+            <i class="fal fa-check-circle" style="color: #FCBF49; font-size: 25px;"></i>
+            <div class="ml-2 introTxt">
+                <span class="introHead">Safe and secure</span>
+                <br>Focus on your work knowing we help protect your data and privacy. We’re here with 24/7 support if you need it.
+            </div>
+          </div>
+        
+        </div>
+      
+      
+      </div>
+
+      <!-- RIGHT SIDE -->
+
+      <div class="col-md-9 d-flex justify-content-center align-items-center right">
+        
+        <div class="container form-container p-5" id="signup-container">
+
+          <div class="row d-flex justify-content-center mb-2">
+            <a href=""><img src="images/site/logo-dark.svg"></a>
+          </div>
+
+ 
+          <div class="container">
+              <!-- <div class="row toggle-btn justify-content-center">
+                  <a href=""><span class="side1">To work</span></a>
+                  <a href=""><span class="side2">To hire</span></a>
+              </div> -->
+
+              <div class="row login-form mt-3">
+                <form class="w-100" action="/signup" method="post">
+
+                    <div class="d-flex toggle-btn justify-content-center">
+                        <label class="switch">
+                        <input type="checkbox" id="togBtn" name="userType" value="hire" onclick="changeBtnColor()">
+                        <div class="slider round">
+                            <!--ADDED HTML -->
+                            <span class="on">To hire</span>
+                             <span class="off">To work</span>
+                            <!--END-->
+                        </div>
+                        </label>
+
+                    </div>
+
+                  <div class="field">
+                    <span class="elabel"></span>
+                    <input type="text" id="name" name="name" placeholder="Name">
+                  </div>
+                  
+                  <div class="field">
+                    <span class="elabel"></span>
+                    <input type="text" id="email" name="email" placeholder="Email">
+                  </div>
+
+                  <div class="field">
+                    <span class="elabel"></span>
+                    <input type="text" id="phone" name="phone" placeholder="Mobile Number">
+                  </div>
+
+                  <div class="field mb-4">
+                    <span class="cplabel"></span>
+                    <input type="password" id="password" name="password" placeholder="Password">
+                  </div>
+                  
+
+                  
+                  <input type="checkbox" id="agreeCheck" name="agreeCheck">
+                  <label for="agreeCheck"> I agree to the Freelancer <span style="color: #F77F00;">User Agreement and Privacy Policy.</span></label><br>
+
+                  <button class="mt-5 w-100 submitBtn" id="submitBtn" type="submit" value="Submit">JOIN NOW</button>
+                
+                  
+                </form> 
+              </div>
+
+
+              <div class="w-100 text-center mt-3"><p>Already have an account? <a href="/login" style="color: #FCBF49;">Log In</a></p></div>
+            
+              
+              
+          </div>
+        </div>
+
+      </div>
+
+      
+    </div>
+  </div>
+
+
+
