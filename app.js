@@ -7,6 +7,7 @@ var logger = require('morgan');
 var hbs=require('express-handlebars')
 var db = require('./config/connection')
 var fileUpload = require('express-fileupload')
+var session = require('express-session')
 
 var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
@@ -40,6 +41,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Middleware for file upload
 app.use(fileUpload())
+
+app.use(session({
+  secret:"secretKeyJobix",
+  cookie:{
+    maxAge:600000
+  },
+  resave:false,
+  saveUninitialized:false
+}))
 
 
 db.connect((err)=>{

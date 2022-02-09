@@ -4,6 +4,7 @@ const bcrypt=require('bcrypt')
 
 module.exports={
 
+
     addUser:(userData)=>{
 
 
@@ -33,6 +34,34 @@ module.exports={
         
     },
 
+
+
+    userLogin:(userData)=>{
+        return new Promise(async (resolve,reject)=>{
+
+            let loginStatus=false
+            let response={}
+
+            let user=await db.get().collection(collection.USERS_COLLECTION).findOne({email:userData.email})
+            if(user){
+                bcrypt.compare(userData.password,user.password).then((status)=>{
+                    if(status){
+                        response.user=user
+                        response.status=true
+                        resolve(response)
+                    }
+                    else{
+                        resolve({status:false , error:"Failed incorrect Password"})
+                    }
+                })
+            }else{
+                resolve({status:false , error:"Failed, No user found"})
+            }
+        })
+    },
+
+
+
     addWorkUser:(userData)=>{
 
 
@@ -52,5 +81,24 @@ module.exports={
         })
         
     },
+
+    checkUser:(data)=>{
+        console.log("checking");
+        return new Promise(async (resolve,reject)=>{
+            let user=await db.get().collection(collection.USERS_COLLECTION).findOne({email:data.email})
+            if(user){
+                resolve({status:true,error:"Email already exists"})
+            }
+            else{
+                let mobileuser=await db.get().collection(collection.USERS_COLLECTION).findOne({phone:data.phone})
+                if(mobileuser) {
+                    resolve({status:true,error:"Mobile already exists"})
+                } 
+                else{ resolve({status:false}) }
+            }
+        })
+    }
+
+
 
 }

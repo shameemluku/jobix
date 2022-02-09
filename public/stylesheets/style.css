@@ -704,5 +704,14 @@ body{
     border: 1px dashed rgb(80, 80, 80);
     margin-bottom: 20px;
 }
+
+#progressDiv{
+    display: none;
+}
+
+#successMsg{
+    font-size: 20px;
+    font-weight: 500;
+}
  
 /* //////////////END ADD PROJECT///////////////// */

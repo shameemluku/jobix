@@ -13,4 +13,16 @@ module.exports={
     },
 
 
+    addProject:(projectDetails)=>{
+
+        let ext = projectDetails.ext;
+        delete projectDetails.ext;
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.PROJECTLIST_COLLECTION).insertOne(projectDetails).then((result)=>{
+                resolve(result.insertedId.toString())
+            })
+        })
+    }
+
+
 }

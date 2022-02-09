@@ -47,21 +47,25 @@
             <a href=""><img src="images/site/logo-dark.svg"></a>
           </div>
 
+          {{#if error}}
+          <div class="alert alert-danger mt-4 loginError" role="alert">
+                      {{error}}
+          </div>{{/if}}
+
  
           <div class="container">
-              
 
               <div class="row login-form mt-4">
-                <form class="w-100" action="">
+                <form class="w-100" action="/login" method="post">
                   
                   <div class="field">
                     <span class="elabel"></span>
-                    <input type="text" id="fname" name="fname" placeholder="Email">
+                    <input type="text" id="fname" name="email" placeholder="Email">
                   </div>
 
                   <div class="field">
                     <span class="plabel"></span>
-                    <input type="password" id="fname" name="fname" placeholder="Password">
+                    <input type="password" id="fname" name="password" placeholder="Password">
                   </div>
 
                   <div class="mt-2"><a class="forgotPass" href="">Forgot Password?</a> </div>

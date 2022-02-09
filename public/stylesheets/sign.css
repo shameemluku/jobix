@@ -2,6 +2,7 @@
 
 body{
     font-family: 'Red Hat Display', sans-serif;
+    transition: all 1s ease-out;
 }
 .check{
     position: absolute;

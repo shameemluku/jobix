@@ -32,8 +32,9 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    document.getElementById("regForm").submit();
-    console.log( document.forms["regForm"]["fname"].value );
+    // document.getElementById("regForm").submit();
+    $("#regForm").submit();
+
     return false;
   }
   // Otherwise, display the correct tab:
@@ -77,6 +78,80 @@ function fixStepIndicator(n) {
 
 
 
-function myFunction() {
-    alert("The form was submitted");
-  }
+
+
+ 
+   $("#regForm").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    // var form = $(this);
+    
+    // $.ajax({
+    //     type: "POST",
+    //     url: actionUrl,
+    //     data: form.serialize(), // serializes the form's elements.
+    //     success: function(data)
+    //     {
+    //       alert(data); // show response from the php script.
+    //     }
+    // });
+
+
+    $.ajax({
+        xhr:function(){
+          var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = ((evt.loaded / evt.total) * 100);
+                        $(".progress-bar").width(percentComplete + '%');
+                        $(".progress-bar").html(percentComplete+'%');
+                    }
+                }, false);
+                return xhr;
+        },
+
+        type: "post",
+        url: '/add-project',
+        data: new FormData(this),
+        contentType:false,
+        cache:false,
+        processData:false,
+
+        beforeSend: function(){
+          $(".progress-bar").width('0%');
+          $('#successMsg').html('Sending......')
+      },
+      error:function(){
+        $('#successMsg').html('Error Added')
+      },
+      success: function(resp){
+          if(resp.success){
+              $('#regForm')[0].reset();
+              $('#successMsg').html('Successfully Added');
+          }else if(!resp.success){
+            $('#successMsg').html('Error Added')
+          }
+      }
+
+        // success: function(data)
+        // {
+        //     // var json = JSON.parse(data);
+        //     // var status = json.status;
+
+        //     // if(status){
+        //     //   $('#successMsg').html('Successfully Added')
+        //     // }
+        //     // else{
+        //     //   $('#successMsg').html('Error happened')
+        //     // }
+
+        //     alert("Done")
+        // }
+
+    });
+
+
+
+    
+});
