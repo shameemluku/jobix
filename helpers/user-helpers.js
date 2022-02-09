@@ -10,10 +10,8 @@ module.exports={
 
         return new Promise(async (resolve,reject)=>{
 
-            let country = userData.country;
             let skills = userData.skills;
-
-            delete userData.country;
+            console.log(userData);
             delete userData.skills;
 
             userData.password=await bcrypt.hash(userData.password,10)
@@ -22,8 +20,7 @@ module.exports={
                 if(data){
                     db.get().collection(collection.WORKER_COLLECTION).insertOne({
                         'userId' : data.insertedId,
-                        'skills':skills,
-                        'country':country
+                        'skills':skills
                     }).then((response)=>{
                         resolve(response)
                     })

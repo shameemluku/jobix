@@ -99,7 +99,7 @@ body{
     background-color: white;
     padding: 3px;
     margin-top: 90px;
-    box-shadow: 0 2px solid black 10px 0 rgba(63, 63, 63, 0.19);
+    box-shadow: 0 2px 4px 0 rgba(92, 92, 92, 0.2);
 }
 
 .l-links{
@@ -250,7 +250,14 @@ body{
 .sticky{
     position: sticky;
     position: -webkit-sticky;
-    top: 90px;
+    top: 100px;
+    bottom:0;
+}
+
+.stickyBrowse{
+    position: sticky;
+    position: -webkit-sticky;
+    top: 100px;
     bottom:0;
 }
 
@@ -451,3 +458,251 @@ body{
 .client-details span{
     font-weight: 500;
 }
+
+
+
+
+
+
+/* //////  search skill /////////// */
+
+
+
+/* ------- SKILLS SELECT ------ */
+
+.select-box {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .select-box .options-container {
+    background: transparent;
+    max-height: 0;
+    width: 100%;
+    opacity: 0;
+    transition: all 0.4s;
+    border-radius: 1px;
+    overflow: hidden;
+  
+    order: 1;
+  }
+  
+  .selected {
+    background: #2f3640;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    color: #f5f6fa;
+    position: relative;
+  
+    order: 0;
+  }
+  
+  .selected::after {
+    content: "";
+    background: url("img/arrow-down.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+  
+    position: absolute;
+    height: 100%;
+    width: 32px;
+    right: 10px;
+    top: 5px;
+  
+    transition: all 0.4s;
+  }
+  
+  .select-box .options-container.active {
+    max-height: 340px;
+    opacity: 1;
+    overflow-y: scroll;
+    margin-top: 54px;
+  }
+  
+  .select-box .options-container.active + .selected::after {
+    transform: rotateX(180deg);
+    top: -6px;
+  }
+  
+  .select-box .options-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .select-box .options-container::-webkit-scrollbar-thumb {
+    background: #b8b8b8;
+    border-radius: 5px;
+  }
+  
+  .select-box .option,
+  .selected {
+    padding-left: 10px;
+    padding-top: 10px;
+    cursor: pointer;
+  }
+  
+  .select-box .option:hover {
+    background: #e6e6e6;
+  }
+  
+  .select-box label {
+    cursor: pointer;
+  }
+  
+  .select-box .option .radio {
+      height: 10px;
+  }
+  
+  /* Searchbox */
+  
+  .search-box input {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+    position: absolute;
+    z-index: 100;
+    border: 1px solid #b8b8b8;
+  
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s;
+  }
+  
+  .search-box input:focus {
+    outline: none;
+  }
+  
+  .select-box .options-container.active ~ .search-box input {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+.applyBtn{
+    padding: 5px;
+    background-color: #D62828;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 10px;
+    cursor:pointer;
+}
+
+
+
+/* skills end */
+
+
+
+/* ////////////////////////// */
+
+
+
+
+
+/* ////////// ADD PROJECT //////////// */
+
+#regForm {
+    background-color: #ffffff;
+    font-family: Raleway;
+    padding: 40px;
+    width: 100%;
+    font-family: 'Red Hat Display', sans-serif;
+    min-width: 300px;
+  }
+  
+  #headingAdd{
+  }
+  
+  #regForm input {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    border: 1px solid #aaaaaa;
+  }
+
+  #regForm textarea {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    border: 1px solid #aaaaaa;
+  }
+  
+  /* Mark input boxes that gets an error on validation: */
+  #regForm input.invalid {
+    background-color: #ffdddd;
+  }
+  
+  /* Hide all steps by default: */
+  .tab {
+    display: none;
+  }
+  
+  .btn-addPro {
+    background-color: #04AA6D;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 17px;
+    cursor: pointer;
+  }
+  
+  .btn-addPro:hover {
+    opacity: 0.8;
+  }
+  
+  #prevBtn {
+    background-color: #bbbbbb;
+  }
+  
+ 
+  .step {
+    height: 50px;
+    padding: 10px 25px 10px 25px;
+    color: white;
+    border: none;  
+    display: inline-block;
+  }
+  
+  .step.active {
+    background-color: #FCBF49;
+    color: rgb(41, 41, 41);
+  }
+  
+  /* Mark the steps that are finished and valid: */
+  .step.finish {
+    background-color: #F77F00;
+    color: rgb(41, 41, 41);
+  }
+
+  .formCont{
+      width: 100% !important;
+  }
+
+
+  #regForm .options-container{
+      background-color: #f5f5f5;
+      /* border: 1px solid rgb(148, 148, 148); */
+  }
+
+  #regForm .option input{
+      width: 5%;
+  }
+  #regForm .option{
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgb(221, 221, 221);
+  }
+
+  #regForm label{
+      font-weight: 500;
+      color: #313131;
+  }
+
+  #regForm input[type='file']{
+    border: 1px dashed rgb(80, 80, 80);
+    margin-bottom: 20px;
+}
+ 
+/* //////////////END ADD PROJECT///////////////// */
