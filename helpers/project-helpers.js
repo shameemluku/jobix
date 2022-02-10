@@ -26,7 +26,7 @@ module.exports={
         })
     },
 
-    getUserBasedPro:(skills)=>{
+    getUserBasedPro:(skills,id)=>{
 
 
         skillArray = [];
@@ -42,7 +42,9 @@ module.exports={
                     $match:{
                         'skills':{
                             $in:[...skillArray]
-                        }}
+                        }, 
+                        'host':{$ne : objectId(id)}
+                        }
                     },
                     
                     {$lookup:
@@ -65,11 +67,12 @@ module.exports={
                 element.skillsName = temp;
                 temp = []
             });
-
+            
             resolve(project);
         
         })   
     },
+
 
 
     getProjectDetails:(id,hostId)=>{
@@ -78,11 +81,19 @@ module.exports={
             
             let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
                 $match:{_id:objectId(id)}},
-                {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}}
+                {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
+                {$lookup:
+                    {from:"skills",
+                    localField:"skills",
+                    foreignField:"code",
+                    as:"skillsArray"}
+                }
             ]).toArray()
             
+          
+
             resolve(projectDetail[0])
-        
+
         })
         
 

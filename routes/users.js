@@ -2,11 +2,14 @@ var express = require('express');
 const { redirect } = require('express/lib/response');
 var router = express.Router();
 
-const accountSid = 'AC702ff942469e68b3c1a21b786097eb79';
-const authToken = 'fd0dc8f02a3502ab7b6a5908f071bf85';
 
-const twilio = require('twilio');
-const client = new twilio(accountSid, authToken);
+
+require('dotenv').config();
+const fast2sms = require('fast-two-sms')
+
+// const twilio = require('twilio');
+// const client = new twilio(accountSid, authToken);
+
 
 
 var projectHelpers=require('../helpers/project-helpers')
@@ -61,6 +64,7 @@ router.post('/signup', function(req, res, next) {
         req.body.userType="hire";
         req.body.otp = otp;
         //sendOTP(otp,req.body.phone)
+        sendOTPfast(otp,req.body.phone)
         res.render("user/otp.hbs",{userData:req.body, sign:true})
         //console.log(Math.floor(Math.random()*100000+1));
       }
@@ -70,6 +74,7 @@ router.post('/signup', function(req, res, next) {
         req.body.userType="work";
         req.body.otp = otp;
         //sendOTP(otp,req.body.phone)
+        sendOTPfast(otp,req.body.phone)
         res.render("user/otp.hbs",{userData:req.body , sign:true})
       }
 
@@ -192,8 +197,7 @@ router.get('/work-dashboard', varifyLogin, function(req, res, next) {
   userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
 
     req.session.user.workProfile = workProfile
-    console.log(req.session.user.workProfile);
-    res.render("user/dashboard.hbs",{title:"Home"})
+    res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user})
 
   }) 
 });
@@ -211,8 +215,18 @@ router.get('/hire-dashboard', varifyLogin, function(req, res, next) {
 router.get('/browse-project', varifyLogin, function(req, res, next) {
   userHelpers.loadSkills(req.session.user._id).then((skills)=>{
 
-    projectHelpers.getUserBasedPro(skills).then((projects)=>{
-      res.render("user/browse-project.hbs",{title:"User",skills,projects})
+    projectHelpers.getUserBasedPro(skills,req.session.user._id).then((projects)=>{
+
+      if(projects.length!=0)
+      {
+        skillsArray=projects[0].skillsName;
+        console.log(skillsArray);
+        res.render("user/browse-project.hbs",{title:"User",skills,skillsArray,projects,user:req.session.user})
+      }
+      else{
+        res.render("user/browse-project.hbs",{title:"User",skills,projects,user:req.session.user})
+      }
+      
     })
     
 
@@ -227,7 +241,7 @@ router.get('/browse-project', varifyLogin, function(req, res, next) {
 router.get('/add-project', varifyLogin,  function(req, res, next) {
   
   projectHelpers.getSkills().then((skills)=>{
-    res.render("user/addproject.hbs",{title:"Add project",skills})
+    res.render("user/addproject.hbs",{title:"Add project",skills,user:req.session.user})
   })
 
 });
@@ -271,10 +285,10 @@ router.get('/project-details', varifyLogin,  function(req, res, next) {
   let hostId = req.query.hId;
   
   projectHelpers.getProjectDetails(id,hostId).then((proDetails)=>{
+    
+    hostDetails = proDetails.host[0];
 
-    hostDetails = proDetails.host[0]
-    console.log(hostDetails);
-    res.render("user/project-details.hbs",{title:"Project Details",proDetails,hostDetails})
+    res.render("user/project-details.hbs",{title:"Project Details",proDetails,hostDetails , skills:proDetails.skillsArray,user:req.session.user})
   })
 
 });
@@ -283,6 +297,12 @@ router.get('/project-details', varifyLogin,  function(req, res, next) {
 router.get('/download', varifyLogin,  function(req, res, next) {
     let id = req.query.file
     res.download(path.join(__dirname,'../public/files/project-files/'+id+".zip"));
+});
+
+router.get('/signout', varifyLogin,  function(req, res, next) {
+    req.session.loggedIn = false
+    req.session.user=null;
+    res.redirect('/')
 });
 
 
@@ -299,6 +319,11 @@ function sendOTP(otp,mobile){
     from: '+18608314293', // From a valid Twilio number
   })
   .then((message) => console.log(message.sid));
+}
+
+async function sendOTPfast(otp,mobile){
+  var options = {authorization : process.env.API_KEY , message : '\nYour OTP for JobX website is '+otp ,  numbers : [mobile]} 
+  const response = await fast2sms.sendMessage(options)
 }
 
 module.exports = router;

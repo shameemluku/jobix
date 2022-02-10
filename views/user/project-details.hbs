@@ -3,7 +3,7 @@
   <div class="container-fluid d-flex secNav">
     <div class="mr-auto p-2 l-links">
 
-      <a class="p-2" href="/">Browse Project</a>
+      <a class="p-2" href="/browse-project">Browse Project</a>
       <a class="p-2" href="/">Browse Contest</a>
       <a class="p-2" href="/">Freelancers</a>
 
@@ -51,8 +51,8 @@
               <div class="container">
                   <p>{{proDetails.pdetails}}</p>
 
-                  <div class="subTitle">Downloads:</div>
-                  <a href="/download?file={{proDetails._id}}">{{proDetails._id}}.zip</a>
+                  <div class="subTitle mb-2">Downloads:</div>
+                  <a href="/download?file={{proDetails._id}}"><i class="far fa-paperclip mr-2"></i>{{proDetails._id}}.zip</a>
               </div>
             </div>
 
@@ -85,8 +85,8 @@
                 <div class="row pb-2">
                   <div class="skills-list pColor">
 
-                      {{#each proDetails.skills}}
-                      <span>{{this.[]}}</span>
+                      {{#each skills}}
+                      <span>{{this.name}}</span>
                       {{/each}}
                 
                   </div>
