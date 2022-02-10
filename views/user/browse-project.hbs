@@ -57,50 +57,15 @@
       
                         <div class="select-box">
                           <div class="options-container active">
+                            
+                            {{#each skills}}
                             <div class="option">
-                              <input type="checkbox" class="radio" id="automobiles" name="category" />
-                              <label for="automobiles">Automobiles</label>
+                              <input type="checkbox" class="radio" id="{{this.code}}" name="skills" value={{this.code}}/>
+                              <label for="{{this.code}}">{{this.name}}</label>
                             </div>
+                            {{/each}}
       
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="film" name="category" />
-                              <label for="film">Film & Animation</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="science" name="category" />
-                              <label for="science">Science & Technology</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="art" name="category" />
-                              <label for="art">Art</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="music" name="category" />
-                              <label for="music">Music</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="travel" name="category" />
-                              <label for="travel">Travel & Events</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="sports" name="category" />
-                              <label for="sports">Sports</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="news" name="category" />
-                              <label for="news">News & Politics</label>
-                            </div>
-      
-                            <div class="option">
-                              <input type="checkbox" class="radio" id="tutorials" name="category" />
-                              <label for="tutorials">Tutorials</label>
-                            </div>
+                           
                           </div>
       
       
@@ -173,15 +138,15 @@
           </div>
 
         
+        {{#each projects}}
           <!-- Project card 1 -->
           <div class="card card-custom" style="width: 100%">
             <div class="card-body">
-
               <div class="container">
 
                 <div class="row">
                   <div class="col-sm-8">
-                    <span class="proTitle">Photo touch up person needed asap</span>
+                    <span class="proTitle">{{this.pheading}}</span>
                   </div>
                   <div class="d-flex col-sm-4 justify-content-end align-items-start">
                     <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
@@ -190,233 +155,39 @@
 
                 <div class="row">
                     <div class="skills-list">
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
+                        {{#each this.skills}}
+                        <span>{{this.[]}}</span>
+                        {{/each}}
                     </div>
                 </div>
 
 
                 <div class="row">
                   <div class="col-sm-9">
-                    <span class="descTxt"><p>A map of India has to be designed with use of vibrant colours, sharing some points that need go be kept in mind- 1. Capital city to be mentioned of each state ( slightly smaller or different font ) 2. Significant culture or animal of each state to be illustrated, not limited to animals.</p></span>
+                    <span class="descTxt"><p>{{this.pdetails}}</p></span>
                   </div>
                   <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
-                      <h4>$600</h4>
+                      <h4>₹{{this.amount}}</h4>
                   </div>
                 </div>
 
 
                 <div class="row">
                   <div class="col">
-                    <span class="bidsCount"><p> <i class="fal fa-users"></i><strong>32</strong> Bids</p></span>
+                    <span class="bidsCount"><p> <i class="fas fa-user-plus"></i><strong>32</strong> Bids</p></span>
                   </div>
+
+                  <a class="learnmoreBtn" href="/project-details?id={{this._id}}&hId={{this.host}}&skills={{this.skills}}">Learn more <i class="fas fa-angle-double-right ml-1"></i></a>
                 </div>
 
               </div>
             </div>
           </div>
-
+        {{/each}}
           <!-- Card ends here -->
 
 
-          <!-- Project card 2 -->
-          <div class="card card-custom" style="width: 100%">
-            <div class="card-body">
-
-              <div class="container">
-
-                <div class="row">
-                  <div class="col-sm-8">
-                    <span class="proTitle">Photo touch up person needed asap</span>
-                  </div>
-                  <div class="d-flex col-sm-4 justify-content-end align-items-start">
-                    <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
-                  </div>
-                </div>
-
-                <div class="row">
-                    <div class="skills-list">
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col-sm-9">
-                    <span class="descTxt"><p>A map of India has to be designed with use of vibrant colours, sharing some points that need go be kept in mind- 1. Capital city to be mentioned of each state ( slightly smaller or different font ) 2. Significant culture or animal of each state to be illustrated, not limited to animals.</p></span>
-                  </div>
-                  <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
-                      <h4>$600</h4>
-                  </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col">
-                    <span class="bidsCount"><p> <i class="fal fa-users"></i><strong>32</strong> Bids</p></span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Card ends here -->
-
-
-          <!-- Project card 3 -->
-          <div class="card card-custom" style="width: 100%">
-            <div class="card-body">
-
-              <div class="container">
-
-                <div class="row">
-                  <div class="col-sm-8">
-                    <span class="proTitle">Photo touch up person needed asap</span>
-                  </div>
-                  <div class="d-flex col-sm-4 justify-content-end align-items-start">
-                    <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
-                  </div>
-                </div>
-
-                <div class="row">
-                    <div class="skills-list">
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col-sm-9">
-                    <span class="descTxt"><p>A map of India has to be designed with use of vibrant colours, sharing some points that need go be kept in mind- 1. Capital city to be mentioned of each state ( slightly smaller or different font ) 2. Significant culture or animal of each state to be illustrated, not limited to animals.</p></span>
-                  </div>
-                  <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
-                      <h4>$600</h4>
-                  </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col">
-                    <span class="bidsCount"><p> <i class="fal fa-users"></i><strong>32</strong> Bids</p></span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Card ends here -->
-
-
-
-           <!-- Project card 4 -->
-           <div class="card card-custom" style="width: 100%">
-            <div class="card-body">
-
-              <div class="container">
-
-                <div class="row">
-                  <div class="col-sm-8">
-                    <span class="proTitle">Photo touch up person needed asap</span>
-                  </div>
-                  <div class="d-flex col-sm-4 justify-content-end align-items-start">
-                    <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
-                  </div>
-                </div>
-
-                <div class="row">
-                    <div class="skills-list">
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col-sm-9">
-                    <span class="descTxt"><p>A map of India has to be designed with use of vibrant colours, sharing some points that need go be kept in mind- 1. Capital city to be mentioned of each state ( slightly smaller or different font ) 2. Significant culture or animal of each state to be illustrated, not limited to animals.</p></span>
-                  </div>
-                  <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
-                      <h4>$600</h4>
-                  </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col">
-                    <span class="bidsCount"><p> <i class="fal fa-users"></i><strong>32</strong> Bids</p></span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Card ends here -->
-
-           <!-- Project card 3 -->
-           <div class="card card-custom" style="width: 100%">
-            <div class="card-body">
-
-              <div class="container">
-
-                <div class="row">
-                  <div class="col-sm-8">
-                    <span class="proTitle">Photo touch up person needed asap</span>
-                  </div>
-                  <div class="d-flex col-sm-4 justify-content-end align-items-start">
-                    <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
-                  </div>
-                </div>
-
-                <div class="row">
-                    <div class="skills-list">
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                        <span>Digital art</span>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col-sm-9">
-                    <span class="descTxt"><p>A map of India has to be designed with use of vibrant colours, sharing some points that need go be kept in mind- 1. Capital city to be mentioned of each state ( slightly smaller or different font ) 2. Significant culture or animal of each state to be illustrated, not limited to animals.</p></span>
-                  </div>
-                  <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
-                      <h4>$600</h4>
-                  </div>
-                </div>
-
-
-                <div class="row">
-                  <div class="col">
-                    <span class="bidsCount"><p> <i class="fal fa-users"></i><strong>32</strong> Bids</p></span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- Card ends here -->
-
+          
           
 
         </div>

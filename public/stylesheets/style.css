@@ -202,7 +202,7 @@ body{
 .proTitle{
     color: #F77F00;
     font-weight: 500;
-    font-size: 20px;
+    font-size: 25px;
     margin-top: 10;
 }
 .thumb img:hover{
@@ -330,6 +330,21 @@ body{
     margin-bottom: 10px !important;
 }
 
+.learnmoreBtn{
+    padding: 5px 15px 5px 15px;
+    text-align: center;
+    color: white;
+    border-radius: 8px;
+    background-color: #04AA6D;
+    text-decoration: none;
+}
+
+.learnmoreBtn:hover{
+    color: white;
+    background-color: #08ac70;
+    text-decoration: none !important;
+}
+
 /* Project card End */
 
 /* ------- Side Nav -------- */
@@ -403,6 +418,11 @@ body{
 .certification i{
     font-size: 20px;
     margin-right: 10px;
+}
+
+.detailsDate{
+    font-size: 13px;
+    color: #535353;
 }
 
 /* Card end */
@@ -585,7 +605,6 @@ body{
     font-size: 15px;
     font-weight: 500;
     border: none;
-    border-radius: 10px;
     cursor:pointer;
 }
 

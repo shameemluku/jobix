@@ -100,7 +100,7 @@ router.get('/login', function(req, res, next) {
 // Login Post
 
 router.post('/login', function(req, res, next) {
-  console.log(req.body);
+
 
   userHelpers.userLogin(req.body).then((response)=>{
     if(response.status){
@@ -187,7 +187,15 @@ router.post('/add-worker', function(req, res, next) {
 ////////////// WORKER DASHBOARD ////////////////
 
 router.get('/work-dashboard', varifyLogin, function(req, res, next) {
-  res.render("user/dashboard.hbs",{title:"Home"})
+
+  
+  userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
+
+    req.session.user.workProfile = workProfile
+    console.log(req.session.user.workProfile);
+    res.render("user/dashboard.hbs",{title:"Home"})
+
+  }) 
 });
 
 /////////////// HIRE DASHBOARD /////////////////
@@ -201,13 +209,15 @@ router.get('/hire-dashboard', varifyLogin, function(req, res, next) {
 // BROWSE PROJECT
 
 router.get('/browse-project', varifyLogin, function(req, res, next) {
+  userHelpers.loadSkills(req.session.user._id).then((skills)=>{
 
-  projectHelpers.getSkills().then((skills)=>{
-  console.log(req.session.user);
-  
+    projectHelpers.getUserBasedPro(skills).then((projects)=>{
+      res.render("user/browse-project.hbs",{title:"User",skills,projects})
+    })
+    
+
   })
-
-  res.render("user/browse-project.hbs",{title:"User"})
+    
 });
 
 
@@ -215,9 +225,11 @@ router.get('/browse-project', varifyLogin, function(req, res, next) {
 // ADD PROJECT PAGE
 
 router.get('/add-project', varifyLogin,  function(req, res, next) {
+  
   projectHelpers.getSkills().then((skills)=>{
     res.render("user/addproject.hbs",{title:"Add project",skills})
   })
+
 });
 
 // ADD PROJECT FUNCTION POST
@@ -232,7 +244,7 @@ router.post('/add-project', function(req, res, next) {
 
   console.log(ext);
 
-  hostId = "12324" // change with req.session.user._id
+  hostId = req.session.user._id // change with req.session.user._id
   req.body.host = hostId
 
   projectHelpers.addProject(req.body).then((id)=>{
@@ -250,6 +262,28 @@ router.post('/add-project', function(req, res, next) {
   })
 });
 
+
+// PROJECT DETAILS PAGE
+
+router.get('/project-details', varifyLogin,  function(req, res, next) {
+  
+  let id = req.query.id;
+  let hostId = req.query.hId;
+  
+  projectHelpers.getProjectDetails(id,hostId).then((proDetails)=>{
+
+    hostDetails = proDetails.host[0]
+    console.log(hostDetails);
+    res.render("user/project-details.hbs",{title:"Project Details",proDetails,hostDetails})
+  })
+
+});
+
+
+router.get('/download', varifyLogin,  function(req, res, next) {
+    let id = req.query.file
+    res.download(path.join(__dirname,'../public/files/project-files/'+id+".zip"));
+});
 
 
 

@@ -1,6 +1,7 @@
 var db=require('../config/connection')
 var collection=require('../config/collections')
 const bcrypt=require('bcrypt')
+var objectId=require('mongodb').ObjectId
 
 module.exports={
 
@@ -97,8 +98,61 @@ module.exports={
                 else{ resolve({status:false}) }
             }
         })
+    },
+
+
+    loadWorkProfile:(id)=>{
+        
+        return new Promise(async(resolve,reject)=>{
+
+            let workProfile = await db.get().collection(collection.WORKER_COLLECTION).find({userId:objectId(id)}).toArray()      
+            console.log(workProfile.skills);       
+            resolve(workProfile)           
+        })   
+    },
+
+
+    loadSkills:(id)=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let workProfile = await db.get().collection('workprofile').aggregate([
+                {
+                    $match:{
+                        userId:objectId(id)
+                    }
+                },
+                {
+                    $unwind:"$skills"
+                },
+                {
+                    $lookup:{
+                        from:"skills",
+                        localField: 'skills',
+                        foreignField: 'code',
+                        as: 'userSkills'
+                    }
+                }
+
+            ]).toArray()  
+                 
+            // console.log(workProfile)  
+
+            skills = []
+            
+            workProfile.forEach(element => {
+                skills.push({'name':element.userSkills[0].name , 'code':element.userSkills[0].code} );
+            });
+
+            resolve(skills)
+        
+        }) 
     }
 
-
-
 }
+
+
+
+
+
+
