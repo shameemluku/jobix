@@ -32,9 +32,6 @@ module.exports={
 
         //checking single value from query. If true make it as an array for Lookup $in
 
-        console.log(skillArray);
-       
-
 
         return new Promise(async(resolve,reject)=>{
 
@@ -50,8 +47,19 @@ module.exports={
                         localField:"skills",
                         foreignField:"code",
                         as:"skillsArray"}
-                    }
+                    },
+                    {$project:{
+                        pdetails:1,pheading:1,bidding:1,
+                        host:1,
+                        amount:1,dueDate:1,skills:1,
+                        skillsArray:1,
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                    }}
+                    
             ]).toArray()
+
+
+            console.log(project);
 
          
             let temp = []
@@ -123,7 +131,14 @@ module.exports={
                         localField:"skills",
                         foreignField:"code",
                         as:"skillsArray"}
-                    }
+                    },
+                    {$project:{
+                        pdetails:1,pheading:1,bidding:1,
+                        host:1,
+                        amount:1,dueDate:1,skills:1,
+                        skillsArray:1,
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                    }}
             ]).toArray()
 
          
@@ -158,8 +173,17 @@ module.exports={
                         localField:"skills",
                         foreignField:"code",
                         as:"skillsArray"}
-                    }
+                    },
+                    {$project:{
+                        pdetails:1,pheading:1,bidding:1,
+                        host:1,
+                        amount:1,dueDate:1,skills:1,
+                        skillsArray:1,
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                    }}
                 ]).toArray()
+
+                console.log(projectDetail[0]);
                 resolve(projectDetail[0])
             }catch(err)
             {
