@@ -525,8 +525,9 @@ body{
 .pBtn{
     height: 50px;
     text-align: center;
-    padding: 15px 30px 10px 30px;
+    padding: 12px 30px 10px 30px;
     font-size: 14px;
+    border:none;
     border-radius: 30px;
     background-color: #00B548;
     color: white;
@@ -537,9 +538,11 @@ body{
 .saveBtn{
     height: 50px;
     text-align: center;
-    padding: 15px 30px 10px 30px;
+    padding: 12px 30px 10px 30px;
     font-size: 14px;
     border-radius: 30px;
+    border:none;
+    background-color: transparent;
     border: 2px solid #7E7E7E;
     color: #00B548;
     font-weight: 500;
@@ -573,8 +576,27 @@ body{
 }
 
 
+/* ///////////END PRODUCT ////////////// */
 
 
+/* //////////// SUBMIT PROPOSAL //////////// */
+
+
+.submitTxt{
+    min-height: 150px;
+}
+
+#remainingC{
+    color: #535353;
+    font-size: 15px;
+}
+
+#sendCard{
+    display: none;
+}
+
+
+/* ////////// END OF SUBMIT ///////////////// */
 
 
 /* //////  search skill /////////// */

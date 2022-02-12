@@ -18,7 +18,7 @@
   <!-- Home starts -->
  
 
-    <div class="container mt-4">
+    <div id="detailsCard" class="container mt-4">
       <div class="row">
 
         <div class="col-md-9">
@@ -109,25 +109,25 @@
 
           <div class="holder project-contest sticky ">
 
-            <!-- Working On -->
+            <!-- SUBMIT BUTTON -->
 
             <div class="card card-custom " style="width: 100%;">
               
               <div class="card-body">
 
                 <div class="container d-flex justify-content-center p-0 mb-2">
-                  <a class="pBtn w-100" href="#">SUBMIT PROPOSAL</a>
+                  <button id="submitBtn" class="pBtn w-100" href="#">SUBMIT PROPOSAL</button>
                 </div>
 
                 <div class="container d-flex justify-content-center p-0">
-                  <a class="saveBtn w-100" href="#"><i class="far fa-heart pr-2"></i>SAVE JOB</a>
+                  <button class="saveBtn w-100" href="#"><i class="far fa-heart pr-2"></i>SAVE JOB</button>
                 </div>
                   
 
               </div>
             </div>
 
-            <!-- Working On -->
+            <!-- HOST DETAILS -->
             
             <div class="card card-custom " style="width: 100%;">
               <div class="d-flex w-100 justify-content-center pt-2">
@@ -156,6 +156,118 @@
                   
               </div>
             </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+
+    {{!-- //////////////////////////////// PROPOSAL FIELD /////////////////////////////////////////// --}}
+
+
+
+    <div id="sendCard" class="container mt-4">
+      <div class="row">
+
+        <div class="col-md-9">
+
+
+          <!-- Project card 1 -->
+          <div class="card card-custom" style="width: 100%">
+            
+            <!-- project heading -->
+            <div class="card-body">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <span class="proTitle">{{proDetails.pheading}}</span>
+                    
+
+                      <div class="skills-list pColor" style="padding-left: 0px">
+
+                      {{#each skills}}
+                      <span>{{this.name}}</span>
+                      {{/each}}
+                
+                      </div>
+
+                  </div>
+                  <div class="d-flex col-sm-4 justify-content-end">
+                    Client's budget:<span class="mr-md-3" style="font-weight: 900;">&nbsp;₹{{proDetails.amount}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- end heading -->
+
+            <div class="line"></div>
+
+            <!-- project heading -->
+            <div class="card-body">
+              <div class="container">
+                  
+                  <div class="subTitle">Cover letter:</div>
+                  <textarea id="coverTxt" class="submitTxt mt-2 p-2" style="width: 100%;" placeholder="Brief about your proposal.... Be genuine"></textarea>
+                  <span id='remainingC'style="float:right;"></span>
+              </div>
+            </div>
+
+            <div class="line"></div>
+
+
+            <div class="card-body">
+              <div class="container">
+                  
+                  <div class="subTitle"><i class="far fa-badge-percent mr-2"></i>Reward terms:</div>
+
+                  <p class="mb-1 mt-3">Total reward for the project : <b>₹<span id="amountTxt">{{proDetails.amount}}</span></b></p>
+                  <p class="mb-1">JobX fee (10%) : <b>₹<span id="comiTxt"></span></b></p>
+                  <p class="mb-0">Estimated amount you'll receive : <b style="color: #008134; font-size:18px">₹<span id="estimateTxt"></span></b></p>
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <!-- Card ends here -->
+
+
+        </div>
+
+        <!-- SIDE BAR RIGHT -->
+
+        <div class="col-md-3">
+
+          <div class="holder project-contest sticky ">
+
+            <!-- SUBMIT BUTTON -->
+
+            <div class="card card-custom " style="width: 100%;">
+              
+              <div class="card-body">
+
+                <div class="container d-flex justify-content-center p-0 mb-2">
+                  <button id="sendProBtn" class="pBtn w-100" onclick="sendProposal('{{proDetails._id}}','{{user._id}}','{{user.name}}')" >SEND PROPOSAL</button>
+                </div>
+
+                <div class="container d-flex justify-content-center p-0">
+                  <button id="cancelBtn" class="saveBtn w-100">CANCEL</button>
+                </div>
+                  
+
+              </div>
+            </div>
+
 
           </div>
 

@@ -180,6 +180,27 @@ module.exports={
         
         })
         
+    },
+
+    sendProposal:(pId,id,name,message)=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            db.get().collection(collection.PROJECTLIST_COLLECTION).update(
+                    {_id:objectId(pId)},
+                    {$addToSet:{bidding:
+                        {
+                            userId:objectId(id),
+                            username:name,
+                            message:message
+                        }
+                    }}
+                ).then((result)=>{
+                resolve(result)
+            })
+        
+        })
+        
     }
 
 }

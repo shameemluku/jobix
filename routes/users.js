@@ -271,17 +271,6 @@ router.get('/filter-projects',  function(req, res, next) {
   var amount = parseInt(req.query.amount);
 
 
-
-  
-//   if(req.query.amount){
-//     query = '{skills:{$in:['+skillsQuery+']},amount:'+req.query.amount+', host: {$ne: ObjectId("'+req.session.user._id+'")} }';
-//   }else{
-//     query = '{skills:{$in:['+skillsQuery+']}, host: {$ne: ObjectId("'+req.session.user._id+'")}}';
-//   }
-
-//     console.log(query);
-
-
   projectHelpers.getFilteredPro(skillArray,amount,req.session.user._id).then((projects)=>{
 
       if(projects.length!=0)
@@ -351,6 +340,7 @@ router.get('/project-details', varifyLogin,  function(req, res, next) {
     hostDetails = proDetails.host[0];
 
     res.render("user/project-details.hbs",{title:"Project Details",proDetails,hostDetails , skills:proDetails.skillsArray,user:req.session.user})
+  
   }).catch((err)=>{
       res.status(500).render('error')
   })
@@ -363,11 +353,33 @@ router.get('/download', varifyLogin,  function(req, res, next) {
     res.download(path.join(__dirname,'../public/files/project-files/'+id+".zip"));
 });
 
+
+router.post('/send-proposal', varifyLogin,  function(req, res, next) {
+    
+    projectHelpers.sendProposal(req.body.pId,req.body.id,req.body.name,req.body.message).then((data)=>{
+      if(data){
+        console.log(data.acknowledged);
+        res.send("done");
+      }else{
+        res.status(500).send('error')
+      }
+    })
+    
+
+});
+
+
+
+// END PRODUCT PAGE
+
 router.get('/signout', varifyLogin,  function(req, res, next) {
     req.session.loggedIn = false
     req.session.user=null;
     res.redirect('/')
 });
+
+
+
 
 
 
