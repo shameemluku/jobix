@@ -26,3 +26,46 @@ const selected = document.querySelector(".selected");
         }
       });
     };
+
+
+
+
+// FILTER FORM
+
+$("#filterForm").submit(function(e) {
+
+  e.preventDefault(); // avoid to execute the actual submit of the form.
+
+  var form = $(this);
+  
+  $.ajax({
+      type: "get",
+      url: '/filter-projects?filter=true',
+      data: form.serialize(),
+
+      //success
+      success: function(data)
+      {
+        $("#card-Holder").html(data);
+        
+        $( "#snackbar" ).html( '<i class="far fa-check-circle mr-2" style="color:white"></i>Filter applied' );
+        $( "#snackbar" ).addClass( "show" );
+        setTimeout(function()
+        {   
+          $( "#snackbar" ).removeClass( "show" );
+        }, 3000);
+      
+      },
+      //error
+      error: function (error) {
+
+        $( "#snackbar" ).html( '<i class="far fa-exclamation-circle mr-2" style="color:white"></i>Server Timeout. Login again' );
+        $( "#snackbar" ).addClass( "show" );
+        setTimeout(function()
+        {   
+          $( "#snackbar" ).removeClass( "show" );
+        }, 3000);
+      }
+  });
+  
+});

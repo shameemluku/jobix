@@ -49,7 +49,7 @@
                 <div class="container p-0">
 
                   <div class="row  mt-2">
-                    <form class="w-100" action="">
+                    <form class="w-100" id="filterForm" action="https://google.com">
       
                       <div class="container">
       
@@ -60,7 +60,7 @@
                             
                             {{#each skills}}
                             <div class="option">
-                              <input type="checkbox" class="radio" id="{{this.code}}" name="skills" value={{this.code}}/>
+                              <input type="checkbox" class="radio" id="{{this.code}}" name="skills" value={{this.code}} checked/>
                               <label for="{{this.code}}">{{this.name}}</label>
                             </div>
                             {{/each}}
@@ -78,6 +78,28 @@
       
                   </div>
                   <!-- SKILLS END -->
+
+
+                  {{!-- REWARD --}}
+
+                      <p class="subTitle mt-2 pColor">Reward Amount</p>
+
+                <div class="skill-select ml-2">
+                    <input type="radio" id="all" name="amount" value="1" checked>
+                    <label class="ml-1" for="all"> All</label><br>
+                    <input type="radio" id="skill1" name="amount" value="2">
+                    <label class="ml-1" for="skill1"> Below $500</label><br>
+                    <input type="radio" id="skill2" name="amount" value="3">
+                    <label class="ml-1" for="skill2"> $500 - $1000</label><br>
+                    <input type="radio" id="skill3" name="amount" value="4">
+                    <label class="ml-1" for="skill3"> $1000 - $5000</label><br>
+                    <input type="radio" id="skill4" name="amount" value="5">
+                    <label class="ml-1" for="skill4"> Above $5000</label><br>
+                    
+                </div>
+
+
+                  {{!-- END REWARD --}}
       
                   <button class="mt-2 w-100 applyBtn" type="submit" value="Submit">Apply</button>
       
@@ -101,19 +123,9 @@
               
               <div class="card-body">
 
-                <p class="subTitle mt-2 pColor">Reward Amount</p>
+                <p class="subTitle mt-2 pColor">Saved Projects</p>
 
-                <div class="skill-select ml-2">
-                    <input type="checkbox" id="skill1" name="skill1" value="Bike">
-                    <label class="ml-1" for="skill1"> Below $100</label><br>
-                    <input type="checkbox" id="skill2" name="skill2" value="Car">
-                    <label class="ml-1" for="skill2"> $100 - $500</label><br>
-                    <input type="checkbox" id="skill3" name="skill3" value="Boat">
-                    <label class="ml-1" for="skill3"> $500 - $1000</label><br>
-                    <input type="checkbox" id="skill4" name="skill4" value="Boat">
-                    <label class="ml-1" for="skill4"> Above $1000</label><br>
-                    
-                </div>
+              
 
               </div>
             </div>
@@ -137,6 +149,7 @@
             <h1 class="windowHeading"><i class="fas fa-list-ul"></i>Browse Projects</h1>
           </div>
 
+        <div id="card-Holder">
         
         {{#each projects}}
           <!-- Project card 1 -->
@@ -187,7 +200,7 @@
           <!-- Card ends here -->
 
 
-          
+         </div> 
           
 
         </div>
@@ -196,35 +209,10 @@
         
 
       </div>
+
+      
     </div>
 
 
-
-
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-
-
-
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-
-
-
+    <div id="snackbar">Server Timeout. Login again</div>
 

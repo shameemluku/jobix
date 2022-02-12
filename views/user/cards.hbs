@@ -1,0 +1,47 @@
+{{#each projects}}
+          <!-- Project card 1 -->
+          <div class="card card-custom" style="width: 100%">
+            <div class="card-body">
+              <div class="container">
+
+                <div class="row">
+                  <div class="col-sm-8">
+                    <span class="proTitle">{{this.pheading}}</span>
+                  </div>
+                  <div class="d-flex col-sm-4 justify-content-end align-items-start">
+                    <a class="heartBtn" href="#"><i class="fal fa-heart"></i></a>
+                  </div>
+                </div>
+
+                <div class="row">
+                    <div class="skills-list">
+                        {{#each skillsArray}}
+                        <span>{{this.name}}</span>
+                        {{/each}}
+                    </div>
+                </div>
+
+
+                <div class="row">
+                  <div class="col-sm-9">
+                    <span class="descTxt"><p>{{this.pdetails}}</p></span>
+                  </div>
+                  <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
+                      <h4>₹{{this.amount}}</h4>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <div class="col">
+                    <span class="bidsCount"><p> <i class="fas fa-user-plus"></i><strong>32</strong> Bids</p></span>
+                  </div>
+
+                  <a class="learnmoreBtn" href="/project-details?id={{this._id}}&hId={{this.host}}&skills={{this.skills}}">Learn more <i class="fas fa-angle-double-right ml-1"></i></a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        {{/each}}
+          <!-- Card ends here -->

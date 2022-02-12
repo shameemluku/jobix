@@ -195,9 +195,19 @@ router.get('/work-dashboard', varifyLogin, function(req, res, next) {
 
   
   userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
-
-    req.session.user.workProfile = workProfile
-    res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user})
+    
+    projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
+        
+        if(hostedProjects.length === 0){
+          empty=true
+        }
+        else{
+          empty=false;
+        }
+        req.session.user.workProfile = workProfile
+        res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user,hostedProjects,empty});
+    })
+    
 
   }) 
 });
@@ -213,27 +223,79 @@ router.get('/hire-dashboard', varifyLogin, function(req, res, next) {
 // BROWSE PROJECT
 
 router.get('/browse-project', varifyLogin, function(req, res, next) {
-  userHelpers.loadSkills(req.session.user._id).then((skills)=>{
 
-    projectHelpers.getUserBasedPro(skills,req.session.user._id).then((projects)=>{
+  
+
+    userHelpers.loadSkills(req.session.user._id).then((skills)=>{
+
+      
+      var skillArray = [];
+      skills.forEach(element => {
+          skillArray.push(element.code)
+      });
+
+        projectHelpers.getUserBasedPro(skillArray,req.session.user._id).then((projects)=>{
+  
+          if(projects.length!=0)
+          {
+            skillsArray=projects[0].skillsName;
+            res.render("user/browse-project.hbs",{title:"User",skills,skillsArray,projects,user:req.session.user})
+          }
+          else{
+            res.render("user/browse-project.hbs",{title:"User",skills,projects,user:req.session.user})
+          }
+          
+        })      
+      
+    })
+
+  
+    
+});
+
+
+// FILTER AND SKILLS PROJECT
+
+router.get('/filter-projects',  function(req, res, next) {
+
+  var skillsQuery = req.query.skills , skillArray = [];
+
+  if(Array.isArray(skillsQuery)){
+    skillArray = skillsQuery
+  }else{
+    skillArray.push(skillsQuery)
+  }
+
+  console.log(skillArray);
+
+  var amount = parseInt(req.query.amount);
+
+
+
+  
+//   if(req.query.amount){
+//     query = '{skills:{$in:['+skillsQuery+']},amount:'+req.query.amount+', host: {$ne: ObjectId("'+req.session.user._id+'")} }';
+//   }else{
+//     query = '{skills:{$in:['+skillsQuery+']}, host: {$ne: ObjectId("'+req.session.user._id+'")}}';
+//   }
+
+//     console.log(query);
+
+
+  projectHelpers.getFilteredPro(skillArray,amount,req.session.user._id).then((projects)=>{
 
       if(projects.length!=0)
       {
         skillsArray=projects[0].skillsName;
-        console.log(skillsArray);
-        res.render("user/browse-project.hbs",{title:"User",skills,skillsArray,projects,user:req.session.user})
+        res.render("user/cards.hbs",{title:"User",skillsArray,projects,user:req.session.user})
       }
       else{
-        res.render("user/browse-project.hbs",{title:"User",skills,projects,user:req.session.user})
+        res.render("user/cards.hbs",{title:"User",projects,user:req.session.user})
       }
-      
-    })
-    
+     
+  })  
 
-  })
-    
-});
-
+ });
 
 
 // ADD PROJECT PAGE
@@ -250,7 +312,7 @@ router.get('/add-project', varifyLogin,  function(req, res, next) {
 
 router.post('/add-project', function(req, res, next) {
 
-  console.log(req.body);
+
 
   let filename = req.files.file.name;
   let ext = filename.split('.').pop()
@@ -289,6 +351,8 @@ router.get('/project-details', varifyLogin,  function(req, res, next) {
     hostDetails = proDetails.host[0];
 
     res.render("user/project-details.hbs",{title:"Project Details",proDetails,hostDetails , skills:proDetails.skillsArray,user:req.session.user})
+  }).catch((err)=>{
+      res.status(500).render('error')
   })
 
 });
