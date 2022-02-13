@@ -120,7 +120,15 @@
                 </div>
 
                 <div class="container d-flex justify-content-center p-0">
-                  <button class="saveBtn w-100" href="#"><i class="far fa-heart pr-2"></i>SAVE JOB</button>
+                  
+                  {{#if proDetails.saved}}
+                  <button id="save{{proDetails._id}}" class="saveBtn w-100 d-none" onclick="saveProject('{{proDetails._id}}')"><i class="far fa-heart pr-2"></i>SAVE JOB</button>
+                  <button id="unsave{{proDetails._id}}" class="saveBtn w-100" onclick="unsaveProject('{{proDetails._id}}')"><i class="fas fa-heart pr-2"></i>SAVED JOB</button>
+                  {{else}}
+                  <button id="save{{proDetails._id}}" class="saveBtn w-100" onclick="saveProject('{{proDetails._id}}')"><i class="far fa-heart pr-2"></i>SAVE JOB</button>
+                  <button id="unsave{{proDetails._id}}" class="saveBtn w-100 d-none"onclick="unsaveProject('{{proDetails._id}}')"><i class="fas fa-heart pr-2"></i>SAVED JOB</button>
+                  {{/if}}
+
                 </div>
                   
 
@@ -278,3 +286,4 @@
     </div>
 
 
+   <div id="snackbar"></div>

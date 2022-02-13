@@ -235,14 +235,19 @@ router.get('/browse-project', varifyLogin, function(req, res, next) {
       });
 
         projectHelpers.getUserBasedPro(skillArray,req.session.user._id).then((projects)=>{
-  
+          
+          let user=req.session.user,
+          saveCount=user.workProfile[0].saveCount;
+
           if(projects.length!=0)
           {
             skillsArray=projects[0].skillsName;
-            res.render("user/browse-project.hbs",{title:"User",skills,skillsArray,projects,user:req.session.user})
+            res.render("user/browse-project.hbs",{title:"User",skills,skillsArray,projects,user,saveCount})
+            console.log(projects);
           }
           else{
-            res.render("user/browse-project.hbs",{title:"User",skills,projects,user:req.session.user})
+            res.render("user/browse-project.hbs",{title:"User",skills,projects,user,saveCount})
+            console.log(projects);
           }
           
         })      
@@ -286,6 +291,34 @@ router.get('/filter-projects',  function(req, res, next) {
 
  });
 
+// SAVE AND UNSAVE PROJECT
+
+router.post('/save-project', varifyLogin,  function(req, res, next) {
+
+  
+  userHelpers.saveProject(req.session.user._id,req.body.pId,).then((response)=>{
+      if(response){
+        
+        req.session.user.workProfile[0].saveCount = req.session.user.workProfile[0].saveCount + 1;
+        res.send({success:true});
+      }
+  })
+
+});
+
+router.post('/unsave-project', varifyLogin,  function(req, res, next) {
+
+  
+  userHelpers.unsaveProject(req.session.user._id,req.body.pId,).then((response)=>{
+      if(response){
+        req.session.user.workProfile[0].saveCount = req.session.user.workProfile[0].saveCount - 1;
+        res.send({success:true});
+      }
+  })
+
+});
+
+// //////////////////////////////////
 
 // ADD PROJECT PAGE
 
@@ -334,8 +367,9 @@ router.get('/project-details', varifyLogin,  function(req, res, next) {
   
   let id = req.query.id;
   let hostId = req.query.hId;
+  let userId = req.session.user._id;
   
-  projectHelpers.getProjectDetails(id,hostId).then((proDetails)=>{
+  projectHelpers.getProjectDetails(id,userId).then((proDetails)=>{
     
     hostDetails = proDetails.host[0];
 

@@ -105,8 +105,19 @@ module.exports={
         
         return new Promise(async(resolve,reject)=>{
 
-            let workProfile = await db.get().collection(collection.WORKER_COLLECTION).find({userId:objectId(id)}).toArray()      
-            console.log(workProfile.skills);       
+            // let workProfile = await db.get().collection(collection.WORKER_COLLECTION).find({userId:objectId(id)}).toArray()      
+            // console.log(workProfile.skills); 
+
+            let workProfile = await db.get().collection(collection.WORKER_COLLECTION).aggregate([
+                {$match:{userId:objectId(id)}},
+                {$project:{
+                    userId:1,
+                    skills:1,saved:1,
+                    saveCount:{$size:{"$ifNull":["$saved",[]]}}
+                }}
+            ]).toArray()
+            
+            console.log(workProfile);
             resolve(workProfile)           
         })   
     },
@@ -147,6 +158,56 @@ module.exports={
             resolve(skills)
         
         }) 
+    },
+
+    // Save project
+
+    saveProject:(id,pId)=>{
+        
+        return new Promise(async(resolve,reject)=>{
+
+            await db.get().collection(collection.WORKER_COLLECTION).update(
+                {userId:objectId(id)},
+                {$addToSet:{saved:
+                    {
+                        pId:objectId(pId)
+                    }
+                }
+            }).then((result)=>{
+
+                db.get().collection(collection.PROJECTLIST_COLLECTION).update(
+                    {_id:objectId(pId)},
+                    {
+                        $addToSet:{savedby:{userId:objectId(id)}}
+                    }
+                ).then((result)=>{
+                    resolve(result)
+                })
+                
+            })         
+        })   
+    },
+
+    //Unsave Project
+    unsaveProject:(id,pId)=>{  
+        
+        return new Promise(async(resolve,reject)=>{
+
+            await db.get().collection(collection.WORKER_COLLECTION).update( 
+                {userId:objectId(id)},
+                {$pull: {'saved':{'pId': objectId(pId)}}}   
+            ).then((result)=>{
+               
+                db.get().collection(collection.PROJECTLIST_COLLECTION).update(
+                    {_id:objectId(pId)},
+                    {$pull: {'savedby':{'userId': objectId(id)}}}
+                ).then((result)=>{
+                    resolve(result)
+                })
+                     
+            
+            })         
+        })   
     }
 
 }

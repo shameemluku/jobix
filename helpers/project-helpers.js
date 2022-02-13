@@ -30,13 +30,10 @@ module.exports={
 
     getUserBasedPro:(skillArray,id)=>{
 
-        //checking single value from query. If true make it as an array for Lookup $in
 
+        console.log(objectId(id));
 
         return new Promise(async(resolve,reject)=>{
-
-            // let project = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({'skills':{$in:[...skillArray]}}).toArray()            
-            // resolve(project)
 
             
             let project = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
@@ -53,13 +50,13 @@ module.exports={
                         host:1,
                         amount:1,dueDate:1,skills:1,
                         skillsArray:1,
-                        bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}},
+                        savedby:1
                     }}
                     
             ]).toArray()
 
 
-            console.log(project);
 
          
             let temp = []
@@ -73,7 +70,18 @@ module.exports={
                 element.skillsName = temp;
                 temp = []
             });
-            
+
+            project.forEach(element => {
+
+                if(Array.isArray(element.savedby)){
+                    element.savedby.forEach(i=>{
+                        if(i.userId.toString() == id){
+                            element.saved=true;
+                        }
+                    })
+                }
+            })
+
             resolve(project)
         
         })   
@@ -160,8 +168,9 @@ module.exports={
     },
 
 
-    getProjectDetails:(id,hostId)=>{
+    getProjectDetails:(id,userId)=>{
 
+        console.log(userId);
         return new Promise(async(resolve,reject)=>{
             
             try{
@@ -178,12 +187,18 @@ module.exports={
                         pdetails:1,pheading:1,bidding:1,
                         host:1,
                         amount:1,dueDate:1,skills:1,
-                        skillsArray:1,
+                        skillsArray:1,savedby:1,
                         bidCount:{$size:{"$ifNull":["$bidding",[]]}}
                     }}
                 ]).toArray()
 
-                console.log(projectDetail[0]);
+                projectDetail[0].savedby.forEach(i=>{
+                    if(i.userId.toString()==userId){
+                        projectDetail[0].saved = true;
+                    }
+                })
+
+
                 resolve(projectDetail[0])
             }catch(err)
             {

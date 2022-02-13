@@ -339,8 +339,23 @@ body{
 
 .heartBtn i{
     font-size: 30px;
-    color: #003049;
+    color: #949494;
 }
+
+.heartBtn{
+    border:none;
+    background-color: transparent;
+}
+
+.heartBtn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+.unsBtn{
+    display: none;
+}
+
 
 .skills-list{
     padding-left: 15px;
