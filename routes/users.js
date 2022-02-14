@@ -128,7 +128,7 @@ router.get('/otp', varifyLogin, function(req, res, next) {
 
 // From OTP Page 
 
-router.post('/signup-skills', function(req, res, next) {
+router.post('/varify-otp', function(req, res, next) {
 
   console.log(req.body);
   if(req.body.userType === 'work'){
@@ -159,11 +159,7 @@ router.post('/signup-skills', function(req, res, next) {
 
 });
 
-// No need
 
-router.get('/signup-skills', varifyLogin,  function(req, res, next) {
-  
-});
 
 // ADDING WORK USER
 router.post('/add-worker', function(req, res, next) {
@@ -193,7 +189,7 @@ router.post('/add-worker', function(req, res, next) {
 
 router.get('/work-dashboard', varifyLogin, function(req, res, next) {
 
-  
+  var splitname = req.session.user.name.split(" ");
   userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
     
     projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
@@ -205,7 +201,8 @@ router.get('/work-dashboard', varifyLogin, function(req, res, next) {
           empty=false;
         }
         req.session.user.workProfile = workProfile
-        res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user,hostedProjects,empty});
+        console.log(hostedProjects);
+        res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user,hostedProjects,empty,name:splitname[0]});
     })
     
 
@@ -215,7 +212,25 @@ router.get('/work-dashboard', varifyLogin, function(req, res, next) {
 /////////////// HIRE DASHBOARD /////////////////
 
 router.get('/hire-dashboard', varifyLogin, function(req, res, next) {
-  res.render("user/index.hbs",{title:"Home"})
+
+  var splitname = req.session.user.name.split(" ");
+  userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
+    
+    projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
+        
+        if(hostedProjects.length === 0){
+          empty=true
+        }
+        else{
+          empty=false;
+        }
+        req.session.user.workProfile = workProfile
+        console.log(hostedProjects);
+        res.render("user/hire-dashboard",{title:"Home" , user:req.session.user,hostedProjects,empty,name:splitname[0]});
+    })
+    
+
+  }) 
 });
 
 
@@ -278,10 +293,13 @@ router.get('/filter-projects',  function(req, res, next) {
 
   projectHelpers.getFilteredPro(skillArray,amount,req.session.user._id).then((projects)=>{
 
+      let user=req.session.user,
+      saveCount=user.workProfile[0].saveCount;
+
       if(projects.length!=0)
       {
         skillsArray=projects[0].skillsName;
-        res.render("user/cards.hbs",{title:"User",skillsArray,projects,user:req.session.user})
+        res.render("user/cards.hbs",{title:"User",skillsArray,projects,user,saveCount})
       }
       else{
         res.render("user/cards.hbs",{title:"User",projects,user:req.session.user})

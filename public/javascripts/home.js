@@ -6,6 +6,8 @@ jQuery( document ).ready(function( $ ) {
     location.reload(true);
   }
 
+  getGreeting();
+
 });
 
 
@@ -82,3 +84,18 @@ $("#filterForm").submit(function(e) {
   
 });
 
+/////////////// greeting
+
+function getGreeting(){
+  var day = new Date();
+  var hr = day.getHours();
+  if (hr >= 0 && hr < 12) {
+      $('#wishTxt').text('Good Morning!')
+  } else if (hr == 12) {
+      $('#wishTxt').text('Good Noon!')
+  } else if (hr >= 12 && hr <= 17) {
+      $('#wishTxt').text('Good Afternoon!')
+  } else {
+      $('#wishTxt').text('Good Evening!')
+  }
+}

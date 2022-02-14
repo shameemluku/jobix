@@ -50,6 +50,16 @@ $(document).ready(function() {
     var commission = amount * 0.1;
     $('#comiTxt').text(commission);
     $('#estimateTxt').text(amount-commission);
+
+    
+ 
+    $('#table_id').DataTable();
+
+    $('#example').dataTable( {
+        "language": {
+          "search": "Filter records:"
+        }
+      } );
     
 
 });

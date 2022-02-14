@@ -145,7 +145,8 @@ module.exports={
                         host:1,
                         amount:1,dueDate:1,skills:1,
                         skillsArray:1,
-                        bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}},
+                        savedby:1
                     }}
             ]).toArray()
 
@@ -161,6 +162,17 @@ module.exports={
                 element.skillsName = temp;
                 temp = []
             });
+
+            project.forEach(element => {
+
+                if(Array.isArray(element.savedby)){
+                    element.savedby.forEach(i=>{
+                        if(i.userId.toString() == id){
+                            element.saved=true;
+                        }
+                    })
+                }
+            })
             
             resolve(project)
         

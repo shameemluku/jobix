@@ -9,8 +9,14 @@
                     <span class="proTitle">{{this.pheading}}</span>
                   </div>
                   <div class="d-flex col-4 justify-content-end align-items-start">
+                    {{#if this.saved}}
+                     <button id="save{{this._id}}" class="heartBtn text-center p-1 d-none" onclick="saveProject('{{this._id}}')"><i class="fal fa-heart-circle"></i></button>
+                    <button id="unsave{{this._id}}" class="heartBtn text-center p-1" onclick="unsaveProject('{{this._id}}')"><i class="fas fa-heart-circle" style="color: #003049;"></i></button>
+                    {{else}}
                     <button id="save{{this._id}}" class="heartBtn text-center p-1" onclick="saveProject('{{this._id}}')"><i class="fal fa-heart-circle"></i></button>
                     <button id="unsave{{this._id}}" class="heartBtn text-center p-1 d-none" onclick="unsaveProject('{{this._id}}')"><i class="fas fa-heart-circle" style="color: #003049;"></i></button>
+                    {{/if}}
+                    
                   </div>
                 </div>
 

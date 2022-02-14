@@ -176,7 +176,7 @@ body{
 }
 
 
-/* /////////// Main Content //////////// */
+/* /////////////////////////////////////////////////////// Main Content //////////////////////////////////////////////////////////// */
 
 .wrapper{
     margin-top: 25px;
@@ -194,6 +194,87 @@ body{
     color: #003049;
     margin-right: 10px;
 }
+
+
+/* -------- DATA TABLE ------------ */
+
+.dataTables_wrapper{
+    margin-top: 30px !important;
+}
+
+.user-table{
+    margin-top: 20px;
+
+    border-collapse:separate; 
+    border-spacing: 0 8px !important;
+   
+}
+.user-table .table-row{
+    background-color: white !important;
+    border-radius: 30pxn;
+}
+.odd{
+    background-color: white !important;
+    border: none;
+}
+.user-table td .sorting_1{
+    padding: 20px;
+}
+
+.user-table td{
+    padding: 20px;
+    max-width: 100px;
+}
+
+.sorting_1{
+    background-color: white !important;
+}
+
+.user-table .sorting{
+    padding: 20px;
+    background-color: white;
+    border-bottom: 1px solid rgb(219, 219, 219);
+    color: rgb(153, 153, 153);
+    font-weight: 300;
+}
+.td-id{
+    font-size: 12px;
+    color: rgb(128, 128, 128);
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.selected{
+    background-color: rgb(70, 70, 70);
+    color: white;
+}
+
+.current{
+    border: none !important;
+    background-color: rgb(163, 163, 163) !important;
+    background-image: none !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.dataTable {
+    border: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+    color: white !important;
+}
+
+.dataTables_info{
+    color: rgb(107, 107, 107) !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: none;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0px;
+}
+
+/* ------------END TABLE-------------- */
 
 /* -----heading card ---------*/
 
@@ -278,6 +359,47 @@ body{
     padding-right: 5px;
     
 }
+
+
+/* ----------- Welcome user ---------- */
+
+.proCard{
+    background-image: linear-gradient(rgb(60, 122, 192), rgb(87, 94, 187));
+    height: 200px;
+    border: none;
+}
+
+#nameTxt{
+    margin-bottom: 0px;
+    color: white;
+}
+#wishTxt{
+    margin-bottom: 5px;
+    margin-top: -5px;
+    font-size: 25px;
+    font-weight: 500;
+    color: white;
+}
+
+.switchBtn{
+    padding: 10px 25px 10px 25px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 30px;
+    margin-bottom: 5px;
+    bottom: 10px;
+    position: absolute;
+    font-weight: 500;
+}
+
+.switchBtn:hover{
+    text-decoration: none;
+    background-color: white;
+    font-weight: 500;
+    color: rgb(31, 23, 141);
+}
+
+/* ----- end welcome ------------- */
 
 /* scroll */
 
