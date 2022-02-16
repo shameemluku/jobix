@@ -4,7 +4,7 @@
     <div class="mr-auto p-2 l-links">
 
       <a class="p-2" href="/browse-project">Browse Project</a>
-      <a class="p-2" href="/">Browse Contest</a>
+      {{!-- <a class="p-2" href="/">Browse Contest</a> --}}
       <a class="p-2" href="/">Freelancers</a>
 
     </div>
@@ -265,7 +265,7 @@
               <div class="card-body">
 
                 <div class="container d-flex justify-content-center p-0 mb-2">
-                  <button id="sendProBtn" class="pBtn w-100" onclick="sendProposal('{{proDetails._id}}','{{user._id}}','{{user.name}}')" >SEND PROPOSAL</button>
+                  <button id="sendProBtn" class="pBtn w-100" onclick="sendProposal('{{proDetails._id}}','{{user._id}}','{{user.name}}','{{hostDetails._id}}')" >SEND PROPOSAL</button>
                 </div>
 
                 <div class="container d-flex justify-content-center p-0">
@@ -287,3 +287,4 @@
 
 
    <div id="snackbar"></div>
+

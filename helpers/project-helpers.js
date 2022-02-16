@@ -226,11 +226,47 @@ module.exports={
 
         return new Promise(async(resolve,reject)=>{
 
-            let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({'host':objectId(id)}).sort({_id:-1}).toArray()
+            // let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({'host':objectId(id)}).sort({_id:-1}).toArray()
+            // resolve(projects)
+
+            let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([
+                {$match:{'host':objectId(id)}},
+                {$project:{
+                    pdetails:1,pheading:1,bidding:1,
+                    amount:1,dueDate:1,skills:1,
+                    saveCount:{$size:{"$ifNull":["$savedby",[]]}},
+                    bidCount:{$size:{"$ifNull":["$bidding",[]]}}
+                }}
+            ]).toArray()
             resolve(projects)
-        
         })
         
+    },
+
+    checkProposal:(pId,id)=>{
+        
+        console.log('project id:'+pId+'\nuser id: '+id);
+
+        return new Promise(async(resolve,reject)=>{
+
+            let projects =await db.get().collection(collection.PROJECTLIST_COLLECTION).find({_id:objectId(pId),'bidding.userId': objectId(id)}).toArray()
+       
+            console.log("\nLength and details\n");
+            console.log(projects);
+            console.log(projects.length);
+
+            if(projects.length===0){
+                console.log("\nNEW PROPOSAL\n");
+                resolve(false)
+            }else{
+                console.log("\nALREADY\n");
+                resolve(true)
+            }
+            
+            
+                     
+        
+        })
     },
 
     sendProposal:(pId,id,name,message)=>{
@@ -249,6 +285,59 @@ module.exports={
                 ).then((result)=>{
                 resolve(result)
             })
+        
+        })
+        
+    },
+
+
+    bidDetails:(id)=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            try{
+                let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
+                    $match:{_id:objectId(id)}},
+                    // {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
+                    {$lookup:
+                        {from:"skills",
+                        localField:"skills",
+                        foreignField:"code",
+                        as:"skillsArray"}
+                    },
+                    {$lookup:
+                        {from:"workprofile",
+                        localField:"bidding.userId",
+                        foreignField:"userId",
+                        as:"bidWorkProfile"}
+                    },
+                    {$project:{
+                        pdetails:1,pheading:1,bidding:1,
+                        amount:1,dueDate:1,skills:1,
+                        skillsArray:1,savedby:1,bidWorkProfile:1,
+                        bidCount:{$size:{"$ifNull":["$bidding",[]]}},
+                    }}
+                ]).toArray()
+
+                if(Array.isArray(projectDetail[0].bidding)){
+                    for(let i=0; i<projectDetail[0].bidding.length;i++){
+                        projectDetail[0].bidding[i] = Object.assign({}, projectDetail[0].bidding[i], projectDetail[0].bidWorkProfile[i] )
+                    }
+    
+                    delete projectDetail[0].bidWorkProfile;
+                }
+
+                
+                console.log(projectDetail[0]);
+                resolve(projectDetail[0])
+
+            }catch(err)
+            {
+                console.log("Error");
+                console.log(err);
+            }finally{
+                reject()
+            }
         
         })
         

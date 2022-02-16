@@ -9,11 +9,15 @@ module.exports={
     addUser:(userData)=>{
 
 
-
         return new Promise(async (resolve,reject)=>{
 
-            let skills = userData.skills;
-            console.log(userData);
+            let skills = [];
+            if(!Array.isArray(userData.skills)){
+                skills.push(userData.skills)
+            }else{
+                skills = userData.skills
+            }
+            
             delete userData.skills;
 
             userData.password=await bcrypt.hash(userData.password,10)
@@ -63,7 +67,7 @@ module.exports={
 
 
 
-    addWorkUser:(userData)=>{
+    addHireUser:(userData)=>{
 
 
         return new Promise(async (resolve,reject)=>{
@@ -73,7 +77,11 @@ module.exports={
             db.get().collection(collection.USERS_COLLECTION).insertOne(userData).then((data)=>{
                 
                 if(data){
-                    resolve(data)
+                    db.get().collection(collection.HIRE_COLLECTION).insertOne({
+                        '_id' : data.insertedId,
+                    }).then((response)=>{
+                        resolve(response)
+                    })
                 }
             
             }).catch((err)=>{
@@ -84,7 +92,6 @@ module.exports={
     },
 
     checkUser:(data)=>{
-        console.log("checking");
         return new Promise(async (resolve,reject)=>{
             let user=await db.get().collection(collection.USERS_COLLECTION).findOne({email:data.email})
             if(user){
@@ -98,6 +105,28 @@ module.exports={
                 else{ resolve({status:false}) }
             }
         })
+    },
+
+    // Host to worker
+
+    registerHostworker:(id,skills)=>{
+
+  
+        return new Promise(async (resolve,reject)=>{
+            db.get().collection(collection.WORKER_COLLECTION).insertOne({
+                userId:objectId(id),
+                skills:skills
+            }).then((data)=>{
+                
+                if(data){
+                    resolve(data)
+                }
+            
+            }).catch((err)=>{
+                reject(err)
+            })
+        })
+
     },
 
 

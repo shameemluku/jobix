@@ -49,7 +49,7 @@ const selected = document.querySelector(".selected");
 $("#filterForm").submit(function(e) {
 
   e.preventDefault(); // avoid to execute the actual submit of the form.
-
+  
   var form = $(this);
   
   $.ajax({

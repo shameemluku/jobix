@@ -1,0 +1,181 @@
+<!-- Second Nav -->
+<div class="container-fluid d-flex secNav">
+  <div class="mr-auto p-2 l-links">
+
+    <a class="p-2" href="/browse-project">Browse Project</a>
+    {{! <a class="p-2" href="/">Browse Contest</a> }}
+    <a class="p-2" href="/">Freelancers</a>
+
+  </div>
+  <div class="p-2 r-link">
+    <i class="fal fa-wallet"></i><span>Wallet:</span>
+    <span class="bal">$10</span>
+  </div>
+
+</div>
+
+<!-- Home starts -->
+
+<div class="container">
+  <div id="" class="container mt-4">
+    <div class="row">
+
+      <div class="col">
+
+        <div class="bid-tab">
+          <button
+            class="tablinks active"
+            onclick="openCity(event, 'details')"
+          ><i class="far fa-info-circle"></i> Project details</button>
+          <button class="tablinks" onclick="openCity(event, 'bids')"><i
+              class="far fa-user-circle"
+            ></i>
+            User bids &nbsp;({{projectDetail.bidCount}})</button>
+          <a href="/"><i
+              class="fal fa-edit mt-3 mr-4"
+              style="float: right; color:white"
+            ></i></a>
+        </div>
+
+        {{! FIRST TAB }}
+
+        <div id="details" class="bid-tabcontent">
+
+          <div class="container">
+
+            <div class="row mt-4">
+              <div class="col-9"><h3>{{projectDetail.pheading}}</h3></div>
+              <div class="col-3 d-flex justify-content-end">
+                <span style="font-weight: 600; font-size:25px">₹
+                  {{projectDetail.amount}}</span></div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col"><p>{{projectDetail.pdetails}}</p></div>
+            </div>
+
+          {{!-- Row --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle">Skills required</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                    {{#each projectDetail.skillsArray}}
+                      <span>{{this.name}}</span>
+                    {{/each}}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+            <div class="row mt-4">
+              <div class="container">
+                <div class="subTitle">Payment details <i class="far fa-question-circle" title="10% jobX fee will be applied"></i></div>
+                <div class="row pb-2">
+
+                  <div class="container">
+                  
+                    <p class="mb-1 mt-3">Total reward for the project : <b>₹<span id="amountTxt">{{projectDetail.amount}}</span></b></p>
+                    <p class="mb-1">JobX fee (10%) : <b>₹<span id="bcomiTxt"></span></b></p>
+                    <p class="mb-0">Estimated amount you'll receive : <b style="color: #008134; font-size:18px">₹<span id="bestimateTxt"></span></b></p>
+
+                  </div>                  
+                  
+                </div>
+              </div>
+            </div>
+
+
+            {{!-- Row FILES --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle">Supporting files</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                        <a href="/download?file={{projectDetail._id}}"><i class="far fa-paperclip mr-2"></i>{{projectDetail._id}}.zip</a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+          </div>
+
+        </div>
+
+         {{! USER CARDS }}
+
+        <div id="bids" class="bid-tabcontent">
+
+          <div class="container">
+            <div class="row">
+
+              {{#each projectDetail.bidding}}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                  <div class="our-team">
+                    <div class="picture">
+                      <img class="img-fluid" src="images/site/default.jpg" />
+                    </div>
+                    <div class="team-content" style="margin-bottom:0">
+                      <h3 class="name">{{this.username}}</h3></div>
+
+                    <div class="star-rate">
+                      <span class="fa fa-star checked"></span>
+                      <span class="fa fa-star checked"></span>
+                      <span class="fa fa-star checked"></span>
+                      <span class="fa fa-star"></span>
+                      <span class="fa fa-star"></span></div>
+
+                    <div class="msg-area w-100 d-flex justify-content-center">
+                      <p class="mb-0"><span></span>{{this.message}}</p>
+                    </div>
+
+                    <a class="btn-hire" href="">
+                      <ul class="social w-100"><li>View more</li></ul>
+                    </a>
+                  </div>
+                </div>
+              {{/each}}
+
+            </div>
+          </div>
+
+          {{! END CARDS }}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', (event) => { tabcontent =
+  document.getElementsByClassName("bid-tabcontent"); tabcontent[0].style.display
+  = "block"; }); function openCity(evt, cityName) { var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("bid-tabcontent"); for (i = 0; i
+  < tabcontent.length; i++) { tabcontent[i].style.display = "none"; } tablinks =
+  document.getElementsByClassName("tablinks"); for (i = 0; i < tablinks.length;
+  i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active"; }
+</script>
+
+
+
+<script>
+    var amount = document.getElementById('amountTxt').innerHTML
+    var fee = amount * 0.1;
+    document.getElementById('bcomiTxt').innerHTML = fee;
+    document.getElementById('bestimateTxt').innerHTML = parseFloat(amount) + parseFloat(fee);
+
+</script>

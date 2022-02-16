@@ -1,0 +1,85 @@
+
+
+  <!-- Second Nav -->
+  <div class="container-fluid d-flex secNav">
+    <div class="mr-auto p-2 l-links">
+
+      <a class="p-2" href="/">Find Freelancers</a>
+
+    </div>
+    <div class="p-2 r-link">
+      <i class="fal fa-wallet"></i><span>Wallet:</span>
+      <span class="bal">$10</span>
+    </div>
+
+  </div>
+
+  <!-- Home starts -->
+
+  
+
+
+<!-- ///////////////////////// -->
+
+
+
+<div class="container w-lg-50">
+
+  <div class="container d-flex p-0 mt-4 bg-dark">
+
+    <span class="step d-flex justify-content-center align-items-center"><i class="far fa-info-circle mr-2"></i>Create work profile</span>
+
+  </div>
+
+  <div class="formCont w-100">
+  <form class="regForm" id="regSkills" method="post" name="regSkills">
+  
+    <!-- ////////////// -->
+
+  
+
+      <p style="font-weight: 500;">To create a work profile, you need to first specify your skills</p>
+
+      <!-- ///////////////  SEARCH SKILLS  ////////////////// -->
+
+      <div class="select-box mb-3">
+        <div class="options-container active">
+          
+          {{#each skills}}
+
+          <div class="option">
+            <input type="checkbox" class="radio" id="{{this.code}}" name="skills" value="{{this.code}}" />
+            <label for="{{this.code}}">{{this.name}}</label>
+          </div>
+
+          {{/each}}
+
+          
+        </div>
+
+
+
+        <div class="search-box">
+          <input type="text" placeholder="Search skills.." />
+        </div>
+        
+      </div>
+    
+            
+    <div><button type="submit" class="btn-submit mb-5" style="float: right;">APPLY</button></div><br><br>
+
+    <!-- ////////////// -->
+    
+
+    
+  </form>
+</div>
+</div>
+
+
+
+ <div id="snackbar"></div>
+
+<!-- ///////////////////// -->
+
+

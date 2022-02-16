@@ -14,6 +14,7 @@ const fast2sms = require('fast-two-sms')
 
 var projectHelpers=require('../helpers/project-helpers')
 var userHelpers=require('../helpers/user-helpers')
+var notiHelpers=require('../helpers/notification-helpers')
 
 var path = require('path');
 
@@ -109,9 +110,20 @@ router.post('/login', function(req, res, next) {
 
   userHelpers.userLogin(req.body).then((response)=>{
     if(response.status){
-      req.session.loggedIn = true
-      req.session.user=response.user
-      res.redirect('/work-dashboard')
+
+        req.session.loggedIn = true
+        req.session.user=response.user
+
+      userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
+        
+        if(workProfile.length==0){
+          res.redirect('/hire-dashboard')
+        }else{       
+          res.redirect('/work-dashboard')
+        }
+
+      })
+      
     }else{
       req.session.error = response.error;
       response.error = false;
@@ -143,9 +155,9 @@ router.post('/varify-otp', function(req, res, next) {
     delete req.body.otp;
     delete req.body.genOtp;
     
-    userHelpers.addWorkUser(req.body).then((response)=>{
+    userHelpers.addHireUser(req.body).then((response)=>{
 
-      /////////////////// ADD WORKER //////////////////////////
+      /////////////////// ADD HIRE //////////////////////////
 
       if(response){
         req.session.loggedIn = true
@@ -189,48 +201,55 @@ router.post('/add-worker', function(req, res, next) {
 
 router.get('/work-dashboard', varifyLogin, function(req, res, next) {
 
+
   var splitname = req.session.user.name.split(" ");
   userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
     
-    projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
-        
-        if(hostedProjects.length === 0){
-          empty=true
-        }
-        else{
-          empty=false;
-        }
-        req.session.user.workProfile = workProfile
-        console.log(hostedProjects);
-        res.render("user/dashboard.hbs",{title:"Home" , user:req.session.user,hostedProjects,empty,name:splitname[0]});
-    })
-    
+    if(workProfile.length==0){
+      res.redirect('/hire-dashboard')
+    }else{
+      req.session.user.workProfile = workProfile
+      res.render("user/dashboard",{title:"Home" , user:req.session.user,name:splitname[0]});
+    }
 
+    
   }) 
+    
 });
+
 
 /////////////// HIRE DASHBOARD /////////////////
 
 router.get('/hire-dashboard', varifyLogin, function(req, res, next) {
 
-  var splitname = req.session.user.name.split(" ");
-  userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
-    
-    projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
-        
-        if(hostedProjects.length === 0){
-          empty=true
-        }
-        else{
-          empty=false;
-        }
-        req.session.user.workProfile = workProfile
-        console.log(hostedProjects);
-        res.render("user/hire-dashboard",{title:"Home" , user:req.session.user,hostedProjects,empty,name:splitname[0]});
-    })
-    
+  var splitname = req.session.user.name.split(" "); 
+  let work,empty;
+  projectHelpers.getAddedProjects(req.session.user._id).then((hostedProjects)=>{
 
-  }) 
+    userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
+
+      if(hostedProjects.length === 0){
+        empty=true
+      }
+      else{
+        empty=false;
+      }
+
+      /// Counting bids and saved by
+
+        
+      if(workProfile.length==0){
+          work = false;
+          res.render("user/hire-dashboard",{title:"Dashboard Hire" , user:req.session.user,hostedProjects,empty,name:splitname[0] , work});
+      }else{
+          work = true;
+          res.render("user/hire-dashboard",{title:"Dashboard Hire" , user:req.session.user,hostedProjects,empty,name:splitname[0] , work});
+      }
+
+    }) 
+        
+  })
+
 });
 
 
@@ -266,10 +285,8 @@ router.get('/browse-project', varifyLogin, function(req, res, next) {
           }
           
         })      
-      
     })
 
-  
     
 });
 
@@ -407,15 +424,27 @@ router.get('/download', varifyLogin,  function(req, res, next) {
 
 
 router.post('/send-proposal', varifyLogin,  function(req, res, next) {
-    
-    projectHelpers.sendProposal(req.body.pId,req.body.id,req.body.name,req.body.message).then((data)=>{
-      if(data){
-        console.log(data.acknowledged);
-        res.send("done");
-      }else{
-        res.status(500).send('error')
-      }
-    })
+
+  projectHelpers.checkProposal(req.body.pId,req.body.id).then((status)=>{
+
+    console.log(status);
+    if(!status){
+      projectHelpers.sendProposal(req.body.pId,req.body.id,req.body.name,req.body.message).then((data)=>{
+        if(data.acknowledged){ 
+          // Send notifications
+          message = "New project proposal from "+req.body.name+" on Project "+req.body.pId;
+          url='/project-details?id='+req.body.pId;
+          notiHelpers.sendNotification(req.body.host,message,url).then((result)=>{
+            res.send("done");
+          })
+        }else{
+          res.status(500).send('Server timeout. Try login again')
+        }
+      })
+    }else{
+      res.status(500).send('Already submit send')
+    }
+  })
     
 
 });
@@ -428,6 +457,63 @@ router.get('/signout', varifyLogin,  function(req, res, next) {
     req.session.loggedIn = false
     req.session.user=null;
     res.redirect('/')
+});
+
+// Render page for host to submit skills
+
+router.get('/select-skills', varifyLogin, function(req, res, next) {
+
+  projectHelpers.getSkills().then((skills)=>{
+    
+    userHelpers.loadWorkProfile(req.session.user._id).then((workProfile)=>{
+      
+      if(workProfile.length==0){
+        req.session.user.workProfile = workProfile
+        res.render("user/skills",{title:"Home" , user:req.session.user, skills});
+      }else{
+        res.redirect('/work-dashboard')
+      }    
+    })
+
+  })
+ 
+    
+});
+
+
+// Host  submit skills to be a worker
+router.post('/register-hostSkills', varifyLogin, function(req, res, next) {
+
+  let skillArray = []
+  if(!Array.isArray(req.body.skills)){
+    skillArray.push(req.body.skills)
+  }else{
+    skillArray = req.body.skills
+  }
+
+  userHelpers.registerHostworker(req.session.user._id,skillArray).then((data)=>{
+      if(data){
+        res.send({success:true})
+      }
+  })
+
+ 
+});
+
+
+////// BID DETAILS ////////
+
+router.get('/bid-details', varifyLogin, function(req, res, next) {
+
+    console.log(req.query.id);
+
+    projectHelpers.bidDetails(req.query.id).then((projectDetail)=>{
+
+      console.log(projectDetail);
+      res.render('user/bid-details', {projectDetail})
+    })
+
+ 
 });
 
 
@@ -453,5 +539,7 @@ async function sendOTPfast(otp,mobile){
   var options = {authorization : process.env.API_KEY , message : '\nYour OTP for JobX website is '+otp ,  numbers : [mobile]} 
   const response = await fast2sms.sendMessage(options)
 }
+
+
 
 module.exports = router;

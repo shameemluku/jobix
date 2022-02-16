@@ -68,13 +68,14 @@ $(document).ready(function() {
 
 //Send Propsal button click
 
-function sendProposal(pId,id,name){
+function sendProposal(pId,id,name,hId){
     coverMsg = $('#coverTxt').val()
     userdata={
         pId:pId,
         id:id,
         name:name,
-        message:coverMsg
+        message:coverMsg,
+        host:hId
     }
 
 
@@ -106,6 +107,64 @@ function sendProposal(pId,id,name){
         },
         //error
         error: function (error) {
+
+          console.log(error);
+  
+          $( "#snackbar" ).html( '<i class="far fa-exclamation-circle mr-2" style="color:white"></i>'+error.responseText );
+          $( "#snackbar" ).addClass( "show" );
+          setTimeout(function()
+          {   
+            $( "#snackbar" ).removeClass( "show" );
+          }, 3000);
+        }
+    });
+}
+
+
+// Register host skills
+
+
+
+$("#regSkills").submit(function(e) {
+
+    e.preventDefault(); 
+    var form = $(this);
+
+    $.ajax({
+        type: "post",
+        url: '/register-hostSkills',
+        data: form.serialize(),
+  
+        //success
+        success: function(data)
+        {
+
+          if(data.success){
+            Swal.fire({
+                title: 'Great !',
+                text: 'Proposal sent successfully. Now, wait for the host to accept!',
+                icon: 'success',
+                confirmButtonText: 'Done',
+                confirmButtonColor: '#26bf2e',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location="/work-dashboard"
+                }
+              })
+
+            }else{ 
+
+              $( "#snackbar" ).html( '<i class="far fa-exclamation-circle mr-2" style="color:white"></i>Server Timeout. Login again' );
+              $( "#snackbar" ).addClass( "show" );
+              setTimeout(function(){   
+                  $( "#snackbar" ).removeClass( "show" );
+              }, 3000);
+
+            }
+        
+        },
+        //error
+        error: function (error) {
   
           $( "#snackbar" ).html( '<i class="far fa-exclamation-circle mr-2" style="color:white"></i>Server Timeout. Login again' );
           $( "#snackbar" ).addClass( "show" );
@@ -115,5 +174,7 @@ function sendProposal(pId,id,name){
           }, 3000);
         }
     });
-}
+
+
+})
 
