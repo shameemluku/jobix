@@ -204,6 +204,10 @@ module.exports={
                     }}
                 ]).toArray()
 
+                if(!Array.isArray(projectDetail[0].savedby)){
+                    projectDetail[0].savedby=[];
+                }
+
                 projectDetail[0].savedby.forEach(i=>{
                     if(i.userId.toString()==userId){
                         projectDetail[0].saved = true;
@@ -214,7 +218,7 @@ module.exports={
                 resolve(projectDetail[0])
             }catch(err)
             {
-                console.log("No id");
+                console.log(err);
             }finally{
                 reject()
             }

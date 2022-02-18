@@ -22,35 +22,41 @@
             <a href="/add-project" class="postBtn">Post a Work</a>
           </div>
 
-        <div class="notidropdown" onclick="showNotiFunction()">
-            <i class="fal fa-bell notiBtn mr-0"></i><span class="mr-3">25</span>
+        <div class="notidropdown mr-4" onclick="showNotiFunction('{{user._id}}')">
+            {{!-- <i class="fal fa-bell notiBtn mr-0"></i>{{#if notiEmpty}}<span class="mr-3"></span>{{else}}<sup><span id="notiCount" class="mr-3 notiCount">{{notiCount}}</span></sup>{{/if}} --}}
+            
+            <i class="fal fa-bell notiBtn mr-0"></i>
+            <span class="badge" id="notiCount">{{#if (eq notiCount 0)}}{{else}}{{notiCount}}{{/if}}</span>
             <div id="mynotiDropdown" class="notidropdown-content">
-                <a href="/project-details?id=620684b5c76a6fb4c5430ffb">
-                  <div class="container noti-item">
-                      <div class="row">
-                          <div class="col-2 pt-1">
-                              <i class="far fa-bell mr-3" style="font-size: 20px;"></i>
-                          </div>
-                          <div class="col-10">
-                              <p class="mb-0">Hai this is a notification. Just for testing guys. So please ignore</p>
-                          </div>
-                      </div>
-                  </div>
-                </a>
                 
+                {{#each notification}}
 
-                <a href="/bid-details?id=620683d8c76a6fb4c5430ff8">
+                <a href="{{this.url}}">
                   <div class="container noti-item">
                       <div class="row">
                           <div class="col-2 pt-1">
                               <i class="far fa-bell mr-3" style="font-size: 20px;"></i>
                           </div>
                           <div class="col-10">
-                              <p class="mb-0">Hai this is a notification. Just for testing guys. So please ignore</p>
+                              <p class="mb-0">{{this.message}}</p>
                           </div>
                       </div>
                   </div>
                 </a>
+
+                {{/each}}
+
+                {{#if (eq notiCount 0)}}
+                <div class="container w-100 h-100">
+                    <div class="row">
+                      <div class="col d-flex justify-content-center">
+                          <img src="/images/site/noti-empty.jpg" height="150px" width="150px">
+                      </div>
+                      <p class="text-center w-100 mb-4" style="color: #003049;">No new notifications</p>
+                    </div>
+                </div>
+                
+                {{/if}}
 
 
           </div>
@@ -73,8 +79,10 @@
 <script>
 /* When the user clicks on the button, 
 toggle between hiding and showing the dropdown content */
-function showNotiFunction() {
+function showNotiFunction(id) {
   document.getElementById("mynotiDropdown").classList.toggle("show");
+
+  sayHi(id)
 }
 
 // Close the dropdown if the user clicks outside of it

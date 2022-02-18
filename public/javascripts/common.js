@@ -96,7 +96,10 @@ function sendProposal(pId,id,name,hId){
         //     $( "#snackbar" ).removeClass( "show" );
         //   }, 3000);
 
-          
+              
+            var count = $( "#details-bidCount" ).html()
+            $( "#details-bidCount" ).html(parseInt(count)+1)
+
             Swal.fire({
                 title: 'Great !',
                 text: 'Proposal sent successfully. Now, wait for the host to accept!',
@@ -177,4 +180,27 @@ $("#regSkills").submit(function(e) {
 
 
 })
+
+function sayHi(id){
+
+  $.ajax({
+    type: "post",
+    url: '/removeNoti',
+    data: {id:id},
+
+    //success
+    success: function(data)
+    {
+
+      if(data.success){
+        $( "#notiCount" ).html("");
+      }
+    
+    },
+    //error
+    error: function (error) {
+
+    }
+  });
+}
 

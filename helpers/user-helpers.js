@@ -146,7 +146,6 @@ module.exports={
                 }}
             ]).toArray()
             
-            console.log(workProfile);
             resolve(workProfile)           
         })   
     },
