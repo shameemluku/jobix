@@ -142,3 +142,15 @@ function fixStepIndicator(n) {
 
     
 });
+
+
+
+
+$(document).ready(function() {
+  
+  var date = new Date().toISOString().slice(0,10);
+
+  $('#dueDate').attr('min', date);
+
+
+})

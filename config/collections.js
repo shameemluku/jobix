@@ -3,6 +3,7 @@ module.exports={
     WORKER_COLLECTION:'workprofile',
     HIRE_COLLECTION:'hireprofile',
     PROJECTLIST_COLLECTION:'projectlist',
+    PROJECTS_COLLECTION:'projects',
     SKILLS_COLLECTION:'skills',
     NOTIFICATION_COLLECTION:'notifications'
 }

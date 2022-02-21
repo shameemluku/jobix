@@ -3,8 +3,7 @@
 $(document).ready(function() {
     var len = 0;
     var maxchar = 200;
-    
-    
+      
 
     //////// PROJECT DETAILS PAGE /////////////
     
@@ -53,16 +52,48 @@ $(document).ready(function() {
 
     
  
-    $('#table_id').DataTable();
 
-    $('#example').dataTable( {
+    $('#table_id').dataTable( {
         "language": {
-          "search": "Filter records:"
+          "search": "<i class='far fa-search'></i>"
         }
-      } );
+    } );
+
+    $('#complete_table_id').dataTable( {
+        "language": {
+          "search": "<i class='far fa-search'></i>"
+        }
+    } );
     
 
+    dataTableStyle("#table_id_wrapper div:first-child")
+    dataTableStyle("#complete_table_id_wrapper div:first-child")
+      
+
 });
+
+
+// Data table style
+
+function dataTableStyle(query){
+
+
+
+  styleQuery = document.querySelector(query)
+  
+  styleQuery.style.color = "rgb(128, 128, 128)"
+  styleQuery.style.backgroundColor = "white"
+  styleQuery.style.width = "100%";
+  styleQuery.style.margin = "0";
+  styleQuery.style.padding = "0.5rem 10px 0px 10px";
+  styleQuery.style.marginBottom = "-12px";
+
+  document.querySelector("#id_heading").style.maxidth = "100px"
+  
+}
+
+
+
 
 
 
@@ -70,11 +101,14 @@ $(document).ready(function() {
 
 function sendProposal(pId,id,name,hId){
     coverMsg = $('#coverTxt').val()
+    amount = $('#bidAmount').val()
+
     userdata={
         pId:pId,
         id:id,
         name:name,
         message:coverMsg,
+        amount:amount,
         host:hId
     }
 
@@ -204,3 +238,114 @@ function sayHi(id){
   });
 }
 
+/////////////////////// BIDS PAGE ////////////////////////////
+
+
+var USER;
+
+function showProfile(user){
+  
+  USER=user;
+  console.log(user);
+  $("#userDiv").hide();
+  $("#user-details").css("display","block");
+  $("#bid-details").css("display","none");
+
+  
+  $( "#username" ).html(user.username);
+  $( "#bid-userId" ).html(user.userId);
+  $( "#bid-message" ).html('<i>'+user.message+'</i>');
+  
+  $( "#bid-amount" ).html('₹ '+user.amount);
+
+  $.ajax({
+    type: "post",
+    url: '/bid-userdata',
+    data: user,
+
+    beforeSend: function() {
+      $("#loadingDiv").show();
+    },
+
+    //success
+    success: function(data)
+    {
+
+      $("#loadingDiv").hide();
+      $("#userDiv").show();
+
+      $('#skillsDiv').html("")
+
+      $('#bid-emailTxt').html(data.email)
+      
+      $('#bid-countryTxt').html('<b>'+data.country+'</b>')
+      
+
+      data.skillsArray.forEach(element => {
+        $('#skillsDiv').append('<span id="skills">'+element.name+'</span>&nbsp;');
+      });
+    
+    },
+    //error
+    error: function (error) {
+
+    }
+  });
+  
+}
+
+
+
+function hireUser(proDetails){
+
+  // console.log(proDetails);
+
+  var data = {
+    _id: proDetails._id,
+    pheading: proDetails.pheading,
+    pdetails: proDetails.pdetails,
+    dueDate: proDetails.dueDate,
+    orgiAmount : proDetails.amount,
+    worker : USER.username,
+    workerId: USER.userId,
+    bidAmount: USER.amount
+  }
+
+  data.bidding = [];
+  proDetails.bidding.forEach(element=>{
+    data.bidding.push(element.userId)
+  })
+
+
+  $.ajax({
+    type: "post",
+    url: '/hire',
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    data: JSON.stringify(data) ,
+
+    beforeSend: function() {
+      
+    },
+
+    //success
+    success: function(data)
+    {
+
+    },
+    //error
+    error: function (error) {
+
+    }
+  });
+}
+
+
+function hideProfile(){
+  
+  USER=null;
+  $("#user-details").css("display","none");
+  $("#bid-details").css("display","block");
+  
+
+}

@@ -1,6 +1,7 @@
 var db=require('../config/connection')
 var collection=require('../config/collections')
 const req = require('express/lib/request')
+var notiHelpers=require('../helpers/notification-helpers')
 var objectId=require('mongodb').ObjectId
 
 module.exports={
@@ -18,6 +19,7 @@ module.exports={
     addProject:(projectDetails)=>{
 
         projectDetails.amount = parseFloat(projectDetails.amount);
+        projectDetails.started = false;
         let ext = projectDetails.ext;
         projectDetails.host = objectId(projectDetails.host)
         delete projectDetails.ext;
@@ -37,7 +39,7 @@ module.exports={
 
             
             let project = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
-                    $match:{'skills':{ $in:[...skillArray] },  'host':{$ne : objectId(id)} }
+                    $match:{'skills':{ $in:[...skillArray] },  'host':{$ne : objectId(id)} , started:false}
                     },
                     {$lookup:
                         {from:"skills",
@@ -95,34 +97,39 @@ module.exports={
         if(amount==1){
             match = {
                 'skills':{ $in:[...skillArray] },
-                'host':{$ne : objectId(id)},    
+                'host':{$ne : objectId(id)},
+                started:false    
             }
         }else if(amount == 2){
             match = {
                 'skills':{ $in:[...skillArray] },
                 'amount':{$lt:500},
-                'host':{$ne : objectId(id)},    
+                'host':{$ne : objectId(id)},
+                started:false    
             }
         }
         else if(amount == 3){
             match = {
                 'skills':{ $in:[...skillArray] },
                 'amount':{$gte:500, $lt:1000},
-                'host':{$ne : objectId(id)},    
+                'host':{$ne : objectId(id)}, 
+                started:false   
             }
         }  
         else if(amount == 4){
             match = {
                 'skills':{ $in:[...skillArray] },
                 'amount':{$gte:1000, $lt:5000},
-                'host':{$ne : objectId(id)},    
+                'host':{$ne : objectId(id)},  
+                started:false  
             }
         }  
         else if(amount == 5){
             match = {
                 'skills':{ $in:[...skillArray] },
                 'amount':{$gte:5000},
-                'host':{$ne : objectId(id)},    
+                'host':{$ne : objectId(id)}, 
+                started:false   
             }
         }       
        
@@ -273,7 +280,9 @@ module.exports={
         })
     },
 
-    sendProposal:(pId,id,name,message)=>{
+    sendProposal:(pId,id,name,message,amount)=>{
+
+        amount = parseFloat(amount);
 
         return new Promise(async(resolve,reject)=>{
 
@@ -283,7 +292,8 @@ module.exports={
                         {
                             userId:objectId(id),
                             username:name,
-                            message:message
+                            message:message,
+                            amount:amount
                         }
                     }}
                 ).then((result)=>{
@@ -345,6 +355,42 @@ module.exports={
         
         })
         
+    },
+
+    hireUser:(projectDetails,hostname)=>{
+
+        projectDetails._id = objectId(projectDetails._id)
+        projectDetails.workerId = objectId(projectDetails.workerId)
+        projectDetails.hostId = objectId(projectDetails.hostId)
+
+        return new Promise(async(resolve,reject)=>{
+            db.get().collection(collection.PROJECTS_COLLECTION).insertOne(projectDetails).then((result)=>{
+                
+                if(result.acknowledged){
+
+                    db.get().collection(collection.PROJECTLIST_COLLECTION).updateMany({_id:projectDetails._id},{$set:{started:true}}).then((update_result)=>{
+                        if(update_result.acknowledged){
+                            
+                            //Acknowledge Hired user
+
+                            message = "CONGRATULATIONS!!\n"+hostname+" hired you on his project";
+                            url='#';
+
+                            notiHelpers.sendNotification(projectDetails.workerId.toString(),message,url).then((result)=>{
+                                console.log("Success!");
+                                resolve(true)
+                            })
+                            
+                            //////
+                            
+                        }
+                    })
+
+                }else{
+
+                }
+            })
+        })  
     }
 
 }

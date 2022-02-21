@@ -151,6 +151,18 @@ module.exports={
     },
 
 
+    loadActiveProjects:(id)=>{
+        return new Promise(async(resolve,reject)=>{
+
+            let projects = await db.get().collection(collection.PROJECTS_COLLECTION).aggregate([
+                {$match:{workerId:objectId(id)}}
+            ]).toArray()
+            
+            resolve(projects)           
+        }) 
+    },
+
+
     loadSkills:(id)=>{
 
         return new Promise(async(resolve,reject)=>{
@@ -236,6 +248,44 @@ module.exports={
             
             })         
         })   
+    },
+
+
+    bid_UserDetails:(id)=>{
+        return new Promise(async(resolve,reject)=>{
+
+            let userDetail = await db.get().collection(collection.WORKER_COLLECTION).aggregate([
+                {$match: {userId : objectId(id)}},
+                {$lookup: {
+                        from:"skills",
+                        localField:"skills",
+                        foreignField:"code",
+                        as:"skillsArray"
+                    } 
+                },
+                {$lookup: {
+                        from:"users",
+                        localField:"userId",
+                        foreignField:"_id",
+                        as:"userprofile"
+                    } 
+                },
+
+                { $addFields: {
+                    "country": { "$arrayElemAt": [ "$userprofile.country", 0 ] },
+                    "email": { "$arrayElemAt": [ "$userprofile.email", 0 ] }
+                }},
+              
+                {$project:{
+                    userId:1,saved:1,skillsArray:1,country:1,email:1
+                }}
+            ]).toArray();
+
+            console.log(userDetail[0]);
+
+            resolve(userDetail[0])
+            
+        })
     }
 
 }

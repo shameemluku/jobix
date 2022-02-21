@@ -8,6 +8,8 @@ const async = require('hbs/lib/async');
 require('dotenv').config();
 const fast2sms = require('fast-two-sms')
 
+var objectId=require('mongodb').ObjectId
+
 
 // ///////////// LOGIN ///////////////////////////////////////////
 
@@ -130,9 +132,31 @@ exports.workDashboard= function(req, res, next) {
         res.redirect('/hire-dashboard')
       }else{
         req.session.user.workProfile = workProfile
-        res.render("user/dashboard",{title:"Home" , user:req.session.user,name:splitname[0] , notification , notiCount});
+        userHelpers.loadActiveProjects(req.session.user._id).then((projects)=>{
+
+          let completedPro = [], activePro = [];
+          if(projects.length!=0){
+
+            projects.forEach(obj=>{
+              if(obj.status=="ACTIVE"){
+                
+                day =checkDays(obj.dueDate)
+                obj.days= day.days;
+                obj.color = day.color; 
+
+                activePro.push(obj)
+
+              }else{
+                completedPro.push(obj)
+              }
+            })
+          }
+
+          res.render("user/dashboard",{title:"Home" , user:req.session.user,name:splitname[0] , activePro, completedPro , notification , notiCount});
+          
+        })
+
       }
-  
       
     }) 
       
@@ -338,12 +362,12 @@ exports.add_project = function(req, res, next) {
 exports.add_project_post = function(req, res, next) {
 
 
-
     let filename = req.files.file.name;
     let ext = filename.split('.').pop()
     req.body.ext = ext
   
-    console.log(ext);
+    req.body.dueDate = req.body.dueDate.toString().split("-").reverse().join("/")
+    console.log(req.body.dueDate);
   
     hostId = req.session.user._id // change with req.session.user._id
     req.body.host = hostId
@@ -401,7 +425,7 @@ exports.send_proposal = function(req, res, next) {
   
       console.log(status);
       if(!status){
-        projectHelpers.sendProposal(req.body.pId,req.body.id,req.body.name,req.body.message).then((data)=>{
+        projectHelpers.sendProposal(req.body.pId,req.body.id,req.body.name,req.body.message,req.body.amount).then((data)=>{
           if(data.acknowledged){ 
             // Send notifications
             message = "New project proposal from "+req.body.name+" on Project "+req.body.pId;
@@ -483,24 +507,117 @@ exports.bid_details = function(req, res, next) {
     
     // End notification
   
-      console.log(req.query.id);
   
       projectHelpers.bidDetails(req.query.id).then((projectDetail)=>{
   
-        console.log(projectDetail);
         res.render('user/bid-details', {projectDetail, user:req.session.user, notification , notiCount })
       })
   
    
+},
+
+
+exports.bid_userData = function(req, res, next) {
+  
+  
+
+    userHelpers.bid_UserDetails(req.body.userId).then((userDetail)=>{
+
+      res.send(userDetail);
+
+    })
+
+ 
+},
+
+
+exports.hire_user = function(req, res, next) {
+  
+  req.body.hostId = req.session.user._id;
+  req.body.status = "ACTIVE"
+  console.log(req.body);
+
+  biddingUser = req.body.bidding
+  
+  const index = biddingUser.indexOf(req.body.workerId);
+  if (index > -1) {
+    biddingUser.splice(index, 1);
+  }
+
+  
+
+  console.log(biddingUser);
+
+  delete req.bidding;
+
+  projectHelpers.hireUser(req.body,req.session.user.name).then((status)=>{
+
+    if(status){
+
+      // Acknowledge all bidde users
+        message = "Sorry! "+req.session.user.name+" hired another user for his project. Better luck next time! Don't worry you can find new jobs";
+        url='/browse-project';
+        notiHelpers.sendBidFailNotificaton(biddingUser,message,url).then((result)=>{
+          
+          console.log("Done");
+          res.send("done");
+      
+        })
+    
+    }
+
+  })
+
+}
+
+
+// Work user Project side Page RENDER
+
+
+exports.worker_project = function(req, res, next) {
+  
+  res.render("user/worker-project")
+
 }
 
 
 
 
+
+// //////////////////////////////////////////////////////////
+
+
 async function sendOTPfast(otp,mobile){
     var options = {authorization : process.env.API_KEY , message : '\nYour OTP for JobX website is '+otp ,  numbers : [mobile]} 
     const response = await fast2sms.sendMessage(options)
+}
+
+
+function checkDays(pDate){
+  
+  let today = new Date().toLocaleDateString()
+  var parts = today.split("/");
+  today = new Date(parts[1] + "/" + parts[0] + "/" + parts[2]);
+
+
+  var parts = pDate.split("/");
+  var proDate = new Date(parts[1] + "/" + parts[0] + "/" + parts[2]);
+
+  var diffTime = (proDate - today);
+  var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if(diffDays>10){
+    color = "green"
+  }
+  else if(diffDays<10 && diffDays>0){
+    color = "#eb9e34"
+  }else{
+    diffDays="No"
+    color = "#eb4034"
   }
 
+  return {days:diffDays,color:color};
+
+}
 
 

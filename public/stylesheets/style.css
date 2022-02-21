@@ -1,5 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;1,500&display=swap');
 
+html {
+    overflow: -moz-scrollbars-vertical; 
+    overflow-y: scroll;
+    
+}
+
+/* // SCROLL BAR // */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
 body{
     font-family: 'Red Hat Display', sans-serif;
     background-color: #f0efef;
@@ -255,9 +283,9 @@ body{
 
 /* -------- DATA TABLE ------------ */
 
-.dataTables_wrapper{
+/* .dataTables_wrapper{
     margin-top: 30px !important;
-}
+} */
 
 .user-table{
     margin-top: 20px;
@@ -296,6 +324,7 @@ body{
 .td-id{
     font-size: 12px;
     color: rgb(128, 128, 128);
+    width: 100px !important;
     overflow: hidden;
     word-break: break-word;
 }
@@ -332,6 +361,8 @@ body{
 
 
 
+
+
 /* table card */
 
 .t-card-head{
@@ -363,6 +394,8 @@ body{
     font-size: 15px;
     padding: 5px 25px 5px 25px;
 }
+
+
 
 
 
@@ -824,6 +857,17 @@ body{
     display: none;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 
 /* ////////// END OF SUBMIT ///////////////// */
 
@@ -1258,7 +1302,8 @@ body{
 
   .msg-area p{
     width: 70%;
-    height: 60px;
+    height: auto;
+    max-height: 60px;
     margin-top: 10px;
     color: #333;
     font-size: 14px;
@@ -1269,4 +1314,83 @@ body{
 }
 
 
+/* user destails in bid */
 
+#user-details{
+    display: none;
+    width: 50% !important;
+}
+
+.pro-pic{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+#username{
+    color: white;
+    font-size: 25px;
+}
+
+.hireBtn{
+    background-color: #FCBF49;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px 0 5px 0;
+    font-weight: 500;
+    border: none;
+}
+
+.cancelBtn{
+    background-color: transparent;
+    border: 2px solid white;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    padding: 5px 0 5px 0;
+    font-weight: 500;
+}
+
+#userDiv{
+    display: none;
+}
+
+/* /// Loader */
+
+.loader {
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px solid #2e2e2e;
+    width: 80px;
+    height: 80px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+
+
+
+/* ///////////////////////////////////////////////////////// */
+/* //////////////////// MEDIA QUERY //////////////////////// */
+
+
+@media (max-width: 768px) {
+
+    #user-details{
+        width: 100% !important;
+    }
+
+}

@@ -23,33 +23,31 @@
 
     <div class="col-md-9">
 
-      {{!-- <div class="card-head d-flex" style="width: 100%">
-        <!--  -->
 
-        <div class="mr-auto p-2 activePending">
+      {{! ///////////////////////////////////////////// }}
 
-          <a class="activeBtn" style="color: #003049;" href="">Active</a>
-          <a class="PendingBtn" style="color: #003049;" href="">Pending</a>
+      <div class="container p-0">
+        <div id="" class="container">
+          <div class="row">
 
-        </div>
-        <!--  -->
-      </div> --}}
+            <div class="col p-0">
 
-      {{#if empty}}
-        <div class="container w-100 d-flex justify-content-center"><img
-            src="images/site/empty.png"
-            width="70%"
-          /></div>
+              <div class="bid-tab">
 
-      {{/if}}
+                <button  id="activeBtn" class="tablinks active" onclick="ActiveTab()"><i class="far fa-info-circle"></i> Active </button>
+                <button id="completeBtn" class="tablinks" onclick="completeTab()"><i class="far fa-check-circle"></i> Completed</button>
 
-   
-      <!-- Project card 1 -->
+              </div>
 
-      <table class="user-table w-100 display" id="table_id">
-        <thead>
+              {{! FIRST TAB }}
+
+              <div id="activeTab">
+                <!-- Project card 1 -->
+
+                <table class="activeTab user-table w-100 display" id="table_id">
+          <thead>
           <tr class="heading-row">
-            <th>
+            <th id="id_heading">
               Project Id:
             </th>
             <th>
@@ -58,10 +56,10 @@
           </tr>
         </thead>
         <tbody>
-          
-        {{#each hostedProjects}}
+
+          {{#each hostedProjects}}
           <tr class="table-row">
-            <td class="td-id" style="width:100px; white-space: initial;">
+            <td class="td-id" style="width:100px !important; white-space: initial;">
               {{this._id}}
             </td>
             <td>
@@ -100,6 +98,43 @@
 
         </tbody>
       </table>
+      </div>
+
+
+      {{!-- ///////// SECOND TAB //////// --}}
+
+        <div id="completeTab">
+        
+        Hiiiiiiiiii
+        
+        </div>
+
+
+
+          
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+
+      {{! ///////////////////////////////////////////// }}
+
+
+
+      {{#if empty}}
+        <div class="container w-100 d-flex justify-content-center"><img
+            src="images/site/empty.png"
+            width="70%"
+          /></div>
+
+      {{/if}}
+
+   
+      <!-- Project card 1 -->
+
 
     </div>
 
@@ -165,3 +200,33 @@
 
   </div>
 </div>
+
+
+<script >
+
+window.addEventListener('load', (event) => {
+
+    document.getElementById("activeTab").style.display = "block";
+    document.getElementById("completeTab").style.display = "none";
+       
+});
+
+function ActiveTab() {
+   
+   document.getElementById("activeTab").style.display = "block";
+   document.getElementById("completeTab").style.display = "none";
+   document.getElementById("activeBtn").classList.add("active");
+   document.getElementById("completeBtn").classList.remove("active");
+   
+}
+
+function completeTab() {
+    document.getElementById("completeTab").style.display = "block"
+    document.getElementById("activeTab").style.display = "none";
+    document.getElementById("activeBtn").classList.remove("active");
+    document.getElementById("completeBtn").classList.add("active");
+}
+
+
+
+ </script>

@@ -25,17 +25,158 @@
 
     <div class="col-md-9">
 
-      <div class="card-head d-flex" style="width: 100%">
-        <!--  -->
+      <div id="bid-details" class="container p-0 mb-4">
+        <div id="" class="container">
+          <div class="row">
 
-        <div class="mr-auto p-2 activePending">
+            <div class="col p-0">
 
-          <a class="activeBtn" style="color: #003049;" href="">Active</a>
-          <a class="PendingBtn" style="color: #003049;" href="">Pending</a>
+              <div class="bid-tab">
+
+                <button  id="activeBtn" class="tablinks active" onclick="ActiveTab()"><i class="far fa-info-circle"></i> Active </button>
+                <button id="completeBtn" class="tablinks" onclick="completeTab()"><i class="far fa-check-circle"></i> Completed</button>
+
+              </div>
+
+              {{! FIRST TAB }}
+
+              <div id="activeTab">
+                <!-- Project card 1 -->
+
+                <table class="activeTab user-table w-100 display" id="table_id">
+          <thead>
+          <tr class="heading-row">
+            <th id="id_heading">
+              Due date:
+            </th>
+            <th>
+              Title
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {{#each activePro}}
+          <tr class="table-row">
+            <td style="width:100px !important; white-space: initial;">
+              <div> {{this.dueDate}}</div>
+              <div class=" mt-2"><span class="t-bidCount" style="background-color:{{this.color}} !important;">{{this.days}} &nbsp;days</span></div>
+            </td>
+            <td>
+              <div class="w-100">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-10">
+                           <p class="mb-0 t-card-head">{{this.pheading}}</p> 
+                           <p class="mb-0">Project Id: {{this._id}}</p> 
+                        </div>
+                        <div class="col-2">
+                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.bidAmount}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col mt-3">
+                        {{!-- <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>            --}}
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col mt-3">
+                        <a href="/projects" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                      </div>
+                    </div>
+
+                </div>
+              </div>
+              
+            </td>
+          </tr>
+
+            <!-- Card ends here -->
+        {{/each}}
+
+        </tbody>
+      </table>
+      </div>
+
+
+      {{!-- ///////// SECOND TAB //////// --}}
+
+        <div id="completeTab">
+        
+        
+                <table class="activeTab user-table w-100 display" id="complete_table_id">
+          <thead>
+          <tr class="heading-row">
+            <th id="id_heading">
+              Project Id:
+            </th>
+            <th>
+              Title
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {{#each completedPro}}
+          <tr class="table-row">
+            <td class="td-id" style="width:100px !important; white-space: initial;">
+              {{this.dueDate}}
+            </td>
+            <td>
+              <div class="w-100">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-10">
+                           <p class="mb-0 t-card-head">{{this.pheading}}</p> 
+                        </div>
+                        <div class="col-2">
+                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col mt-3">
+                        <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>{{this.bidCount}}</b> &nbsp;bids</span>
+                        <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>           
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col mt-3">
+                        <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                      </div>
+                    </div>
+
+                </div>
+              </div>
+              
+            </td>
+          </tr>
+
+            <!-- Card ends here -->
+        {{/each}}
+
+        </tbody>
+      </table>
+        
+        </div>
+
+
+
+          
+            </div>
+          </div>
+
 
         </div>
-        <!--  -->
+
       </div>
+
+      {{! ///////////////////////////////////////////// }}
+
+
 
       {{#if empty}}
         <div class="container w-100 d-flex justify-content-center"><img
@@ -48,47 +189,6 @@
    
       <!-- Project card 1 -->
 
-      <table class="user-table w-100 display" id="table_id">
-        <thead>
-          <tr class="heading-row">
-            <th>
-              Project Id:
-            </th>
-            <th>
-              Title
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          
-        {{#each hostedProjects}}
-          <tr class="table-row">
-            <td class="td-id" style="width:100px; white-space: initial;">
-              {{this._id}}
-            </td>
-            <td>
-              <div class="w-100">
-
-                <div class="container">
-                    <div class="row">
-                        <div class="col-10">
-                            {{this.pheading}}
-                        </div>
-                        <div class="col-2">
-                            <span>₹ {{this.amount}}</span>
-                        </div>
-                    </div>
-                </div>
-              </div>
-              
-            </td>
-          </tr>
-
-            <!-- Card ends here -->
-        {{/each}}
-
-        </tbody>
-      </table>
 
     </div>
 
@@ -153,3 +253,35 @@
 
   </div>
 </div>
+
+
+
+<script >
+
+window.addEventListener('load', (event) => {
+
+    document.getElementById("activeTab").style.display = "block";
+    document.getElementById("completeTab").style.display = "none";
+       
+});
+
+function ActiveTab() {
+   
+   document.getElementById("activeTab").style.display = "block";
+   document.getElementById("completeTab").style.display = "none";
+   document.getElementById("activeBtn").classList.add("active");
+   document.getElementById("completeBtn").classList.remove("active");
+   
+}
+
+function completeTab() {
+    document.getElementById("completeTab").style.display = "block"
+    document.getElementById("activeTab").style.display = "none";
+    document.getElementById("activeBtn").classList.remove("active");
+    document.getElementById("completeBtn").classList.add("active");
+   // dataTableStyle("#complete_table_id_wrapper div:first-child")
+}
+
+
+
+ </script>

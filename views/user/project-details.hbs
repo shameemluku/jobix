@@ -36,7 +36,7 @@
                     <p class="mb-0 detailsDate">Posted on: {{proDetails.dueDate}}</p>
                   </div>
                   <div class="d-flex col-sm-4 justify-content-end">
-                    <span class="mr-md-3" style="font-weight: 900;">₹{{proDetails.amount}}</span>
+                    <span class="mr-md-3" style="font-weight: 900;">₹<span id="budgetTxt">{{proDetails.amount}}</span></span>
                   </div>
                 </div>
               </div>
@@ -225,6 +225,10 @@
                   <div class="subTitle">Cover letter:</div>
                   <textarea id="coverTxt" class="submitTxt mt-2 p-2" style="width: 100%;" placeholder="Brief about your proposal.... Be genuine"></textarea>
                   <span id='remainingC'style="float:right;"></span>
+
+                  <div class="subTitle">Bid amount:</div>
+                  <input type="number" id="bidAmount" class="mt-2 p-2" style="width: 100%;" placeholder="Your bid amount">
+                  <span id='warningTxt' class="mt-2" style="float:right; color:red; display:none"><i class="far fa-exclamation-triangle"></i>Your bid amount is greater than client's budget. It will reduce the chance of getting the job</span>
               </div>
             </div>
 
@@ -287,4 +291,55 @@
 
 
    <div id="snackbar"></div>
+
+
+ {{!-- Validating BID Amount --}}
+
+   <script>
+     var inputBox = document.getElementById("bidAmount");
+     var budgetTxt = document.getElementById("budgetTxt");
+     var warningTxt = document.getElementById("warningTxt");  
+
+     // Amount changing texts
+
+     var comiTxt = document.getElementById("comiTxt");
+     var estimateTxt = document.getElementById("estimateTxt");  
+
+     
+    var invalidChars = ["-","+","e"];
+
+
+    inputBox.addEventListener("keydown", function(e) {
+      if (invalidChars.includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+
+    inputBox.addEventListener("keyup", function(e) {
+      if( parseFloat(inputBox.value)> parseFloat(budgetTxt.innerHTML)){
+        warningTxt.style.display = "block"
+      }else{
+        warningTxt.style.display = "none"
+      }
+
+      // Change estimate amount
+
+      if(inputBox.value == ""){
+        var commission = parseFloat(budgetTxt.innerHTML) * 0.1;
+        comiTxt.innerHTML = commission.toFixed( 2 );
+        estimateTxt.innerHTML =  parseFloat(budgetTxt.innerHTML) - commission
+      }else{
+        var commission = parseFloat(inputBox.value) * 0.1;
+        comiTxt.innerHTML = commission.toFixed( 2 );
+        estimateTxt.innerHTML =  parseFloat(inputBox.value) - commission
+      }
+
+      
+
+
+    });
+
+
+    
+   </script>
 

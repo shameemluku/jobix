@@ -3,9 +3,6 @@ const { redirect } = require('express/lib/response');
 var router = express.Router();
 
 
-
-
-
 var projectHelpers=require('../helpers/project-helpers')
 var userHelpers=require('../helpers/user-helpers')
 var notiHelpers=require('../helpers/notification-helpers')
@@ -155,6 +152,24 @@ router.post('/register-hostSkills', varifyLogin, usermiddlewares.registerHost_sk
 ////// BID DETAILS ////////
 
 router.get('/bid-details', varifyLogin, usermiddlewares.bid_details);
+
+// Bids page user additional data
+
+router.post('/bid-userdata' , varifyLogin, usermiddlewares.bid_userData)
+
+
+// HIRE A USER
+
+router.post('/hire' , varifyLogin, usermiddlewares.hire_user)
+
+
+
+// HIRE A USER
+
+router.get('/projects' , varifyLogin, usermiddlewares.worker_project)
+
+
+
 
 // To remove notification 
 

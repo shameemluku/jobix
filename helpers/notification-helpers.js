@@ -1,6 +1,7 @@
 var db=require('../config/connection')
 var collection=require('../config/collections')
 const req = require('express/lib/request')
+const { ObjectId } = require('mongodb')
 var objectId=require('mongodb').ObjectId
 
 module.exports={
@@ -8,7 +9,7 @@ module.exports={
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(
                 {
-                    recieveId:objectId(id),
+                    recieveId:[objectId(id)],
                     message:message,
                     url:url,
                     read:false
@@ -21,7 +22,7 @@ module.exports={
 
     getNotification:(id)=>{
         return new Promise(async (resolve,reject)=>{
-            let notification=await db.get().collection(collection.NOTIFICATION_COLLECTION).find({recieveId:objectId(id),read:false}).toArray()
+            let notification=await db.get().collection(collection.NOTIFICATION_COLLECTION).find({recieveId:{$in:[objectId(id)]},read:false}).toArray()
             resolve(notification);
         })
     },
@@ -29,10 +30,33 @@ module.exports={
     setNotiRead:(id)=>{
         console.log("\n\n\n\nHEREEEEEEEEE\n\n"+id+"\n\n");
         return new Promise(async (resolve,reject)=>{
-            await db.get().collection(collection.NOTIFICATION_COLLECTION).updateMany({recieveId:objectId(id)},{$set:{read:true}}).then((data)=>{
+            await db.get().collection(collection.NOTIFICATION_COLLECTION).updateMany({recieveId:{$in:[objectId(id)]}},{$set:{read:true}}).then((data)=>{
                 resolve(data)
             })
         })
+    },
+
+
+    sendBidFailNotificaton:(bidusers,message,url)=>{
+        
+        for(let i=0;i<bidusers.length;i++){
+            bidusers[i] = objectId(bidusers[i])
+        }
+
+
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(
+                {
+                    recieveId: bidusers,
+                    message:message,
+                    url:url,
+                    read:false
+                }
+            ).then((result)=>{
+                resolve(result.insertedId.toString())
+            })
+        })
+
     }
 
 }
