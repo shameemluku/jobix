@@ -72,3 +72,36 @@
             r(221), r(611)
         }()
 }();
+
+$(document).ready(function() {
+
+    $("#chatList").scrollTop($("#chatList")[0].scrollHeight);
+    
+})
+
+
+$("#send-msg-Form").submit(function(e) {
+
+    e.preventDefault()
+    
+    var form = $(this);
+    message = $('#msgTxt').val()
+
+    $.ajax({
+        type: "POST",
+        url: '/send-message',
+        data: form.serialize(), 
+        success: function(data)
+        {
+          if(data.status){
+            html = '<li class="self"> <div class="avatar"><img src="/images/site/default.jpg" draggable="false"/></div><div class="msg"><p>'+message+'<emoji class="suffocated"/></p><time>20:18</time></div></li>'
+            document.getElementById("chatList").innerHTML = document.getElementById("chatList").innerHTML + html;
+
+           
+            $('#chatList').animate({scrollTop: $('#chatList').prop("scrollHeight")}, 500);
+            $('#msgTxt').val("")
+          }
+        }
+    });
+
+})

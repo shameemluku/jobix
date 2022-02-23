@@ -38,12 +38,100 @@
 					</ul>
 
 					<section id="tab-1" class="tab-body entry-content active active-content">
-						<h2>Face Primer</h2>
-						<p>While some people don’t think that <a href="#">face primer</a> is necessary, I personally view it as a vital step in my makeup routine.</p>
-						<p>Face primers’ exact effects on your skin and makeup can vary, but overall, their main purpose is to keep your skin looking smooth and your makeup looking fresh all day long.</p>
-						<p>Face primers’ exact effects on your skin and makeup can vary, but overall, their main purpose is to keep your skin looking smooth and your makeup looking fresh all day long.</p>
-						<br><br><br><br><br><br><br><br><br><br><br>
-					</section>
+
+            <div class="container p-5">
+
+						<div class="row mt-0">
+              <div class="col-9">
+    
+                <h3>{{activeProDetails.pheading}}</h3>
+                <div class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
+              
+              </div>
+                
+              <div class="col-3 d-flex justify-content-end">
+                <span style="font-weight: 600; font-size:25px">₹
+                  {{activeProDetails.bidAmount}}</span></div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col"><p>{{activeProDetails.pdetails}}</p></div>
+            </div>
+
+          <hr>
+
+
+          {{!-- Row --}}
+
+            <div class="row mt-4">
+              <div class="container">
+                <div class="subTitle">Payment details <i class="far fa-question-circle" title="10% jobX fee will be applied"></i></div>
+                <div class="row pb-2">
+                  <div class="container">
+                    
+                    <p class="mb-1 mt-3">Client's budget for the project : <b>₹<span>{{activeProDetails.orgiAmount}}</span></b></p>
+                    <p class="mb-1">Your bid amount : <b>₹<span id="amountTxt">{{activeProDetails.bidAmount}}</span></b></p>
+                    <p class="mb-1">JobX fee (10%) : <b>₹<span id="bcomiTxt"></span></b></p>
+                    <p class="mb-0">Estimated amount you'll receive : <b style="color: #008134; font-size:18px">₹<span id="bestimateTxt"></span></b></p>
+
+                  </div>                  
+                  
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+
+            {{!-- Row FILES --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle">Supporting files</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                        <a href="/download?file={{activeProDetails._id}}"><i class="far fa-paperclip mr-2"></i>{{activeProDetails._id}}.zip</a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+          <hr>
+
+
+          {{!-- Row Client --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle"><i class="far fa-user-circle mr-1"></i>Client info</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                        <p class="mb-1"> <b>{{activeProDetails.hostName}}</b></p>
+                        <p class="mb-1" style="font-size: 12px;"><b>User id:</b> {{activeProDetails.hostId}}</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+
+
+
+            </div>
+					
+          
+          
+          
+          </section>
+
+
 
 					<section id="tab-2" class="tab-body entry-content">
 						<h2>Foundation</h2>
@@ -57,51 +145,30 @@
 
 					<section id="tab-3" class="tab-body entry-content">
 
-      <div class="chat-wrapper">
-            <div class="menu">
-            <div class="back"><i class="fa fa-chevron-left"></i> <img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-            <div class="name">Alex</div>
-            <div class="last">18:09</div>
-        </div>
-    <ol class="chat">
-    <li class="other">
-        <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-      <div class="msg">
-        <p>Hola!</p>
-        <p>Te vienes a cenar al centro? <emoji class="pizza"/></p>
-        <time>20:17</time>
-      </div>
-    </li>
-    <li class="self">
-        <div class="avatar"><img src="https://i.imgur.com/HYcn9xO.png" draggable="false"/></div>
-      <div class="msg">
-        <p>Puff...</p>
-        <p>Aún estoy haciendo el contexto de Góngora... <emoji class="books"/></p>
-        <p>Mejor otro día</p>
-        <time>20:18</time>
-      </div>
-    </li>
-    <li class="other">
-        <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-      <div class="msg">
-        <p>Qué contexto de Góngora? <emoji class="suffocated"/></p>
-        <time>20:18</time>
-      </div>
-    </li>
-    <li class="self">
-        <div class="avatar"><img src="https://i.imgur.com/HYcn9xO.png" draggable="false"/></div>
-      <div class="msg">
-        <p>El que mandó Marialu</p>
-        <p>Es para mañana...</p>
-        <time>20:18</time>
-      </div>
-    </li>
+            <div class="chat-wrapper">
+              <div class="menu">
+                <div class="back"><img src="images/site/default.jpg" draggable="false"/></div>
+                <div class="name">{{activeProDetails.hostName}}</div>
+              </div>
+              <ol class="chat" id="chatList">
 
-    </ol>
+              {{#each messages}}
+                <li class="{{this.class}}">
+                  <div class="avatar"><img src="images/site/default.jpg" draggable="false"/></div>
+                  <div class="msg">
+                  <p>{{this.message}}</p>
+                  <time>{{this.date}}</time>
+                  </div>
+                </li>
+              {{/each}}
+            </ol>
 
-    <input class="msg-textarea" type="text" placeholder="Type here!"/><div class="emojis"></div>
+            <form id="send-msg-Form">
+              <input type="hidden" name="id" value="{{activeProDetails._id}}">
+                <input id="msgTxt"  class="msg-textarea" name="message" type="text" placeholder="Type here!"/><div class="emojis"></div>
+            </form>
 
-      </div>
+            </div>
 					</section>
 
 				</div>
@@ -113,4 +180,17 @@
 
 <!-- ///////////////////// -->
 
+
+
+<script>
+    var amount = document.getElementById('amountTxt').innerHTML
+    var fee = amount * 0.1;
+    document.getElementById('bcomiTxt').innerHTML = fee;
+    document.getElementById('bestimateTxt').innerHTML = parseFloat(amount) - parseFloat(fee);
+</script>
+
+
+
+ {{!-- <script defer src="/socket.io/socket.io.js"></script>
+ <script defer src="/javascripts/client.js"></script> --}}
 

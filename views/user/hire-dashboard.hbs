@@ -1,66 +1,58 @@
 <!-- Second Nav -->
 <div class="container-fluid d-flex secNav">
-  <div class="mr-auto p-2 l-links">
-
-    <a class="p-2" href="#">Find Freelancers</a>
-
-  </div>
-  <div class="p-2 r-link">
-    <i class="fal fa-wallet"></i><span>Wallet:</span>
-    <span class="bal">$10</span>
-  </div>
-
+   <div class="mr-auto p-2 l-links">
+      <a class="p-2" href="#">Find Freelancers</a>
+   </div>
+   <div class="p-2 r-link">
+      <i class="fal fa-wallet"></i><span>Wallet:</span>
+      <span class="bal">$10</span>
+   </div>
 </div>
+
 
 <!-- Home starts -->
-
 <div class="container mt-4">
-  <h1 class="windowHeading"><i class="fas fa-tasks mr-3"></i>Projects</h1>
+   <h1 class="windowHeading"><i class="fal fa-tasks-alt mr-3"></i>Dashboard <span id="dash-heading" style="color: #7E7E7E; font-size:15px">&gt; Hired Projects</span></h1>
 </div>
-
 <div class="container mb-5">
-  <div class="row">
+   <div class="row">
+      <div class="col-md-9">
 
-    <div class="col-md-9">
+         {{! ///////////////////////////////////////////// }}
+         <div class="container p-0" id="hire_table">
+            <div id="" class="container">
+               <div class="row">
+                  <div class="col p-0">
+                     <div class="bid-tab">
+                        <button  id="activeBtn" class="tablinks active" onclick="ActiveTab()"><i class="far fa-info-circle"></i> Active </button>
+                        <button id="completeBtn" class="tablinks" onclick="completeTab()"><i class="far fa-check-circle"></i> Completed</button>
+                     </div>
 
 
-      {{! ///////////////////////////////////////////// }}
+               {{! FIRST TAB }}
+               <div id="activeTab">
 
-      <div class="container p-0">
-        <div id="" class="container">
-          <div class="row">
+            
+                        <!-- Project card 1 -->
+                        <table class="activeTab user-table w-100 display" id="table_id">
+                           <thead>
+                              <tr class="heading-row">
+                                 <th id="id_heading">
+                                    Project Id:
+                                 </th>
+                                 <th>
+                                    Title
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody>
 
-            <div class="col p-0">
 
-              <div class="bid-tab">
-
-                <button  id="activeBtn" class="tablinks active" onclick="ActiveTab()"><i class="far fa-info-circle"></i> Active </button>
-                <button id="completeBtn" class="tablinks" onclick="completeTab()"><i class="far fa-check-circle"></i> Completed</button>
-
-              </div>
-
-              {{! FIRST TAB }}
-
-              <div id="activeTab">
-                <!-- Project card 1 -->
-
-                <table class="activeTab user-table w-100 display" id="table_id">
-          <thead>
-          <tr class="heading-row">
-            <th id="id_heading">
-              Project Id:
-            </th>
-            <th>
-              Title
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-
-          {{#each hostedProjects}}
-          <tr class="table-row">
-            <td class="td-id" style="width:100px !important; white-space: initial;">
-              {{this._id}}
+                              {{#each activePro}}
+                              <tr class="table-row">
+            <td style="width:100px !important; white-space: initial;">
+              <div> {{this.dueDate}}</div>
+              <div class=" mt-2"><span class="t-bidCount" style="background-color:{{this.color}} !important;">{{this.days}} &nbsp;days</span></div>
             </td>
             <td>
               <div class="w-100">
@@ -69,21 +61,21 @@
                     <div class="row">
                         <div class="col-10">
                            <p class="mb-0 t-card-head">{{this.pheading}}</p> 
+                           <p class="mb-0">Project Id: {{this._id}}</p> 
                         </div>
                         <div class="col-2">
-                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
+                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.bidAmount}}</span>
                         </div>
                     </div>
                     <div class="row">
                       <div class="col mt-3">
-                        <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>{{this.bidCount}}</b> &nbsp;bids</span>
-                        <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>           
+                        {{!-- <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>            --}}
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col mt-3">
-                        <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                        <a href="/host-projects?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
                       </div>
                     </div>
 
@@ -92,141 +84,227 @@
               
             </td>
           </tr>
+                              <!-- Card ends here -->
+                              {{/each}}
+                           </tbody>
+                        </table>
 
-            <!-- Card ends here -->
-        {{/each}}
-
-        </tbody>
-      </table>
-      </div>
-
-
-      {{!-- ///////// SECOND TAB //////// --}}
-
-        <div id="completeTab">
-        
-        Hiiiiiiiiii
-        
-        </div>
+                     </div>
 
 
 
-          
+                     {{!-- ///////// SECOND TAB //////// --}}
+                     <div id="completeTab">
+                        <table class="activeTab user-table w-100 display" id="complete_table_id">
+                           <thead>
+                              <tr class="heading-row">
+                                 <th id="id_heading">
+                                    Project Id:
+                                 </th>
+                                 <th>
+                                    Title
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {{#each completedPro}}
+                              <tr class="table-row">
+                                 <td class="td-id" style="width:100px !important; white-space: initial;">
+                                    {{this.dueDate}}
+                                 </td>
+                                 <td>
+                                    <div class="w-100">
+                                       <div class="container">
+                                          <div class="row">
+                                             <div class="col-10">
+                                                <p class="mb-0 t-card-head">{{this.pheading}}</p>
+                                             </div>
+                                             <div class="col-2">
+                                                <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
+                                             </div>
+                                          </div>
+                                          <div class="row">
+                                             <div class="col mt-3">
+                                                <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>{{this.bidCount}}</b> &nbsp;bids</span>
+                                                <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>           
+                                             </div>
+                                          </div>
+                                          <div class="row">
+                                             <div class="col mt-3">
+                                                <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </td>
+                              </tr>
+                              <!-- Card ends here -->
+                              {{/each}}
+                           </tbody>
+                        </table>
+                     </div>
+                     {{!-- SECOND TAB ENDS --}}
+
+
+
+
+                  </div>
+               </div>
             </div>
-          </div>
+         </div>
+         {{! ///////////////////////////////////////////// }}
+         
+         <!-- Project card 1 -->
+    
 
 
-        </div>
+
+
+    {{!-- /////////////////////////////////////////////////////// SWITCH /////////////////////////////////////////////////////////////////// --}}
+
+          {{!-- loading --}}
+
+    <div id="loadingDiv" class="row p-3" style="display: none;">
+
+      <p class="text-center w-100">Loading posted projects..</p>
+      <div class="col d-flex justify-content-center">
+
+        <div class="loader"></div>
 
       </div>
-
-      {{! ///////////////////////////////////////////// }}
-
-
-
-      {{#if empty}}
-        <div class="container w-100 d-flex justify-content-center"><img
-            src="images/site/empty.png"
-            width="70%"
-          /></div>
-
-      {{/if}}
-
-   
-      <!-- Project card 1 -->
-
-
+    
     </div>
 
-    <!-- SIDE BAR RIGHT -->
+          <div class="container p-0" id="projectlist_table" style="display: none;">
+            <div id="" class="container">
+               <div class="row">
+                  <div class="col p-0">
+                 
+                        <!-- Project card 1 -->
+                        <table class="activeTab user-table w-100 display" id="table_id_bidding">
+                           <thead>
+                              <tr class="heading-row">
+                                 <th id="id_heading">
+                                    Project Id:
+                                 </th>
+                                 <th>
+                                    Title
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody  id="bid-t-body">
 
-    <div class="col-md-3">
 
-      <div class="holder project-contest sticky">
+                              {{!-- <tr class="table-row">
+                                 <td class="td-id" style="width:100px !important; white-space: initial;">
+                                    {{this._id}}
+                                 </td>
+                                 <td>
+                                    <div class="w-100">
+                                       <div class="container">
+                                          <div class="row">
+                                             <div class="col-10">
+                                                <p class="mb-0 t-card-head">{{this.pheading}}</p>
+                                             </div>
+                                             <div class="col-2">
+                                                <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
+                                             </div>
+                                          </div>
+                                          <div class="row">
+                                             <div class="col mt-3">
+                                                <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>{{this.bidCount}}</b> &nbsp;bids</span>
+                                                <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>           
+                                             </div>
+                                          </div>
+                                          <div class="row">
+                                             <div class="col mt-3">
+                                                <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </td>
+                              </tr> --}}
+                              <!-- Card ends here -->
 
-        <!-- Working On -->
 
-        <div class="card card-custom proCard" style="width: 100%;">
-          <div class="card-body">
-            <p id="nameTxt">Hi {{name}},</p>
-            <p id="wishTxt"></p>
-
-            <div class="w-100 d-flex justify-content-end">
-              {{#if work}}<a class="switchBtn" href="/work-dashboard">Switch to work</a>{{else}}<a class="switchBtn" href="/select-skills">Start working</a>{{/if}}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
             </div>
-          </div>
-        </div>
+  
+    
 
-        {{!-- White card --}}
 
-        <div class="card card-custom" style="width: 100%;">
-          <div class="d-flex w-100 justify-content-center pt-2">
-            <h5 class="card-title" style="font-size: 16px; color: #7E7E7E;">As
-              worker</h5>
-          </div>
-          <div class="line"></div>
-          <div class="card-body">
 
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapse3">Project
-                  <span class="count">0</span></a>
-              </h4>
-            </div>
-            <div id="collapse3" class="panel-collapse collapse">
-              <div class="panel-body">Active</div>
-              <div class="panel-body">Completed</div>
-            </div>
-
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapse4">Hosted
-                  <span class="count">0</span></a>
-              </h4>
-            </div>
-            <div id="collapse4" class="panel-collapse collapse">
-              <div class="panel-body">Active</div>
-              <div class="panel-body">Completed</div>
-            </div>
-
-          </div>
-        </div>
-
-        {{!-- end working --}}
-
+    {{!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// --}}
       </div>
 
-    </div>
-
-  </div>
+      <!-- SIDE BAR RIGHT -->
+      <div class="col-md-3">
+         <div class="holder project-contest sticky">
+            <!-- Working On -->
+            <div class="card card-custom proHireCard" style="width: 100%;">
+               <div class="card-body">
+                  <p id="nameTxt">Hi {{name}},</p>
+                  <p id="wishTxt"></p>
+                  <div class="w-100 d-flex justify-content-end">
+                     {{#if work}}<a class="switchBtn" href="/work-dashboard">Switch to work</a>{{else}}<a class="switchBtn" href="/select-skills">Start working</a>{{/if}}
+                  </div>
+               </div>
+            </div>
+            {{!-- White card --}}
+            <div class="card card-custom" style="width: 100%;">
+               <div class="d-flex w-100 justify-content-center pt-2">
+                  <h5 class="card-title" style="font-size: 16px; color: #7E7E7E;">Activities</h5>
+               </div>
+               <div class="line"></div>
+               <div class="card-body p-0">
+                  <a href="#" onclick="loadProList(event)" class="home-cat-a">
+                     <div id="workingBtn" class="text-center pt-3 pb-3 active-cat">
+                        <span class="home-cat-btn"><i class="fal fa-briefcase mr-2"></i>Hired Projects</span>
+                     </div>
+                  </a>
+                  <hr class="m-0">
+                  <a href="#" onclick="hideHired(event)" class="home-cat-a">
+                     <div id="biddingBtn" class="text-center pt-3 pb-3">
+                        <span class="home-cat-btn"><i class="fal fa-clock mr-1"></i>Project Listings</span>
+                     </div>
+                  </a>
+               </div>
+            </div>
+            {{!-- end working --}}
+         </div>
+      </div>
+   </div>
 </div>
-
-
 <script >
-
-window.addEventListener('load', (event) => {
-
-    document.getElementById("activeTab").style.display = "block";
-    document.getElementById("completeTab").style.display = "none";
-       
-});
-
-function ActiveTab() {
+   window.addEventListener('load', (event) => {
    
-   document.getElementById("activeTab").style.display = "block";
-   document.getElementById("completeTab").style.display = "none";
-   document.getElementById("activeBtn").classList.add("active");
-   document.getElementById("completeBtn").classList.remove("active");
+       document.getElementById("activeTab").style.display = "block";
+       document.getElementById("completeTab").style.display = "none";
+          
+   });
    
-}
-
-function completeTab() {
-    document.getElementById("completeTab").style.display = "block"
-    document.getElementById("activeTab").style.display = "none";
-    document.getElementById("activeBtn").classList.remove("active");
-    document.getElementById("completeBtn").classList.add("active");
-}
-
-
-
- </script>
+   function ActiveTab() {
+      
+      document.getElementById("activeTab").style.display = "block";
+      document.getElementById("completeTab").style.display = "none";
+      document.getElementById("activeBtn").classList.add("active");
+      document.getElementById("completeBtn").classList.remove("active");
+      
+   }
+   
+   function completeTab() {
+       document.getElementById("completeTab").style.display = "block"
+       document.getElementById("activeTab").style.display = "none";
+       document.getElementById("activeBtn").classList.remove("active");
+       document.getElementById("completeBtn").classList.add("active");
+   }
+   
+   
+   
+    
+</script>

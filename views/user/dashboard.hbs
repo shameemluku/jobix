@@ -17,7 +17,7 @@
 <!-- Home starts -->
 
 <div class="container mt-4">
-  <h1 class="windowHeading"><i class="fas fa-tasks mr-3"></i>Projects</h1>
+  <h1 class="windowHeading"><i class="fal fa-tasks-alt mr-3"></i>Dashboard <span id="dash-heading" style="color: #7E7E7E; font-size:15px">&gt; Working Projects</span></h1>
 </div>
 
 <div class="container">
@@ -25,7 +25,7 @@
 
     <div class="col-md-9">
 
-      <div id="bid-details" class="container p-0 mb-4">
+      <div id="active-works" class="container p-0 mb-4">
         <div id="" class="container">
           <div class="row">
 
@@ -83,7 +83,7 @@
 
                     <div class="row">
                       <div class="col mt-3">
-                        <a href="/projects" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                        <a href="/projects?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
                       </div>
                     </div>
 
@@ -119,7 +119,7 @@
         </thead>
         <tbody>
 
-          {{#each completedPro}}
+          {{#each activePro}}
           <tr class="table-row">
             <td class="td-id" style="width:100px !important; white-space: initial;">
               {{this.dueDate}}
@@ -130,7 +130,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-10">
-                           <p class="mb-0 t-card-head">{{this.pheading}}</p> 
+                           <p class="mb-0 t-card-head">XDHXFH</p> 
                         </div>
                         <div class="col-2">
                             <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
@@ -178,19 +178,93 @@
 
 
 
-      {{#if empty}}
-        <div class="container w-100 d-flex justify-content-center"><img
-            src="images/site/empty.png"
-            width="70%"
-          /></div>
-
-      {{/if}}
-
-   
       <!-- Project card 1 -->
+
+      {{!-- ///////////////////////////////////// bidded list //////////////////////////////////////// --}}
+
+
+      {{!-- loading --}}
+
+    <div id="loadingDiv" class="row p-3" style="display: none;">
+
+      <p class="text-center w-100">Loading posted projects..</p>
+      <div class="col d-flex justify-content-center">
+
+        <div class="loader"></div>
+
+      </div>
+    
+    </div>
+
+
+      <div id="bidded-projects" class="container p-0 mb-4" style="display: none;">
+        <div id="" class="container">
+          <div class="row">
+            
+
+          <table class="activeTab user-table w-100 mt-0 display">
+      
+          <tbody id="bid-t-body">
+
+
+          {{!-- <tr class="table-row">
+            <td>
+              <div class="w-100">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-10">
+                           <p class="mb-0 t-card-head">Data collection and cleaning</p> 
+                           <p class="mb-0">Data collection and cleaning</p> 
+                        </div>
+                        <div class="col-2 d-flex justify-content-center">
+                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ 500</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col mt-3">
+                        <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>250</b> &nbsp;bids</span>         
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col mt-3">
+                        <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">Remove</a>      
+                        <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100 mr-1" style="float: right;">view details</a>         
+                      </div>
+                      
+                    </div>
+
+                </div>
+              </div>
+              
+            </td>
+          </tr> --}}
+
+            <!-- Card ends here -->
+
+
+            
+    
+
+        </tbody>
+      </table>
+
+
+          </div>
+        </div>
+
+                
+      </div>
+
+
+
+      {{!-- ///////////////////////////////////////////////////////////////////////////////////////////////// --}}
 
 
     </div>
+
+
 
     <!-- SIDE BAR RIGHT -->
 
@@ -216,33 +290,21 @@
 
         <div class="card card-custom" style="width: 100%;">
           <div class="d-flex w-100 justify-content-center pt-2">
-            <h5 class="card-title" style="font-size: 16px; color: #7E7E7E;">As
-              worker</h5>
+            <h5 class="card-title" style="font-size: 16px; color: #7E7E7E;">Activities</h5>
           </div>
           <div class="line"></div>
-          <div class="card-body">
+          <div class="card-body p-0">
 
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapse3">Project
-                  <span class="count">0</span></a>
-              </h4>
-            </div>
-            <div id="collapse3" class="panel-collapse collapse">
-              <div class="panel-body">Active</div>
-              <div class="panel-body">Completed</div>
-            </div>
+            <a href="#" onclick="hideBid(event)" class="home-cat-a"><div id="workingBtn" class="text-center pt-3 pb-3 active-cat">
+               <span class="home-cat-btn"><i class="fal fa-briefcase mr-1"></i> Working Projects</span>
+            </div></a>
 
-            <div class="panel-heading">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapse4">Hosted
-                  <span class="count">0</span></a>
-              </h4>
-            </div>
-            <div id="collapse4" class="panel-collapse collapse">
-              <div class="panel-body">Active</div>
-              <div class="panel-body">Completed</div>
-            </div>
+            <hr class="m-0">
+            <a href="#" onclick="loadBids(event)" class="home-cat-a"><div id="biddingBtn" class="text-center pt-3 pb-3">
+              <span class="home-cat-btn"><i class="fal fa-clock mr-1"></i>Bidded Projects</span>
+            </div></a>
+
+        
 
           </div>
         </div>
@@ -285,3 +347,7 @@ function completeTab() {
 
 
  </script>
+
+
+
+ 

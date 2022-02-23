@@ -4,10 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var hbs=require('express-handlebars')
+var hbs = require('express-handlebars')
 var db = require('./config/connection')
 var fileUpload = require('express-fileupload')
 var session = require('express-session')
+const MongoStore = require('connect-mongo');
 
 var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
@@ -19,27 +20,27 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.engine( 'hbs', hbs.engine( { 
-  extname: 'hbs', 
-  defaultLayout: 'layout', 
-  layoutsDir: __dirname + '/views/layouts/',
-  partialsDir: __dirname + '/views/partials/',
+app.engine('hbs', hbs.engine({
+    extname: 'hbs',
+    defaultLayout: 'layout',
+    layoutsDir: __dirname + '/views/layouts/',
+    partialsDir: __dirname + '/views/partials/',
 
-  helpers:{
-    eq: function(arg1, arg2) {
-      return (arg1 == arg2) ? true : false;   //custom helper for comparison
-    },
+    helpers: {
+        eq: function(arg1, arg2) {
+            return (arg1 == arg2) ? true : false; //custom helper for comparison
+        },
 
-    json: function(context) {
-      return JSON.stringify(context);
+        json: function(context) {
+            return JSON.stringify(context);
+        }
     }
-  }
-} ) );
+}));
 
 
 app.use(function(req, res, next) {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-  next();
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+    next();
 });
 
 
@@ -54,18 +55,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload())
 
 app.use(session({
-  secret:"secretKeyJobix",
-  cookie:{
-    maxAge:600000
-  },
-  resave:false,
-  saveUninitialized:false
+    secret: "secretKeyJobix",
+    store: MongoStore.create({
+        mongoUrl: 'mongodb://localhost:27017/jobix'
+    }),
+    cookie: {
+        maxAge: 600000
+    },
+    resave: false,
+    saveUninitialized: false
 }))
 
 
-db.connect((err)=>{
-  if(err) console.log("Connection Error");
-  else console.log("Connected to Database")
+db.connect((err) => {
+    if (err) console.log("Connection Error");
+    else console.log("Connected to Database")
 })
 
 
@@ -74,18 +78,18 @@ app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

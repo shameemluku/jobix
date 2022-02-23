@@ -1,0 +1,196 @@
+
+
+  <!-- Second Nav -->
+  <div class="container-fluid d-flex secNav">
+    <div class="mr-auto p-2 l-links">
+
+      <a class="p-2" href="/browse-project">Browse Project</a>
+      {{!-- <a class="p-2" href="/">Browse Contest</a> --}}
+      <a class="p-2" href="/">Freelancers</a>
+
+    </div>
+    <div class="p-2 r-link">
+      <i class="fal fa-wallet"></i><span>Wallet:</span>
+      <span class="bal">$10</span>
+    </div>
+
+  </div>
+
+
+<!-- //////////// CONTENT STARTS ///////////// -->
+
+
+<div id="workarea" class="site-wrapper">
+	<section class="tabs-wrapper">
+		<div class="tabs-container">
+			<div class="tabs-block">
+				<div id="tabs-section" class="tabs">
+					<ul class="tab-head">
+						<li>
+							<a href="#tab-1" class="tab-link active"> <span class="tab-icon"><i class="far fa-info-circle"></i></span> <span class="tab-label">Overview</span></a>
+						</li>
+						<li>
+							<a href="#tab-2" class="tab-link"> <span class="material-icons tab-icon"><i class="far fa-file"></i></span> <span class="tab-label">Files</span></a>
+						</li>
+						<li>
+							<a href="#tab-3" class="tab-link"> <span class="material-icons tab-icon"><i class="far fa-comment-alt"></i></span> <span class="tab-label">Messages</span></a>
+						</li>
+					</ul>
+
+					<section id="tab-1" class="tab-body entry-content active active-content">
+
+            <div class="container p-5">
+
+						<div class="row mt-0">
+              <div class="col-9">
+    
+                <h3>{{activeProDetails.pheading}}</h3>
+                <div class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
+              
+              </div>
+                
+              <div class="col-3 d-flex justify-content-end">
+                <span style="font-weight: 600; font-size:25px">₹
+                  {{activeProDetails.bidAmount}}</span></div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col"><p>{{activeProDetails.pdetails}}</p></div>
+            </div>
+
+          <hr>
+
+
+          {{!-- Row --}}
+
+            <div class="row mt-4">
+              <div class="container">
+                <div class="subTitle">Payment details <i class="far fa-question-circle" title="10% jobX fee will be applied"></i></div>
+                <div class="row pb-2">
+                  <div class="container">
+                    
+                    <p class="mb-1 mt-3">Client's budget for the project : <b>₹<span>{{activeProDetails.orgiAmount}}</span></b></p>
+                    <p class="mb-1">Your bid amount : <b>₹<span id="amountTxt">{{activeProDetails.bidAmount}}</span></b></p>
+                    <p class="mb-1">JobX fee (10%) : <b>₹<span id="bcomiTxt"></span></b></p>
+                    <p class="mb-0">Estimated amount you'll receive : <b style="color: #008134; font-size:18px">₹<span id="bestimateTxt"></span></b></p>
+
+                  </div>                  
+                  
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+
+            {{!-- Row FILES --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle">Supporting files</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                        <a href="/download?file={{activeProDetails._id}}"><i class="far fa-paperclip mr-2"></i>{{activeProDetails._id}}.zip</a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+          <hr>
+
+
+          {{!-- Row Client --}}
+
+            <div class="row mt-3">
+              <div class="container">
+                <div class="subTitle"><i class="far fa-user-circle mr-1"></i>Freelancer info</div>
+                <div class="row pb-2">
+                  <div class="skills-list pColor">
+
+                        <p class="mb-1"> <b>{{activeProDetails.worker}}</b></p>
+                        <p class="mb-1" style="font-size: 12px;"><b>User id:</b> {{activeProDetails.workerId}}</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {{!-- Row --}}
+
+
+
+
+            </div>
+					
+          
+          
+          
+          </section>
+
+
+
+					<section id="tab-2" class="tab-body entry-content">
+						<h2>Foundation</h2>
+						<p>Foundation is probably the hardest part of your makeup routine to get right, as you not only have to consider the type of coverage you want (i.e. sheer/natural, medium, or full), but also your skin type and undertones.</p>
+						<p>If you are new to wearing foundation or aren’t sure what type/shade is right for you, I’d highly recommend going to your nearest Sephora, MAC, or department store and have a makeup artist help you pick out one that matches your complexion and fits your coverage needs. It’s also a good idea to request a sample if you want to see how a formula feels on your skin before buying.</p>
+					</section>
+
+
+
+          {{!-- CHAT SECTION --}}
+
+					<section id="tab-3" class="tab-body entry-content">
+
+            <div class="chat-wrapper">
+              <div class="menu">
+                <div class="back"><img src="images/site/default.jpg" draggable="false"/></div>
+                <div class="name">{{activeProDetails.worker}}</div>
+              </div>
+              <ol class="chat" id="chatList">
+
+              {{#each messages}}
+                <li class="{{this.class}}">
+                  <div class="avatar"><img src="images/site/default.jpg" draggable="false"/></div>
+                  <div class="msg">
+                  <p>{{this.message}}</p>
+                  <time>{{this.date}}</time>
+                  </div>
+                </li>
+              {{/each}}
+            </ol>
+
+            <form id="send-msg-Form">
+              <input type="hidden" name="id" value="{{activeProDetails._id}}">
+                <input id="msgTxt"  class="msg-textarea" name="message" type="text" placeholder="Type here!"/><div class="emojis"></div>
+            </form>
+
+            </div>
+					</section>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+</div>
+
+<!-- ///////////////////// -->
+
+
+
+<script>
+    var amount = document.getElementById('amountTxt').innerHTML
+    var fee = amount * 0.1;
+    document.getElementById('bcomiTxt').innerHTML = fee;
+    document.getElementById('bestimateTxt').innerHTML = parseFloat(amount) - parseFloat(fee);
+</script>
+
+
+
+ {{!-- <script defer src="/socket.io/socket.io.js"></script>
+ <script defer src="/javascripts/client.js"></script> --}}
+

@@ -85,7 +85,7 @@
                   
                     <p class="mb-1 mt-3">Total reward for the project : <b>₹<span id="amountTxt">{{projectDetail.amount}}</span></b></p>
                     <p class="mb-1">JobX fee (10%) : <b>₹<span id="bcomiTxt"></span></b></p>
-                    <p class="mb-0">Estimated amount you'll receive : <b style="color: #008134; font-size:18px">₹<span id="bestimateTxt"></span></b></p>
+                    <p class="mb-0">Estimated amount you'll spend : <b style="color: #008134; font-size:18px">₹<span id="bestimateTxt"></span></b></p>
 
                   </div>                  
                   
@@ -129,7 +129,7 @@
                       <img class="img-fluid" src="images/site/default.jpg" />
                     </div>
                     <div class="team-content" style="margin-bottom:0">
-                      <h3 class="name">{{this.username}}</h3></div>
+                      <h3 class="username">{{this.username}}</h3></div>
 
                     <div class="star-rate">
                       <span class="fa fa-star checked"></span>
@@ -146,9 +146,9 @@
                     </div>
 
 
-                    <div class="msg-area w-100 d-flex justify-content-center">
+                    {{!-- <div class="msg-area w-100 d-flex justify-content-center">
                       <p class="mb-0"><span></span>{{this.message}}</p>
-                    </div>
+                    </div> --}}
 
                     <a class="btn-hire" href="#" onclick="showProfile({{json this}})">
                       <ul class="social w-100"><li>View more</li></ul>
