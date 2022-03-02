@@ -1,0 +1,180 @@
+<main class="content">
+   <div class="container-fluid p-0">
+      <h1 class="h3 mb-3"><strong>Analytics</strong> Dashboard</h1>
+      <div class="row">
+         <div class="col-xl-6 col-xxl-5 d-flex">
+            <div class="w-100">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col mt-0">
+                                 <h5 class="card-title">Projects</h5>
+                              </div>
+                              <div class="col-auto">
+                                 <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="truck"></i>
+                                 </div>
+                              </div>
+                           </div>
+                           <h1 class="mt-1 mb-3">17</h1>
+                           <div class="mb-0">
+                              <span class="text-muted">Active projects</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col mt-0">
+                                 <h5 class="card-title">Freelancers</h5>
+                              </div>
+                              <div class="col-auto">
+                                 <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="users"></i>
+                                 </div>
+                              </div>
+                           </div>
+                           <h1 class="mt-1 mb-3" style="font-size: 35px;">14</h1>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col mt-0">
+                                 <h5 class="card-title">Earnings</h5>
+                              </div>
+                              <div class="col-auto">
+                                 <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                 </div>
+                              </div>
+                           </div>
+                           <h1 class="mt-1 mb-3">₹ 0.000</h1>
+                           <div class="mb-0">
+                              <span class="text-muted">Total Earnings</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col mt-0">
+                                 <h5 class="card-title">Hosts</h5>
+                              </div>
+                              <div class="col-auto">
+                                 <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="shopping-cart"></i>
+                                 </div>
+                              </div>
+                           </div>
+                           <h1 class="mt-1 mb-3" style="font-size: 35px;">64</h1>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-xl-6 col-xxl-7">
+            <div class="card flex-fill w-100">
+               <div class="card-header">
+                  <h5 class="card-title mb-0">Recent Movement</h5>
+               </div>
+               <div class="card-body py-3">
+                  <div class="chart chart-sm">
+                     <canvas id="chartjs-dashboard-line"></canvas>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+
+
+      {{!-- table  --}}
+
+      <div class="row">
+         <div class="col-12 col-xxl-9 d-flex">
+            <div class="card flex-fill">
+               <div class="card-header">
+                  <h5 class="card-title mb-0">Latest Projects</h5>
+               </div>
+               
+               <table class="table table-hover my-0" id="home_table">
+                  <thead>
+                     <tr>
+                        <th>Project Id</th>
+                        <th>Title</th>
+                        <th class="d-none d-xl-table-cell">Due Date</th>
+                        <th class="d-none d-xl-table-cell">Host</th>
+                        <th>Amount</th>
+                        <th class="d-none d-md-table-cell">Status</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+
+                     {{#each projects}}
+                     <tr>
+                        <td class="d-none d-xl-table-cell" style="color: dimgrey; font-size:10px">{{this._id}}</td>
+                        <td>{{this.pheading}}</td>
+                        <td class="d-none d-xl-table-cell">{{this.dueDate}}</td>
+                        <td class="d-none d-xl-table-cell">{{this.hostName}}</td>
+                        <td style="color: rgb(99, 148, 14); font-weight:500">₹ {{this.bidAmount}}</td>
+                        {{#if (eq this.status "COMPLETED")}}<td><span class="badge bg-success">Completed</span></td>{{/if}}
+                        {{#if (eq this.status "ACTIVE")}}<td><span class="badge bg-warning">Active</span></td>{{/if}}
+                        {{#if (eq this.status "CANCELLED")}}<td><span class="badge bg-danger">Cancelled</span></td>{{/if}}
+                     </tr>
+                     {{/each}}
+
+                     
+                  </tbody>
+               </table>
+            </div>
+         </div>
+
+         <div class="col-12 col-md-12 col-xxl-3 d-flex order-2 order-xxl-3">
+                            <div class="card flex-fill w-100">
+                                <div class="card-header">
+
+                                    <h5 class="card-title mb-0">Project overview</h5>
+                                </div>
+                                <div class="card-body d-flex">
+                                    <div class="align-self-center w-100">
+                                        <div class="py-3">
+                                            <div class="chart chart-xs">
+                                                <canvas id="chartjs-dashboard-pie"></canvas>
+                                            </div>
+                                        </div>
+
+                                        <table class="table mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Active</td>
+                                                    <td class="text-end" id="active-pie">0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Completed</td>
+                                                    <td class="text-end" id="complete-pie">0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cancelled</td>
+                                                    <td class="text-end" id="cancel-pie">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+      
+      </div>
+
+      <div class="row">
+         
+
+      </div>
+   </div>
+</main>

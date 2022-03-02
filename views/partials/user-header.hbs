@@ -65,7 +65,7 @@
           
         </form>
           <div class="dropdown">
-            <a href="" class="dropbtn"><img class="profileImg" src="images/site/default.jpg" class="postBtn"></a>
+            <a href="/profile" class="dropbtn">{{#if user.propic}}<img id="headerPropic" class="profileImg" src="images/profile-pics/{{user._id}}.jpg" class="postBtn">{{else}}<img id="headerPropic" class="profileImg" src="images/site/default.jpg" class="postBtn">{{/if}}</a>
              <div class="dropdown-content">
                   <a href="#" class="userName"><i class="fas fa-user-circle mr-2"></i>{{user.name}}</a>
                   <a href="/signout"><div class="signOutBtn">Sign out<i class="far fa-sign-out-alt ml-2"></i></div></a>

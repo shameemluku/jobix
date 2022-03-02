@@ -1,26 +1,3 @@
-#workarea a,
-#workarea a:visited {
-    background-color: transparent;
-    color: #0067b8;
-    text-decoration: none;
-    border-bottom: 1px dotted;
-}
-
-#workarea a:hover,
-#workarea a:active {
-    border-bottom: none;
-    outline: 0;
-}
-
-#workarea a:focus {
-    border-bottom: none;
-    outline: thin dotted;
-}
-
-#workarea a img {
-    border: 0;
-}
-
 #workarea .entry-content>*:not(:last-child) {
     margin-bottom: 1rem;
 }
@@ -132,7 +109,7 @@
     display: none;
 }
 
-#workarea .tabs section {
+#workarea .tabs .select-section {
     width: 100%;
     background-color: #fff;
     display: none;
@@ -140,100 +117,168 @@
     border-bottom: 2px solid #b6b6b6;
 }
 
-#workarea .tabs section>* {
+#workarea .tabs .select-section>* {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.s, transform 0.2s;
 }
 
-#workarea .tabs section>*:nth-child(1) {
+#workarea .tabs .select-section>*:nth-child(1) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(2) {
+#workarea .tabs .select-section>*:nth-child(2) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(3) {
+#workarea .tabs .select-section>*:nth-child(3) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(4) {
+#workarea .tabs .select-section>*:nth-child(4) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(5) {
+#workarea .tabs .select-section>*:nth-child(5) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(6) {
+#workarea .tabs .select-section>*:nth-child(6) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(7) {
+#workarea .tabs .select-section>*:nth-child(7) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(8) {
+#workarea .tabs .select-section>*:nth-child(8) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(9) {
+#workarea .tabs .select-section>*:nth-child(9) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(10) {
+#workarea .tabs .select-section>*:nth-child(10) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(11) {
+#workarea .tabs .select-section>*:nth-child(11) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(12) {
+#workarea .tabs .select-section>*:nth-child(12) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(13) {
+#workarea .tabs .select-section>*:nth-child(13) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(14) {
+#workarea .tabs .select-section>*:nth-child(14) {
     transition-delay: 0;
     ;
 }
 
-#workarea .tabs section>*:nth-child(15) {
+#workarea .tabs .select-section>*:nth-child(15) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(16) {
+#workarea .tabs .select-section>*:nth-child(16) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(17) {
+#workarea .tabs .select-section>*:nth-child(17) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(18) {
+#workarea .tabs .select-section>*:nth-child(18) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(19) {
+#workarea .tabs .select-section>*:nth-child(19) {
     transition-delay: 0;
 }
 
-#workarea .tabs section>*:nth-child(20) {
+#workarea .tabs .select-section>*:nth-child(20) {
     transition-delay: 0;
 }
 
-#workarea .tabs section.active {
+#workarea .tabs .select-section.active {
     display: block;
 }
 
-#workarea .tabs section.active-content>* {
+#workarea .tabs .select-section.active-content>* {
     opacity: 1;
     transform: translateY(0);
+}
+
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active-collapse,
+.collapsible:hover {
+    background-color: #555;
+}
+
+.content {
+    padding: 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.file-border {
+    border-bottom: 1px solid #d7d7d7;
+}
+
+.file-card button {
+    color: rgb(24, 23, 23);
+    cursor: pointer !important;
+    font-weight: 500;
+}
+
+.file-card button:hover {
+    cursor: pointer !important;
+    color: red;
+    text-decoration: none;
+}
+
+.file-card button:focus {
+    text-decoration: none;
+}
+
+.action-drop:focus {
+    outline: none !important;
+    box-shadow: none!important
+}
+
+.action-drop {
+    background-color: white;
+    color: #262626;
+}
+
+.action-drop-menu {
+    left: -91px !important;
+}
+
+.completeBtn {
+    width: 100%;
+    margin-top: 0px;
+    padding-top: 10px;
+    text-align: center;
+    background-color: #058335 !important;
+    color: white !important;
+    height: 50px;
 }
 
 
@@ -293,7 +338,7 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
-.name {
+.chat-name {
     position: absolute;
     top: 12px;
     left: 70px;
@@ -491,6 +536,16 @@ input.msg-textarea {
     z-index: 99;
 }
 
+.file-section label {
+    background-color: rgb(187, 31, 31);
+    color: white;
+    padding: 15px 25px 15px 25px;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
 
 /* ////////////////// END CHAT ///////////////////////// */
 
@@ -509,7 +564,7 @@ input.msg-textarea {
         display: block;
         margin-top: 0.2rem;
     }
-    #workarea .tabs section {
+    #workarea .tabs .select-section {
         width: calc(100% - 150px);
     }
 }
@@ -524,4 +579,161 @@ input.msg-textarea {
     #workarea .tabs {
         width: 90%;
     }
+}
+
+
+/* //////////////// FILES ///////////////// */
+
+::selection {
+    color: #fff;
+    background: #6990F2;
+}
+
+.file-wrapper {
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
+}
+
+.file-wrapper header {
+    color: #003049;
+    font-size: 27px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.file-wrapper form {
+    height: 167px;
+    display: flex;
+    cursor: pointer;
+    margin: 30px 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 2px dashed #6990F2;
+}
+
+.file-wrapper form :where(i, p) {
+    color: #6990F2;
+}
+
+.file-wrapper form i {
+    font-size: 50px;
+}
+
+.file-wrapper form p {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+.file-wrapper section .row-p {
+    margin-bottom: 10px;
+    background: #E9F0FF;
+    list-style: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.file-wrapper section .row-p i {
+    color: #24355f;
+    font-size: 30px;
+}
+
+.file-wrapper section .details span {
+    font-size: 14px;
+}
+
+.progress-area .row-p .content {
+    width: 100%;
+    margin-left: 15px;
+}
+
+.progress-area .details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 7px;
+    justify-content: space-between;
+}
+
+.progress-area .content .progress-bar {
+    height: 6px;
+    width: 100% !important;
+    margin-bottom: 4px;
+    background: #fff;
+    border-radius: 30px;
+}
+
+.content .progress-bar .progress {
+    height: 100%;
+    width: 0%;
+    background: #6990F2;
+    border-radius: inherit;
+}
+
+.uploaded-area {
+    max-height: 232px;
+    overflow-y: scroll;
+}
+
+.uploaded-area.onprogress {
+    max-height: 150px;
+}
+
+.uploaded-area::-webkit-scrollbar {
+    width: 0px;
+}
+
+.uploaded-area .row-p .content {
+    display: flex;
+    align-items: center;
+}
+
+.uploaded-area .row-p .details {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.uploaded-area .row-p .details .size {
+    color: #404040;
+    font-size: 11px;
+}
+
+.uploaded-area i.fa-check {
+    font-size: 16px;
+}
+
+
+/* Table */
+
+#files-table {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+#files-table tr {
+    background-color: white;
+    box-shadow: 0px 0px 0px 1px rgb(218, 218, 218);
+}
+
+.filename {
+    font-size: 18px;
+    color: #0067b8;
+}
+
+.filedate {
+    font-size: 13px;
+    color: #474747;
+}
+
+.deleteBtn {
+    text-decoration: none !important;
+    color: red !important;
+    border-bottom: none !important;
+    outline: 0 !important;
 }

@@ -1,0 +1,63 @@
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Users</h1>
+    </div>
+    <div class="row">
+
+      <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+        <div class="card flex-fill">
+          <table class="table table-hover my-0" id="user_Table">
+            <thead>
+              <tr>
+               <th class="d-none d-xl-table-cell">Id</th>
+               <th>Profile</th>
+                <th>Name</th>
+                <th class="d-none d-xl-table-cell">Email</th>
+                <th class="d-none d-xl-table-cell">Country</th>
+                <th class="d-none d-xl-table-cell">Type</th>
+                <th class="d-none d-md-table-cell">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+               {{#each users}}
+
+              <tr>
+                <td style="color: slategrey; font-size:10px">{{this._id}}</td>
+                <td class="d-none d-xl-table-cell">
+                   <img class="table-pro-pic" height="40px" width="40px" src="/images/profile-pics/{{this._id}}.jpg" alt="" onerror="this.src='/images/site/default.jpg'" draggable="false">
+               </td>
+                <td class="d-none d-xl-table-cell">{{this.name}}</td>
+                <td class="d-none d-xl-table-cell">{{this.email}}</td>
+                <td class="d-none d-md-table-cell">{{this.country}}</td>
+                <td><span class="badge bg-success">worker</span></td>
+                <td class="d-none d-md-table-cell">
+
+                   <div class="d-flex toggle-btn justify-content-center">
+                        <label class="switch">
+                        <input type="checkbox" id="togBtn" name="userType" value="hire" onclick="changeBtnColor()">
+                        <div class="slider round">
+                            <!--ADDED HTML -->
+                            <span class="on">Unblock</span>
+                             <span class="off">Blocked</span>
+                            <!--END-->
+                        </div>
+                        </label>
+
+                    </div>
+
+
+                </td>
+              </tr>
+
+               {{/each}}
+       
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

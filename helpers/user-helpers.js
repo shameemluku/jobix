@@ -1,6 +1,7 @@
 var db = require('../config/connection')
 var collection = require('../config/collections')
 const bcrypt = require('bcrypt')
+const { ObjectId } = require('mongodb')
 var objectId = require('mongodb').ObjectId
 
 module.exports = {
@@ -28,7 +29,13 @@ module.exports = {
                         'userId': data.insertedId,
                         'skills': skills
                     }).then((response) => {
-                        resolve(response)
+
+                        db.get().collection(collection.HIRE_COLLECTION).insertOne({
+                            '_id': data.insertedId,
+                        }).then((response) => {
+                            resolve(response)
+                        })
+
                     })
                 }
 
@@ -137,9 +144,18 @@ module.exports = {
             let workProfile = await db.get().collection(collection.WORKER_COLLECTION).aggregate([
                 { $match: { userId: objectId(id) } },
                 {
+                    $lookup: {
+                        from: "skills",
+                        localField: "skills",
+                        foreignField: "code",
+                        as: "skillsArray"
+                    }
+                },
+                {
                     $project: {
                         userId: 1,
                         skills: 1,
+                        skillsArray: 1,
                         saved: 1,
                         saveCount: { $size: { "$ifNull": ["$saved", []] } }
                     }
@@ -293,7 +309,7 @@ module.exports = {
                 }
             ]).toArray();
 
-            // console.log(userDetail[0]);
+            console.log(userDetail[0]);
 
             resolve(userDetail[0])
 
@@ -380,11 +396,82 @@ module.exports = {
     self_removeBid: (id, pId) => {
 
         return new Promise(async(resolve, reject) => {
-            await db.get().collection(collection.PROJECTLIST_COLLECTION).update({ _id: objectId(pId) }, { $pull: { 'bidding': { 'userId': objectId(id) } } }).then((result) => {
+            await db.get().collection(collection.PROJECTLIST_COLLECTION).update({ _id: objectId(pId) }, {
+                $pull: { 'bidding': { 'userId': objectId(id) } }
+            }).then((result) => {
                 resolve(true)
             }).catch(() => {
                 reject(false)
             })
+        })
+    },
+
+    //change DP
+    changeDpStatus: (id) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.PROJECTLIST_COLLECTION).update({ _id: objectId(id) }, { $set: { 'propic': true } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+    updateUserDetails: (id, details) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.USERS_COLLECTION)
+                .update({ _id: objectId(id) }, {
+                    $set: {
+                        'name': details.name,
+                        'lname': details.lname,
+                        'email': details.email,
+                        'phone': details.phone,
+                        'country': details.country,
+                        'bio': details.bio
+                    }
+                })
+                .then((result) => {
+
+                    db.get().collection(collection.PROJECTS_COLLECTION).bulkWrite(
+                        [{
+                                updateMany: {
+                                    filter: { "workerId": objectId(id) },
+                                    update: { $set: { "worker": details.name } }
+                                },
+                            },
+                            {
+                                updateMany: {
+                                    filter: { "hostId": objectId(id) },
+                                    update: { $set: { hostName: details.name } },
+                                },
+                            },
+                        ]).then((res) => {
+
+                        if (res.ok) {
+                            db.get().collection(collection.PROJECTLIST_COLLECTION).updateMany({ "bidding.userId": objectId(id) }, {
+                                $set: { "bidding.$.username": details.name }
+                            }).then(() => {
+                                resolve(true)
+                            })
+                        }
+                    })
+
+
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+    updateUserSkills: (id, skills) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.WORKER_COLLECTION).update({ userId: objectId(id) }, { $set: { 'skills': skills } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
         })
     }
 

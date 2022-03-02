@@ -1,0 +1,240 @@
+<section class="py-5 my-5">
+        <div id="profile-container" class="container">
+            <div class="bg-white shadow rounded-lg d-block d-sm-flex mt-3">
+                <div class="profile-tab-nav border-right">
+                    <div class="p-4">
+                   
+                        <div class="profilepic">
+                            <img id="propic-round" src="images/profile-pics/{{user._id}}.jpg" alt="Image" onerror="this.src='images/site/default.jpg'" class="shadow profilepic__image" height="200px" width="200px" style="object-fit: cover;">
+                            <div class="profilepic__content">
+                                <form method="post">
+                                    <input type="file" name="crop_image" class="crop_image" id="upload_image" style="display: none;" />
+                                    <label for="upload_image" style="cursor: pointer;"><span class="profilepic__icon"><i class="fas fa-camera mr-1"></i></span>
+                                    <span class="profilepic__text">Edit Profile</span></label>
+                                </form>
+                                <a class="remove-pro {{#if user.propic}}{{else}}d-none{{/if}}" href="#"><span class="profilepic__text"><i class="fas fa-trash-alt mr-1"></i>Remove</span></label></a>
+                            </div>
+                        </div>
+
+                        <div class="profilepic-loading">
+                            <img id="propic-round" src="images/site/loading.gif" alt="Image" class="shadow profilepic__image" height="200px" width="200px" style="object-fit: cover;">
+                        </div>
+
+                        <h4 class="text-center mt-3">{{user.name}}</h4>
+
+                      
+
+                        {{!-- CROPPER MODEL --}}
+
+            <div class="modal fade" id="modal_crop" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Crop Image Before Upload</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <div class="row">
+                                    <div class="col p-0">
+                                        <img class="crop-img" src="" width="100%" id="sample_image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="crop_and_upload" class="btn btn-primary">Crop</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {{!-- cropper end --}}
+
+
+                    </div>
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" id="account-tab" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">
+                            <i class="fa fa-home text-center mr-1"></i> Account
+                        </a>
+                        <a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
+                            <i class="fa fa-key text-center mr-1"></i> Password
+                        </a>
+                        <a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab" aria-controls="security" aria-selected="false">
+                            <i class="fa fa-user text-center mr-1"></i> Skills
+                        </a>
+                        <a class="nav-link" id="application-tab" data-toggle="pill" href="#application" role="tab" aria-controls="application" aria-selected="false">
+                            <i class="fa fa-tv text-center mr-1"></i> Application
+                        </a>
+                        <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
+                            <i class="fa fa-bell text-center mr-1"></i> Notification
+                        </a>
+                    </div>
+                </div>
+                <div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                        <h3 class="mb-4">Account Settings</h3>
+                        <form id="bio-form" action="/update-details" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" name="name" class="form-control" value="{{user.name}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" name="lname" class="form-control" value="{{user.lname}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" name="email" class="form-control" value="{{user.email}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Phone number</label>
+                                    <input type="text" name="phone" class="form-control" value="{{user.phone}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Country</label>
+                                    <select id="country" name="country" class="form-control">
+                                            {{>country}}
+                                    </select>
+                                </div>
+                            </div>
+                            {{!-- <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Designation</label>
+                                    <input type="text" class="form-control" value="UI Developer">
+                                </div>
+                            </div> --}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Bio</label>
+                                    <textarea class="form-control" name="bio" rows="4" placeholder="Bio text here"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100t" style="float: right;">
+                            <button class="btn btn-primary" type="submit"><span id="data-update-loading" style="display: none;"><i class="fa fa-spinner fa-spin mr-2"></i></span>Update</button>
+                            <button class="btn btn-light">Cancel</button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                        <h3 class="mb-4">Password Settings</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Old password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>New password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Confirm new password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary">Update</button>
+                            <button class="btn btn-light">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+                        <h3 class="mb-3">Skill Settings</h3>
+
+                        <div class="row mb-3">
+
+                            <div class="col">
+                                     <div class="subTitle">Your skills</div>
+                                     <div class="row">
+                                       <div class="skills-list pColor">
+
+                                           {{#each user.workProfile.skillsArray}}
+                                           <span>{{this.name}}</span>
+                                           {{/each}}
+                                     
+                                       </div>
+                      
+
+                                   </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+
+                            <form id="skillUpdate" class="w-100" method="post" action="/updateskills">
+
+                            <div class="col">
+                                
+                               <div class="select-box mb-3">
+
+                                    
+                                     <div class="options-container active skills-select">
+
+                                         
+                                       
+                                       {{#each skills}}
+
+                                       <div class="option">
+                                         <input type="checkbox" class="radio" id="{{this.code}}" name="skills" value="{{this.code}}" {{#if this.checked}}checked{{/if}}/>
+                                         <label for="{{this.code}}">{{this.name}}</label>
+                                       </div>
+
+                                       {{/each}}
+
+                                       
+                                     </div>
+
+
+
+                                     <div class="search-box">
+                                       <input type="text" placeholder="Search skills.." />
+                                     </div>
+                                   </div>
+                                <div>
+                                    <button class="btn btn-primary"><span id="skill-update-loading"><i class="fa fa-spinner fa-spin mr-2"></i></span>Update</button>
+                                    <button class="btn btn-light">Cancel</button>
+                                </div>
+
+                            </div>
+                            </form>
+                            
+                        </div>
+                        
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            
+        </div>
+    </section>
+
+
+
+
+
+      <div id="snackbar"></div>

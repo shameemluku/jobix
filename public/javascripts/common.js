@@ -244,10 +244,15 @@ function showProfile(user) {
     $("#userDiv").hide();
     $("#user-details").css("display", "block");
     $("#bid-details").css("display", "none");
+    $("#star-holder").html(`<div class="Stars" style="--rating: ${user.average};" aria-label="Rating of this product is ${user.average} out of 5."></div>`);
+
+
 
 
     $("#username").html(user.username);
     $("#bid-userId").html(user.userId);
+
+    $('#userPropic').html(`<img class="pro-pic" src="/images/profile-pics/${user.userId}.jpg" alt="" onerror="this.src='images/site/default.jpg'" draggable="false">`)
     $("#bid-message").html('<i>' + user.message + '</i>');
 
     $("#bid-amount").html('₹ ' + user.amount);
@@ -277,6 +282,7 @@ function showProfile(user) {
             data.skillsArray.forEach(element => {
                 $('#skillsDiv').append('<span id="skills">' + element.name + '</span>&nbsp;');
             });
+
 
         },
         //error

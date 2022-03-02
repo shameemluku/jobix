@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var bodyParser = require('body-parser');
 
 var hbs = require('express-handlebars')
 var db = require('./config/connection')
@@ -43,12 +44,14 @@ app.use(function(req, res, next) {
     next();
 });
 
-
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 //Middleware for file upload
@@ -57,7 +60,7 @@ app.use(fileUpload())
 app.use(session({
     secret: "secretKeyJobix",
     store: MongoStore.create({
-        mongoUrl: 'mongodb://localhost:27017/jobix'
+        mongoUrl: process.env.MONGO_DATABASE
     }),
     cookie: {
         maxAge: 600000

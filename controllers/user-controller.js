@@ -4,12 +4,16 @@ var notiHelpers = require('../helpers/notification-helpers')
 
 var path = require('path');
 const async = require('hbs/lib/async');
+var base64ToImage = require('base64-to-image');
 
 require('dotenv').config();
 const fast2sms = require('fast-two-sms');
-const { stat } = require('fs');
+const fs = require('fs');
+const { promise } = require('bcrypt/promises');
+const { response } = require('express');
+const objectId = require('mongodb').ObjectId
 
-var objectId = require('mongodb').ObjectId
+
 
 
 // ///////////// LOGIN ///////////////////////////////////////////
@@ -23,15 +27,18 @@ exports.login_POST = function(req, res, next) {
             req.session.loggedIn = true
             req.session.user = response.user
 
-            userHelpers.loadWorkProfile(req.session.user._id).then((workProfile) => {
+            userHelpers.loadWorkProfile(req.session.user._id)
+                .then((workProfile) => {
 
-                if (workProfile.length == 0) {
-                    res.redirect('/hire-dashboard')
-                } else {
-                    res.redirect('/work-dashboard')
-                }
+                    if (workProfile.length == 0) {
+                        res.redirect('/hire-dashboard')
+                    } else {
+                        req.session.user.workProfile = workProfile[0];
+                        console.log(req.session.user.workProfile);
+                        res.redirect('/work-dashboard')
+                    }
 
-            })
+                })
 
         } else {
             req.session.error = response.error;
@@ -44,47 +51,57 @@ exports.login_POST = function(req, res, next) {
 
 exports.signup_POST = function(req, res, next) {
 
-    userHelpers.checkUser(req.body).then((result) => {
-        if (!result.status) {
+    userHelpers.checkUser(req.body)
+        .then((result) => {
+            if (!result.status) {
 
-            console.log(req.body);
-            let userType = req.body.userType;
-            if (userType) {
+                console.log(req.body);
+                let userType = req.body.userType;
+                if (userType) {
 
-                var otp = Math.floor(Math.random() * 100000 + 1);
-                console.log(otp);
-                req.body.userType = "hire";
-                req.body.otp = otp;
-                //sendOTP(otp,req.body.phone)
-                sendOTPfast(otp, req.body.phone)
-                res.render("user/otp.hbs", { userData: req.body, sign: true })
-                    //console.log(Math.floor(Math.random()*100000+1));
+                    var otp = Math.floor(Math.random() * 100000 + 1);
+                    console.log(otp);
+                    req.body.userType = "hire";
+                    req.body.otp = otp;
+                    //sendOTP(otp,req.body.phone)
+                    sendOTPfast(otp, req.body.phone)
+                    res.render("user/otp.hbs", {
+                        userData: req.body,
+                        sign: true
+                    })
+                } else {
+                    var otp = Math.floor(Math.random() * 100000 + 1);
+                    console.log(otp);
+                    req.body.userType = "work";
+                    req.body.otp = otp;
+                    //sendOTP(otp,req.body.phone)
+                    sendOTPfast(otp, req.body.phone)
+                    res.render("user/otp.hbs", {
+                        userData: req.body,
+                        sign: true
+                    })
+                }
+
             } else {
-                var otp = Math.floor(Math.random() * 100000 + 1);
-                console.log(otp);
-                req.body.userType = "work";
-                req.body.otp = otp;
-                //sendOTP(otp,req.body.phone)
-                sendOTPfast(otp, req.body.phone)
-                res.render("user/otp.hbs", { userData: req.body, sign: true })
+                req.session.error = result.error;
+                result.error = false;
+                res.redirect('/signup')
             }
-
-        } else {
-            req.session.error = result.error;
-            result.error = false;
-            res.redirect('/signup')
-        }
-    })
+        })
 }
 
-// Varify POST
+// Varify OTP POST
 
 exports.varify_POST = function(req, res, next) {
 
     console.log(req.body);
     if (req.body.userType === 'work') {
         projectHelpers.getSkills().then((skills) => {
-            res.render("user/worker-sign.hbs", { userData: req.body, skills, sign: true })
+            res.render("user/worker-sign.hbs", {
+                userData: req.body,
+                skills,
+                sign: true
+            })
         })
         console.log(req.body);
     } else if (req.body.userType === 'hire') {
@@ -93,9 +110,9 @@ exports.varify_POST = function(req, res, next) {
         delete req.body.otp;
         delete req.body.genOtp;
 
-        userHelpers.addHireUser(req.body).then((response) => {
+        req.body.propic = false;
 
-            /////////////////// ADD HIRE //////////////////////////
+        userHelpers.addHireUser(req.body).then((response) => {
 
             if (response) {
                 req.session.loggedIn = true
@@ -112,10 +129,11 @@ exports.varify_POST = function(req, res, next) {
 ///////////////// WORKER DASHBOARD ////////////////////////////////
 
 exports.workDashboard = function(req, res, next) {
+    let empty = {}
 
     // Notification
     let notification = [],
-        empty = {},
+        projectempty = {},
         notiCount, notiEmpty = true;
 
     notiHelpers.getNotification(req.session.user._id).then((result) => {
@@ -132,7 +150,7 @@ exports.workDashboard = function(req, res, next) {
         if (workProfile.length == 0) {
             res.redirect('/hire-dashboard')
         } else {
-            req.session.user.workProfile = workProfile
+            req.session.user.workProfile = workProfile[0]
             userHelpers.loadActiveProjects(req.session.user._id).then((projects) => {
 
                 let completedPro = [],
@@ -226,10 +244,30 @@ exports.hire_dashboard = function(req, res, next) {
 
             if (workProfile.length == 0) {
                 work = false;
-                res.render("user/hire-dashboard", { title: "Dashboard Hire", user: req.session.user, activePro, completedPro, projectempty, name: splitname[0], work, notification, notiCount });
+                res.render("user/hire-dashboard", {
+                    title: "Dashboard Hire",
+                    user: req.session.user,
+                    activePro,
+                    completedPro,
+                    projectempty,
+                    name: splitname[0],
+                    work,
+                    notification,
+                    notiCount
+                });
             } else {
                 work = true;
-                res.render("user/hire-dashboard", { title: "Dashboard Hire", user: req.session.user, activePro, completedPro, projectempty, name: splitname[0], work, notification, notiCount });
+                res.render("user/hire-dashboard", {
+                    title: "Dashboard Hire",
+                    user: req.session.user,
+                    activePro,
+                    completedPro,
+                    projectempty,
+                    name: splitname[0],
+                    work,
+                    notification,
+                    notiCount
+                });
             }
 
         })
@@ -265,14 +303,31 @@ exports.browse_project = function(req, res, next) {
         projectHelpers.getUserBasedPro(skillArray, req.session.user._id).then((projects) => {
 
             let user = req.session.user,
-                saveCount = user.workProfile[0].saveCount;
+                saveCount = user.workProfile.saveCount;
 
             if (projects.length != 0) {
                 skillsArray = projects[0].skillsName;
-                res.render("user/browse-project.hbs", { title: "User", skills, skillsArray, projects, user, saveCount, notification, notiCount })
+                res.render("user/browse-project.hbs", {
+                    title: "User",
+                    skills,
+                    skillsArray,
+                    projects,
+                    user,
+                    saveCount,
+                    notification,
+                    notiCount
+                })
                 console.log(projects);
             } else {
-                res.render("user/browse-project.hbs", { title: "User", skills, projects, user, saveCount, notification, notiCount })
+                res.render("user/browse-project.hbs", {
+                    title: "User",
+                    skills,
+                    projects,
+                    user,
+                    saveCount,
+                    notification,
+                    notiCount
+                })
                 console.log(projects);
             }
 
@@ -303,13 +358,23 @@ exports.filter_skills = function(req, res, next) {
     projectHelpers.getFilteredPro(skillArray, amount, req.session.user._id).then((projects) => {
 
         let user = req.session.user,
-            saveCount = user.workProfile[0].saveCount;
+            saveCount = user.workProfile.saveCount;
 
         if (projects.length != 0) {
             skillsArray = projects[0].skillsName;
-            res.render("user/cards.hbs", { title: "User", skillsArray, projects, user, saveCount })
+            res.render("user/cards.hbs", {
+                title: "User",
+                skillsArray,
+                projects,
+                user,
+                saveCount
+            })
         } else {
-            res.render("user/cards.hbs", { title: "User", projects, user: req.session.user })
+            res.render("user/cards.hbs", {
+                title: "User",
+                projects,
+                user: req.session.user
+            })
         }
 
     })
@@ -321,6 +386,7 @@ exports.filter_skills = function(req, res, next) {
 exports.add_worker_post = function(req, res, next) {
 
     delete req.body.userType;
+    req.body.propic = false;
     userHelpers.addUser(req.body).then((response) => {
 
             if (response) {
@@ -347,7 +413,7 @@ exports.save_project = function(req, res, next) {
     userHelpers.saveProject(req.session.user._id, req.body.pId, ).then((response) => {
         if (response) {
 
-            req.session.user.workProfile[0].saveCount = req.session.user.workProfile[0].saveCount + 1;
+            req.session.user.workProfile.saveCount = req.session.user.workProfile.saveCount + 1;
             res.send({ success: true });
         }
     })
@@ -359,7 +425,7 @@ exports.unsave_project = function(req, res, next) {
 
     userHelpers.unsaveProject(req.session.user._id, req.body.pId, ).then((response) => {
         if (response) {
-            req.session.user.workProfile[0].saveCount = req.session.user.workProfile[0].saveCount - 1;
+            req.session.user.workProfile.saveCount = req.session.user.workProfile.saveCount - 1;
             res.send({ success: true });
         }
     })
@@ -437,7 +503,15 @@ exports.project_Details = function(req, res, next) {
 
         hostDetails = proDetails.host[0];
 
-        res.render("user/project-details.hbs", { title: "Project Details", proDetails, hostDetails, skills: proDetails.skillsArray, user: req.session.user, notification, notiCount })
+        res.render("user/project-details.hbs", {
+            title: "Project Details",
+            proDetails,
+            hostDetails,
+            skills: proDetails.skillsArray,
+            user: req.session.user,
+            notification,
+            notiCount
+        })
 
     }).catch((err) => {
         res.status(500).render('error')
@@ -632,18 +706,20 @@ exports.worker_project = function(req, res, next) {
         remaining = checkDays(activeProDetails.dueDate)
         messages = activeProDetails.messages;
 
+        projectHelpers.loadProjectFiles(pId).then((pFiles) => {
 
-        for (let i = 0; i < messages.length; i++) {
-            if (messages[i].sender == req.session.user._id) {
-                messages[i].class = "self"
-            } else {
-                messages[i].class = "other"
+            for (let i = 0; i < messages.length; i++) {
+                if (messages[i].sender == req.session.user._id) {
+                    messages[i].class = "self"
+                } else {
+                    messages[i].class = "other"
+                }
             }
-        }
 
+            res.render("user/worker-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user })
 
+        })
 
-        res.render("user/worker-project", { activeProDetails, messages, remaining })
 
     }).catch((err) => {
         console.log(err);
@@ -669,18 +745,21 @@ exports.host_project = function(req, res, next) {
         remaining = checkDays(activeProDetails.dueDate)
         messages = activeProDetails.messages;
 
+        projectHelpers.loadProjectFiles(pId).then((pFiles) => {
 
-        for (let i = 0; i < messages.length; i++) {
-            if (messages[i].sender == req.session.user._id) {
-                messages[i].class = "self"
-            } else {
-                messages[i].class = "other"
+            for (let i = 0; i < messages.length; i++) {
+                if (messages[i].sender == req.session.user._id) {
+                    messages[i].class = "self"
+                } else {
+                    messages[i].class = "other"
+                }
             }
-        }
+
+            res.render("user/host-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user })
+
+        })
 
 
-
-        res.render("user/host-project", { activeProDetails, messages, remaining })
 
     }).catch((err) => {
         console.log(err);
@@ -744,6 +823,70 @@ exports.loadAddedProject = function(req, res, next) {
 }
 
 
+exports.uploadProjectFiles = async function(req, res, next) {
+
+    let database_files = [];
+    let filesArray = [];
+
+
+    try {
+
+        if (Array.isArray(req.files.file)) {
+            filesArray = req.files.file
+        } else {
+            filesArray.push(req.files.file)
+        }
+
+        filesArray.forEach((file, i, array) => {
+
+            let filename = file.name.split(" ").join("_");
+            console.log(filename);
+
+            let dir = path.join(__dirname, '../public/files/project-files/work/' + req.body.pId + '/')
+
+            if (!fs.existsSync(dir)) { fs.mkdirSync(dir); }
+
+            fs.readdir(dir, function(err, files) {
+
+                getName(filename, files).then((name) => {
+                    file.mv(dir + name, (err, done) => {
+                        if (!err) {
+
+                            var datetime = new Date();
+
+                            database_files.push({ id: new objectId(), filename: name, date: datetime.toISOString().slice(0, 10) })
+
+
+                            if (i === array.length - 1) {
+
+                                projectHelpers.uploadProjectFiles(database_files, req.body.pId)
+                                    .then((response) => {
+                                        res.send({ success: true })
+                                    })
+
+                            }
+
+
+                        } else {
+                            res.status(400).send({ success: false, err });
+                        }
+                    })
+                })
+
+            });
+
+
+        })
+
+
+    } catch (err) {
+        console.log(err);
+    }
+
+
+}
+
+
 
 // SENDING MESSAGE
 
@@ -769,6 +912,111 @@ exports.sendMessage = function(req, res, next) {
 
 
 }
+
+exports.getFile = function(req, res, next) {
+    console.log(req.body);
+
+    projectHelpers.loadProjectFiles(req.body.pId).then((files) => {
+        res.send(files)
+    })
+
+}
+
+
+exports.userProfile = function(req, res, next) {
+
+    user = req.session.user
+    projectHelpers.getAllSkills().then((skills) => {
+
+        userSkills = req.session.user.workProfile.skillsArray;
+
+        for (let i = 0; i < skills.length; i++) {
+            userSkills.forEach(elem => {
+                if (elem.code === skills[i].code) {
+                    skills[i].checked = true;
+                }
+            })
+        }
+
+        res.render('user/profile', { user, skills })
+
+    })
+
+
+}
+
+exports.changeDp = function(req, res, next) {
+
+    try {
+
+        var base64Str = req.body.crop_image
+        var dir = path.join(__dirname, '../public/images/profile-pics/');
+        var optionalObj = { 'fileName': req.session.user._id, 'type': 'jpg' };
+
+        var imageInfo = base64ToImage(base64Str, dir, optionalObj);
+        if (imageInfo) {
+            console.log(req.session.user.propic);
+
+            if (!req.session.user.propic) {
+                userHelpers.changeDpStatus(req.session.user._id).then((data) => {
+                    if (data) {
+                        res.send({ status: true, image: req.session.user._id + ".jpg" })
+                        req.session.user.propic = true
+                    }
+                })
+            } else {
+                res.send({ status: true, image: req.session.user._id + ".jpg" })
+            }
+        } else {
+            res.send({ status: false })
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+exports.updateDetails = function(req, res, next) {
+    userHelpers.updateUserDetails(req.session.user._id, req.body).then((response) => {
+        if (response) {
+
+            req.session.user.name = req.body.name;
+            req.session.user.lname = req.body.lname;
+            req.session.user.email = req.body.email;
+            req.session.user.country = req.body.country;
+            req.session.user.phone = req.body.phone;
+            req.session.user.bio = req.body.bio;
+
+            console.log(req.session.user);
+
+            res.send({ status: true })
+        } else {
+            res.send({ status: false })
+
+        }
+    })
+}
+
+exports.updateSkills = function(req, res, next) {
+
+    userHelpers.updateUserSkills(req.session.user._id, req.body.skills).then((response) => {
+
+        userHelpers.loadWorkProfile(req.session.user._id).then((workProfile) => {
+
+            console.log(workProfile[0].skillsArray);
+
+            req.session.user.workProfile.skillsArray = [...workProfile[0].skillsArray]
+
+            res.send(req.session.user.workProfile.skillsArray)
+
+        })
+    })
+
+
+
+}
+
 
 
 
@@ -811,16 +1059,20 @@ function checkDays(pDate) {
 
 
 
-function checkNotification() {
-    // Notification
-    let notification = [],
-        empty = {},
-        notiCount, notiEmpty = true;
 
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
+const getName = async(fileName, fileList) => {
+
+    return new Promise(async(resolve, reject) => {
+        let [name, end] = fileName.split('.');
+        let num = 0;
+        let curName = `${name}.${end}`;
+        let exists = fileList.filter(f => f === curName).length;
+        while (exists) {
+            console.log('curName:', curName, 'exists:', exists, 'num:', num);
+            curName = `${name}(${++num}).${end}`;
+            exists = fileList.filter(f => f === curName).length;
+        }
+        resolve(curName)
     })
 
-    // End notification
 }

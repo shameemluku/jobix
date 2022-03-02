@@ -236,6 +236,13 @@ module.exports = {
         })
     },
 
+    getAllSkills: () => {
+        return new Promise(async(resolve, reject) => {
+            let skills = db.get().collection(collection.SKILLS_COLLECTION).find().toArray()
+            resolve(skills)
+        })
+    },
+
     getAddedProjects: (id) => {
 
         return new Promise(async(resolve, reject) => {
@@ -323,6 +330,8 @@ module.exports = {
                         $match: { _id: objectId(id), host: objectId(userId) }
                     },
                     // {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
+
+
                     {
                         $lookup: {
                             from: "skills",
@@ -331,6 +340,14 @@ module.exports = {
                             as: "skillsArray"
                         }
                     },
+
+                    {
+                        $unwind: {
+                            path: '$bidding',
+                            preserveNullAndEmptyArrays: true,
+                        }
+                    },
+
                     {
                         $lookup: {
                             from: "workprofile",
@@ -340,35 +357,72 @@ module.exports = {
                         }
                     },
                     {
-                        $project: {
-                            pdetails: 1,
-                            pheading: 1,
-                            bidding: 1,
-                            amount: 1,
-                            dueDate: 1,
-                            skills: 1,
-                            skillsArray: 1,
-                            savedby: 1,
-                            bidWorkProfile: 1,
-                            bidCount: { $size: { "$ifNull": ["$bidding", []] } },
+                        $unwind: '$bidWorkProfile',
+                    },
+                    {
+                        $addFields: {
+                            'bidding.skills': '$bidWorkProfile.skills',
+                            'bidding.workId': '$bidWorkProfile._id',
+                            'bidding.reviews': '$bidWorkProfile.reviews',
+                            "bidding.rating": {
+                                $sum: "$bidWorkProfile.reviews.rating"
+                            },
+                            //More will be added here, eg Rating
                         }
-                    }
+                    },
+                    {
+                        $group: {
+                            _id: '$_id',
+                            pheading: {
+                                $first: '$pheading'
+                            },
+                            pdetails: {
+                                $first: '$pdetails'
+                            },
+                            bidding: {
+                                $push: '$bidding'
+                            },
+                            skillsArray: {
+                                $first: "$skillsArray"
+                            },
+                            dueDate: {
+                                $first: "$dueDate"
+                            },
+                            amount: {
+                                $first: "$amount"
+                            }
+                        }
+                    },
+                    { "$addFields": { "bidCount": { $size: { "$ifNull": ["$bidding", []] } } } }
+
                 ]).toArray()
 
-                if (Array.isArray(projectDetail[0].bidding)) {
-                    for (let i = 0; i < projectDetail[0].bidding.length; i++) {
-                        projectDetail[0].bidding[i] = Object.assign({}, projectDetail[0].bidding[i], projectDetail[0].bidWorkProfile[i])
+                let bidding = projectDetail[0].bidding;
+                for (let i = 0; i < bidding.length; i++) {
+                    if (bidding[i].reviews) {
+                        projectDetail[0].bidding[i].average = bidding[i].rating / bidding.length
+                    } else {
+                        projectDetail[0].bidding[i].average = 0;
                     }
-
-                    delete projectDetail[0].bidWorkProfile;
                 }
 
-
                 console.log(projectDetail[0]);
+
+                // if (Array.isArray(projectDetail[0].bidding)) {
+                //     for (let i = 0; i < projectDetail[0].bidding.length; i++) {
+                //         projectDetail[0].bidding[i] = Object.assign({}, projectDetail[0].bidding[i], projectDetail[0].bidWorkProfile[i])
+                //         console.log(projectDetail[0].bidding[i]);
+                //     }
+
+                //     delete projectDetail[0].bidWorkProfile;
+                // }
+
+                // console.log("-------------------------- FINISHED ---------------------");
+                // //console.log(projectDetail[0]);
                 resolve(projectDetail[0])
 
             } catch (err) {
-                console.log("Error");
+                console.log(err);
 
             } finally {
                 reject("Not accessible")
@@ -418,7 +472,10 @@ module.exports = {
     loadActiveDetails: (id, wId) => {
 
         return new Promise(async(resolve, reject) => {
-            let projectDetail = await db.get().collection(collection.PROJECTS_COLLECTION).find({ _id: objectId(id), workerId: objectId(wId) }).toArray()
+            let projectDetail = await db.get().collection(collection.PROJECTS_COLLECTION).find({
+                _id: objectId(id),
+                workerId: objectId(wId)
+            }).toArray()
 
             if (projectDetail[0]) {
                 if (!projectDetail[0].hasOwnProperty('messages')) {
@@ -436,7 +493,10 @@ module.exports = {
     load_HostActiveDetails: (id, wId) => {
 
         return new Promise(async(resolve, reject) => {
-            let projectDetail = await db.get().collection(collection.PROJECTS_COLLECTION).find({ _id: objectId(id), hostId: objectId(wId) }).toArray()
+            let projectDetail = await db.get().collection(collection.PROJECTS_COLLECTION).find({
+                _id: objectId(id),
+                hostId: objectId(wId)
+            }).toArray()
 
             if (projectDetail[0]) {
                 if (!projectDetail[0].hasOwnProperty('messages')) {
@@ -459,6 +519,37 @@ module.exports = {
             await db.get().collection(collection.PROJECTS_COLLECTION).updateOne({ _id: objectId(id) }, { $push: { messages: message } }).then((result) => {
                 resolve(true)
             })
+
+        })
+    },
+
+
+    uploadProjectFiles: async(files, id) => {
+
+
+        return new Promise(async(resolve, reject) => {
+
+            await db.get().collection(collection.PROJECTS_COLLECTION).updateOne({ _id: objectId(id) }, {
+                $push: {
+                    "workfiles": {
+                        $each: files
+                    }
+                }
+            }).then((result) => {
+                resolve(true)
+            })
+
+        })
+    },
+
+    loadProjectFiles: (id) => {
+        return new Promise(async(resolve, reject) => {
+
+            let projectFiles = await db.get().collection(collection.PROJECTS_COLLECTION)
+                .aggregate([{ $match: { _id: objectId(id) } }, { $unwind: '$workfiles' }, { $sort: { "workfiles.id": -1 } }, { $project: { workfiles: 1 } }]).toArray()
+
+            console.log(projectFiles);
+            resolve(projectFiles)
 
         })
     }
