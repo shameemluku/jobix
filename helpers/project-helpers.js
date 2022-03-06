@@ -2,6 +2,7 @@ var db = require('../config/connection')
 var collection = require('../config/collections')
 const req = require('express/lib/request')
 var notiHelpers = require('../helpers/notification-helpers')
+const async = require('hbs/lib/async')
 var objectId = require('mongodb').ObjectId
 
 module.exports = {
@@ -512,6 +513,38 @@ module.exports = {
     },
 
 
+
+    projectDetailsforCheckout: (id, wId) => {
+
+        return new Promise(async(resolve, reject) => {
+            let projectDetail = await db.get().collection(collection.PROJECTS_COLLECTION).aggregate([{
+                    $match: { _id: objectId(id), hostId: objectId(wId) }
+
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "workerId",
+                        foreignField: "_id",
+                        as: "workerDetails"
+                    }
+                },
+                {
+                    $project: {
+                        messages: 0,
+                        bidding: 0,
+                        workfiles: 0
+                    }
+                }
+
+            ]).toArray()
+
+            resolve(projectDetail[0])
+
+        })
+    },
+
+
     sendMessage: (id, message) => {
 
         return new Promise(async(resolve, reject) => {
@@ -551,6 +584,45 @@ module.exports = {
             console.log(projectFiles);
             resolve(projectFiles)
 
+        })
+    },
+
+    extendDate: (pId, date) => {
+        return new Promise(async(resolve, reject) => {
+
+            await db.get().collection(collection.PROJECTS_COLLECTION).updateOne({ _id: objectId(pId) }, {
+                $set: {
+                    dueDate: date
+                }
+            }).then((result) => {
+                resolve(true)
+            })
+
+        })
+    },
+
+    createTransaction: (data) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.TRANSACTION_COLLECTION).insertOne(data).then((result) => {
+                resolve({ status: true, tId: result.insertedId.toString() })
+            })
+        })
+    },
+
+
+    completeProject: (pId, tId) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.PROJECTS_COLLECTION).updateOne({ _id: objectId(pId) }, {
+                    $set: {
+                        status: "COMPLETED",
+                        tId: objectId(tId)
+                    }
+                }).then((result) => {
+                    resolve(true)
+                })
+                .catch((err) => {
+                    reject(false)
+                })
         })
     }
 

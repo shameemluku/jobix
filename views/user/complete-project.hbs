@@ -1,0 +1,123 @@
+<div id="page-container">
+   <div id="content-wrap">
+      
+        {{>sec-nav-worker}}
+
+
+      <!-- //////////// CONTENT STARTS ///////////// -->
+      <div class="container ">
+         <div class="container d-flex p-0 mt-4 bg-dark">
+            <span class="step d-flex justify-content-center align-items-center"><i class="far fa-star mr-2"></i>User rating</span>
+            <span class="step d-flex justify-content-center align-items-center"><i class="fas fa-list mr-2"></i>Complete payment</span>
+         </div>
+
+
+
+
+
+            <div class="formCont w-100">
+            <form class="regForm" id="checkout-form" name="checkout-form"  method="post" enctype="multipart/form-data">
+               <!-- <h1 id="headingAdd">Register:</h1> -->
+               <!-- One "tab" for each step in the form: -->
+               <div class="pay-tab">
+                  <div><label>How was your experience working with <span>{{proDetails.worker}}</span></label></div>
+
+                    <div class="rate">
+                     <input type="radio" id="star5" name="rate" value="5" />
+                     <label for="star5" title="text">5 stars</label>
+                     <input type="radio" id="star4" name="rate" value="4" />
+                     <label for="star4" title="text">4 stars</label>
+                     <input type="radio" id="star3" name="rate" value="3" />
+                     <label for="star3" title="text">3 stars</label>
+                     <input type="radio" id="star2" name="rate" value="2" />
+                     <label for="star2" title="text">2 stars</label>
+                     <input type="radio" id="star1" name="rate" value="1" />
+                     <label for="star1" title="text">1 star</label>
+                    </div>
+                  
+                  <br><br>
+                  <div class="mt-2">
+                     <label>Write a short review:</label>
+                     <p><textarea class="variElem" type="textarea" placeholder="Write something about Shameem" oninput="this.className = ''" name="message"></textarea></p>
+                  </div>
+               </div>
+               <!-- ////////////// -->
+
+
+               <div class="pay-tab">
+                  <p>Select the skills required for your project</p>
+
+                  <div class="container p-0">
+                    <div class="row">
+                      <div class="col-md-7">
+
+                        <div class="container p-3" style="border:1px solid rgb(214, 214, 214); border-radius:10px">
+                          <p class="pay-heading">Project Details</p>
+                          <span>Project Id: {{proDetails._id}}</span><br>
+                          <span>Payment for: {{proDetails.worker}}</span><br>
+                          <span>Worker Id: {{proDetails.workerId}}</span>
+                        </div>
+
+                        <input type="hidden" name="pId" value="{{proDetails._id}}">
+
+                        <div class="container mt-3  p-3" style="border:1px solid rgb(214, 214, 214); border-radius:10px">
+                          <p class="pay-heading">Payment methods: </p>
+                          
+                          <div class="radio-toolbar">
+
+                            <input type="radio" id="paypal" name="payMethod" value="paypal" checked>
+                            <label for="paypal"  class="mr-2"><img class="paypal" src="images/site/paypal.svg" alt=""> <b>Paypal</b> </label>
+
+                            <input type="radio" id="razorpay" name="payMethod" value="razor">
+                            <label for="razorpay"><div><img class="razor" src="images/site/razorpay.svg" alt=""></div></label>
+                          </div>
+                          
+                        </div>
+                    
+                      </div>
+                      <div class="col-md-5">
+                        <div class="container p-3" style="border:1px solid rgb(214, 214, 214); border-radius:10px">
+                          <p class="pay-heading">Payment Details</p>
+                        
+                          <div>
+                            <span>Payment amount:</span>
+                            <span style="float: right;">{{proDetails.bidAmount}}</span>
+                          </div>
+
+                          <div>
+                            <span>JobX fee (10%):</span>
+                            <span id="jobx-fee" style="float: right;">{{proDetails.fee}}</span>
+                          </div>
+
+                          <hr>
+
+                          <div>
+                            <span>Payment amount: <span id="jobx-perc"></span></span>
+                            <span style="float: right;">{{proDetails.finalAmount}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+               </div>
+
+
+               <div style="overflow:auto;">
+                  <div style="float:right;">
+                     <button type="button" class="btn-addPro" id="prevBtn" onclick="nextPrev(-1)">Back</button>
+                     <button type="button" class="btn-addPro" id="nextBtn" onclick="nextPrev(1)">Next</button>
+                  </div>
+               </div>
+               <!-- Circles which indicates the steps of the form: -->
+            </form>
+         </div>
+
+         
+     
+      </div>
+   </div>
+</div>
+<!-- ///////////////////// -->
+

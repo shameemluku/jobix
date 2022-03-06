@@ -6,6 +6,22 @@ var objectId = require('mongodb').ObjectId
 
 module.exports = {
 
+    login: (data) => {
+        return new Promise(async(resolve, reject) => {
+            let user = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ email: data.email })
+            if (user) {
+                console.log(user);
+                if (user.password === data.password) {
+                    resolve({ status: true, user: user })
+                } else {
+                    resolve({ status: false, error: "Incorrect password" })
+                }
+            } else {
+                resolve({ status: false, error: "No such user found" })
+            }
+        })
+    },
+
 
     loadProjectsHome: () => {
 
@@ -51,6 +67,40 @@ module.exports = {
 
         })
 
-    }
+    },
 
+    blockUser: (id, status) => {
+
+        return new Promise(async(resolve, reject) => {
+
+            await db.get().collection(collection.USERS_COLLECTION).updateOne({ _id: objectId(id) }, {
+                $set: {
+                    status: status
+                }
+            }).then((result) => {
+                resolve(true)
+            })
+
+        })
+
+    },
+
+    loadNumbers: () => {
+
+        return new Promise(async(resolve, reject) => {
+
+            let workerCount = await db.get().collection(collection.WORKER_COLLECTION).count()
+            let hireCount = await db.get().collection(collection.HIRE_COLLECTION).count()
+            let projectCount = await db.get().collection(collection.PROJECTS_COLLECTION).count()
+
+            let numbers = {
+                workerCount: workerCount,
+                hireCount: hireCount,
+                projectCount: projectCount
+            }
+
+            resolve(numbers)
+
+        })
+    }
 }

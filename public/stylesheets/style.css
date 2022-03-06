@@ -251,7 +251,6 @@ body {
     height: 50px;
     background-color: white;
     padding: 3px;
-    margin-top: 90px;
     box-shadow: 0 2px 4px 0 rgba(92, 92, 92, 0.2);
 }
 
@@ -1112,6 +1111,10 @@ input[type=number] {
     border: 1px solid #aaaaaa;
 }
 
+.regForm input[type=radio] {
+    width: auto !important;
+}
+
 .regForm textarea {
     padding: 10px;
     width: 100%;
@@ -1130,6 +1133,10 @@ input[type=number] {
 /* Hide all steps by default: */
 
 .tab {
+    display: none;
+}
+
+.pay-tab {
     display: none;
 }
 
@@ -1655,6 +1662,55 @@ input[type=number] {
 }
 
 
+/* Wallet */
+
+.payout-btn {
+    background-color: #D62828 !important;
+    cursor: pointer;
+    border: 2px solid #D62828;
+    border-radius: 30px;
+    color: white;
+    height: 40px;
+}
+
+.payout-btn:hover {
+    background-color: #ff4343 !important;
+    border: 2px solid #D62828;
+}
+
+#page-container {
+    position: relative;
+    min-height: 100vh;
+    padding-top: 90px;
+}
+
+#content-wrap {
+    padding-bottom: 3rem;
+    /* Footer height */
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3rem;
+    /* Footer height */
+    background: #fff;
+    direction: ltr;
+    padding: 0.7rem .875rem
+}
+
+#footer ul {
+    margin-bottom: 0
+}
+
+@media(max-width:767.98px) {
+    footer.footer {
+        width: 100vw
+    }
+}
+
+
 /* ///////////////////////////////////////////////////////// */
 
 
@@ -1663,5 +1719,18 @@ input[type=number] {
 @media (max-width: 768px) {
     #user-details {
         width: 100% !important;
+    }
+    .hidden-mobile {
+        display: none;
+    }
+    .payout-btn {
+        width: 100%;
+        margin-bottom: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .payout-col {
+        display: flex;
+        justify-content: end;
     }
 }

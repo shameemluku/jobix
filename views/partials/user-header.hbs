@@ -1,4 +1,5 @@
  <div class="nav-cont container-fluid fixed-top bg-dark">
+   {{!-- <div class="container"> --}}
     <nav class="navbar navbar-expand-lg">
       <a class="navbar-brand" href="/work-dashboard"><img class="logo" src="images/site/logo.svg"></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -67,12 +68,13 @@
           <div class="dropdown">
             <a href="/profile" class="dropbtn">{{#if user.propic}}<img id="headerPropic" class="profileImg" src="images/profile-pics/{{user._id}}.jpg" class="postBtn">{{else}}<img id="headerPropic" class="profileImg" src="images/site/default.jpg" class="postBtn">{{/if}}</a>
              <div class="dropdown-content">
-                  <a href="#" class="userName"><i class="fas fa-user-circle mr-2"></i>{{user.name}}</a>
+                  <a id="header-userName" href="#" class="userName"><i class="fas fa-user-circle mr-2"></i>{{user.name}}</a>
                   <a href="/signout"><div class="signOutBtn">Sign out<i class="far fa-sign-out-alt ml-2"></i></div></a>
-             </div>
-</div>
+            </div>
+        </div>
       </div>
     </nav>
+    {{!-- </div> --}}
   </div>
 
 

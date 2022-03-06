@@ -105,3 +105,33 @@ $("#send-msg-Form").submit(function(e) {
     });
 
 })
+
+
+
+function extendDate(pId) {
+
+    date = document.querySelector('input[type="date"]').value;
+
+    var parts = date.split("-");
+    date = parts[2] + "/" + parts[1] + "/" + parts[0];
+
+    $.ajax({
+        type: "POST",
+        url: '/extend-date',
+        data: { pId: pId, date: date },
+        success: function(data) {
+            if (data.status) {
+                console.log(data.day)
+                document.querySelector('#remainDate').innerHTML = `<span class="t-bidCount" style="background-color:${data.day.color} !important;">${data.day.days} &nbsp;days</span> <span style="color: ${data.day.color};">Left to complete the project</span>`;
+
+                $('#exampleModalCenter').modal('hide');
+                $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Date updated successfully');
+                $("#snackbar").addClass("show");
+                setTimeout(function() {
+                    $("#snackbar").removeClass("show");
+                }, 3000);
+
+            }
+        }
+    });
+}

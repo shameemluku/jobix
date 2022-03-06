@@ -737,3 +737,104 @@ input.msg-textarea {
     border-bottom: none !important;
     outline: 0 !important;
 }
+
+
+/* //////////////////////// COMPLETE PROJECT //////////////////////// */
+
+
+/* rating */
+
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+
+.rate:not(:checked)>input {
+    position: absolute;
+    top: -9999px;
+}
+
+.rate:not(:checked)>label {
+    float: right;
+    width: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.rate:not(:checked)>label:before {
+    content: '★ ';
+}
+
+.rate>input:checked~label {
+    color: #ffc700;
+}
+
+.rate:not(:checked)>label:hover,
+.rate:not(:checked)>label:hover~label {
+    color: #deb217;
+}
+
+.rate>input:checked+label:hover,
+.rate>input:checked+label:hover~label,
+.rate>input:checked~label:hover,
+.rate>input:checked~label:hover~label,
+.rate>label:hover~input:checked~label {
+    color: #c59b08;
+}
+
+
+/* ///////////////////// */
+
+.pay-heading {
+    font-weight: 600;
+}
+
+
+/* .radio-toolbar {} */
+
+.radio-toolbar input[type="radio"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-toolbar label {
+    display: inline-block;
+    background-color: rgb(255, 255, 255);
+    padding: 20px 40px;
+    font-family: sans-serif, Arial;
+    font-size: 16px;
+    border: 2px solid rgb(221, 221, 221);
+    border-radius: 4px;
+}
+
+.radio-toolbar label:hover {
+    background-color: #dfd;
+}
+
+
+/* Razor Image */
+
+.radio-toolbar label .razor {
+    width: 120px;
+}
+
+
+/* Paypal Image */
+
+.radio-toolbar label .paypal {
+    width: 25px;
+}
+
+.radio-toolbar input[type="radio"]:focus+label {
+    border: 2px solid #4c4;
+}
+
+.radio-toolbar input[type="radio"]:checked+label {
+    background-color: rgb(255, 255, 255);
+    border-color: #4c4;
+}

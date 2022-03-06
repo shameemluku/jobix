@@ -103,3 +103,11 @@ input:checked+.slider .off {
 
 
 /* Toggle endssss */
+
+.loginBtn {
+    padding: 15px;
+    border: none;
+    background-color: #2ab934;
+    color: aliceblue;
+    font-size: 17px;
+}
