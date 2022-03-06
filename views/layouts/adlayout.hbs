@@ -29,6 +29,10 @@
 
 <body>
 
+    {{#if sign}}
+    {{{body}}}  
+    {{else}}
+
     <div class="wrapper">
         
         {{>admin-sidenav}}
@@ -44,6 +48,8 @@
             
         </div>
     </div>
+
+    {{/if}}
 
     
 
@@ -61,6 +67,7 @@
     <script src="/javascripts/admin/app.js"></script>
     <script src="/javascripts/admin/table.js"></script>
     <script src="/javascripts/admin/script.js"></script>
+    <script src="/javascripts/admin/admin-sign.js"></script>
 
 
   </body>

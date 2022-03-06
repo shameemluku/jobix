@@ -5,6 +5,7 @@ var projectHelpers = require('../helpers/project-helpers')
 var userHelpers = require('../helpers/user-helpers')
 var notiHelpers = require('../helpers/notification-helpers')
 var userController = require('../controllers/user-controller')
+var paymentController = require('../controllers/payment-controller')
 var path = require('path');
 const async = require('hbs/lib/async');
 
@@ -125,6 +126,8 @@ router.get('/host-projects', varifyLogin, userController.host_project)
 
 router.post('/send-message', varifyLogin, userController.sendMessage)
 
+router.post('/extend-date', varifyLogin, userController.extendProjectDate)
+
 router.post('/upload-file', varifyLogin, userController.uploadProjectFiles)
 
 //File for ajax request
@@ -143,12 +146,20 @@ router.get('/profile', varifyLogin, userController.userProfile)
 
 router.post('/changeDp', varifyLogin, userController.changeDp)
 
+router.get('/removedp', varifyLogin, userController.removeDp)
+
 router.post('/update-details', varifyLogin, userController.updateDetails)
 
 router.post('/updateskills', varifyLogin, userController.updateSkills)
 
 // Remove self from bidding list
 router.post('/remove-bid', varifyLogin, userController.removeBid)
+
+router.get('/complete-project', varifyLogin, userController.completeProject)
+
+router.post('/checkout', varifyLogin, paymentController.checkout)
+
+router.post('/varify-payment', varifyLogin, paymentController.verifyPayment)
 
 
 router.post('/removeNoti', function(req, res, next) {
@@ -163,6 +174,13 @@ router.post('/removeNoti', function(req, res, next) {
 
 })
 
+router.get('/success-paypal', varifyLogin, paymentController.paypalSuccess)
+
+router.get('/wallet', varifyLogin, userController.wallet)
+
+
+
+// router.post('/pay', paymentController.pay)
 
 
 module.exports = router;

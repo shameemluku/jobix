@@ -1,0 +1,63 @@
+<div id="page-container">
+   <div id="content-wrap">
+      <section>
+         <div id="profile-container" class="container mb-4">
+
+
+            <div class="row  mt-3 p-3">
+               <div class="card card-custom" style="width: 100%;">
+                  <div class="card-body p-0 container">
+
+                      <div class="row">
+                    <div class="col-sm-6 p-2 bd-highlight">
+                        <div class="p-2 r-link m-0 ml-4" style="font-weight: 700; font-size:20px"><i class="fal fa-wallet"></i><span class="mr-2">Wallet:</span><span class="bal" style="color:#F77F00">₹{{user.wallet}}</span></div>
+                    </div>
+
+                    <div class="col-sm-6 payout-col d-flex justify-content-end align-items-center">
+                        <span class="hidden-mobile mt-1 mr-2" style="color: #003049; font-weight:500">₹1000 is the minimum to request a payout.</span>
+                        <div class="btn payout-btn  mr-sm-3">Request payout</div>
+                    </div>
+                </div>
+
+
+                  </div>
+               </div>
+               
+            </div>
+
+            <div class="row">
+               <div class="col-12 d-flex">
+                  <div class="card flex-fill">
+                     <table class="table table-hover my-0" id="user_Table">
+                        <thead>
+                           <tr>
+                              <th class="d-none d-xl-table-cell">Transaction Id</th>
+                              <th>Date</th>
+                              <th>Description</th>
+                              <th class="d-none d-xl-table-cell">Amount</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {{#each transactions}}
+                           <tr>
+                              <td style="color: slategrey; font-size:10px">{{this._id}}</td>
+                              <td class="d-none d-xl-table-cell">{{this.date}}</td>
+                              <td class="d-none d-xl-table-cell">{{this.type}}</td>
+                              <td class="d-none d-xl-table-cell">
+                                 {{#if this.credit}}<span style="color: darkgreen;">+ {{this.credit}}</span>{{/if}}
+                                 {{#if this.debit}}<span style="color: rgb(158, 1, 22);">- {{this.debit}}</span>{{/if}}
+                              </td>
+                           </tr>
+                           {{/each}}
+                        </tbody>
+                     </table>
+                     <H1>{{name}}</H1>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+   </div>
+   {{>user-footer}}
+</div>
+<div id="snackbar"></div>

@@ -14,8 +14,8 @@
                <th>Profile</th>
                 <th>Name</th>
                 <th class="d-none d-xl-table-cell">Email</th>
+                <th class="d-none d-xl-table-cell">Phone</th>
                 <th class="d-none d-xl-table-cell">Country</th>
-                <th class="d-none d-xl-table-cell">Type</th>
                 <th class="d-none d-md-table-cell">Action</th>
               </tr>
             </thead>
@@ -30,13 +30,13 @@
                </td>
                 <td class="d-none d-xl-table-cell">{{this.name}}</td>
                 <td class="d-none d-xl-table-cell">{{this.email}}</td>
+                <td class="d-none d-xl-table-cell">{{this.phone}}</td>
                 <td class="d-none d-md-table-cell">{{this.country}}</td>
-                <td><span class="badge bg-success">worker</span></td>
                 <td class="d-none d-md-table-cell">
 
                    <div class="d-flex toggle-btn justify-content-center">
                         <label class="switch">
-                        <input type="checkbox" id="togBtn" name="userType" value="hire" onclick="changeBtnColor()">
+                        <input class="block-togBtn" type="checkbox" id="block-togBtn" name="userType" value="{{this._id}}" onclick="changeBtnColor()" {{#if (eq this.status "ACTIVE")}}checked{{/if}}>
                         <div class="slider round">
                             <!--ADDED HTML -->
                             <span class="on">Unblock</span>

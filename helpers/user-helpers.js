@@ -3,6 +3,7 @@ var collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongodb')
 var objectId = require('mongodb').ObjectId
+const crypto = require('crypto');
 
 module.exports = {
 
@@ -20,6 +21,7 @@ module.exports = {
             }
 
             delete userData.skills;
+            userData.status = "ACTIVE";
 
             userData.password = await bcrypt.hash(userData.password, 10)
             db.get().collection(collection.USERS_COLLECTION).insertOne(userData).then((data) => {
@@ -56,15 +58,20 @@ module.exports = {
 
             let user = await db.get().collection(collection.USERS_COLLECTION).findOne({ email: userData.email })
             if (user) {
-                bcrypt.compare(userData.password, user.password).then((status) => {
-                    if (status) {
-                        response.user = user
-                        response.status = true
-                        resolve(response)
-                    } else {
-                        resolve({ status: false, error: "Failed incorrect Password" })
-                    }
-                })
+
+                if (user.status != "BLOCKED") {
+                    bcrypt.compare(userData.password, user.password).then((status) => {
+                        if (status) {
+                            response.user = user
+                            response.status = true
+                            resolve(response)
+                        } else {
+                            resolve({ status: false, error: "Failed incorrect Password" })
+                        }
+                    })
+                } else {
+                    resolve({ status: false, error: "Your account is temporarily blocked." })
+                }
             } else {
                 resolve({ status: false, error: "Failed, No user found" })
             }
@@ -78,7 +85,7 @@ module.exports = {
 
         return new Promise(async(resolve, reject) => {
 
-
+            userData.status = "ACTIVE";
             userData.password = await bcrypt.hash(userData.password, 10)
             db.get().collection(collection.USERS_COLLECTION).insertOne(userData).then((data) => {
 
@@ -227,6 +234,9 @@ module.exports = {
 
         })
     },
+
+
+
 
     // Save project
 
@@ -409,7 +419,18 @@ module.exports = {
     //change DP
     changeDpStatus: (id) => {
         return new Promise(async(resolve, reject) => {
-            await db.get().collection(collection.PROJECTLIST_COLLECTION).update({ _id: objectId(id) }, { $set: { 'propic': true } })
+            await db.get().collection(collection.USERS_COLLECTION).update({ _id: objectId(id) }, { $set: { 'propic': true } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+    removeProPic: (id) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.USERS_COLLECTION).updateOne({ _id: objectId(id) }, { $set: { 'propic': false } })
                 .then((result) => {
                     resolve(true)
                 }).catch(() => {
@@ -472,6 +493,84 @@ module.exports = {
                 }).catch(() => {
                     reject(false)
                 })
+        })
+    },
+
+    varifyPayment: (details) => {
+        return new Promise(async(resolve, reject) => {
+            try {
+
+                console.log("here");
+                let hmac = crypto.createHmac('sha256', process.env.RAZOR_SECRET)
+
+                console.log(process.env.RAZOR_SECRET);
+                console.log(details.payment.razorpay_order_id);
+                console.log(details.payment.razorpay_payment_id);
+                console.log(details.payment.razorpay_signature);
+
+                hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
+                hmac = hmac.digest('hex')
+                if (hmac == details.payment.razorpay_signature) {
+                    console.log("Resolve");
+                    resolve(true)
+                } else {
+                    console.log("Reject");
+                    reject(false)
+                }
+            } catch (err) {
+                console.log(err);
+                reject(false)
+            }
+        })
+    },
+
+    addRating: (id, data, user) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.WORKER_COLLECTION).updateOne({ userId: objectId(id) }, {
+                    $addToSet: {
+                        reviews: {
+                            pId: data.pId,
+                            rating: parseInt(data.rate),
+                            message: data.message,
+                            hostId: user._id,
+                            hostname: user.name
+                        }
+                    }
+                })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+    updateWallet: (id, amount) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.USERS_COLLECTION).updateOne({ _id: objectId(id) }, { $inc: { wallet: amount } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+
+    getTransactions: (id) => {
+        return new Promise(async(resolve, reject) => {
+
+            let transactions = await db.get().collection(collection.TRANSACTION_COLLECTION).find({
+                $or: [{
+                        sender: objectId(id)
+                    },
+                    {
+                        receiver: objectId(id)
+                    }
+                ]
+            }).toArray()
+
+            resolve(transactions)
         })
     }
 

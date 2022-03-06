@@ -1,18 +1,7 @@
-<!-- Second Nav -->
-<div class="container-fluid d-flex secNav">
-  <div class="mr-auto p-2 l-links">
+<div id="page-container">
+  <div id="content-wrap">
 
-    <a class="p-2" href="/browse-project">Browse Project</a>
-    {{!-- <a class="p-2" href="/">Browse Contest</a> --}}
-    <a class="p-2" href="/">Freelancers</a>
-
-  </div>
-  <div class="p-2 r-link">
-    <i class="fal fa-wallet"></i><span>Wallet:</span>
-    <span class="bal">$10</span>
-  </div>
-
-</div>
+  {{>sec-nav-worker}}
 
 <!-- Home starts -->
 
@@ -20,7 +9,7 @@
   <h1 class="windowHeading"><i class="fal fa-tasks-alt mr-3"></i>Dashboard <span id="dash-heading" style="color: #7E7E7E; font-size:15px">&gt; Working Projects</span></h1>
 </div>
 
-<div class="container">
+<div class="container mb-5">
   <div class="row">
 
     <div class="col-md-9">
@@ -121,8 +110,9 @@
 
           {{#each completedPro}}
           <tr class="table-row">
-            <td class="td-id" style="width:100px !important; white-space: initial;">
-              {{this.dueDate}}
+            <td style="width:100px !important; white-space: initial;">
+              <div> {{this.dueDate}}</div>
+              <div class=" mt-2"><span class="t-bidCount" style="background-color:{{this.color}} !important;">{{this.days}} &nbsp;days</span></div>
             </td>
             <td>
               <div class="w-100">
@@ -130,22 +120,22 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-10">
-                           <p class="mb-0 t-card-head"></p> 
+                           <p class="mb-0 t-card-head">{{this.pheading}}</p> 
+                           <p class="mb-0">Project Id: {{this._id}}</p> 
                         </div>
                         <div class="col-2">
-                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.amount}}</span>
+                            <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.bidAmount}}</span>
                         </div>
                     </div>
                     <div class="row">
                       <div class="col mt-3">
-                        <span class="t-bidCount"><i class="fal fa-user"></i>&nbsp; <b>{{this.bidCount}}</b> &nbsp;bids</span>
-                        <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>           
+                        {{!-- <span class="t-saveCount ml-1"><i class="fal fa-heart"></i>&nbsp; <b>&nbsp;{{this.saveCount}}</b></span>            --}}
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col mt-3">
-                        <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
+                        <a href="/projects?id={{this._id}}" class="t-viewBtn w-sm-100" style="float: right;">view details</a>          
                       </div>
                     </div>
 
@@ -316,7 +306,9 @@
   </div>
 </div>
 
-
+</div>
+    {{>user-footer}}
+</div>
 
 <script >
 

@@ -1,5 +1,7 @@
-<section class="py-5 my-5">
-        <div id="profile-container" class="container">
+<div id="page-container">
+  <div id="content-wrap">
+<section>
+        <div id="profile-container" class="container mb-4">
             <div class="bg-white shadow rounded-lg d-block d-sm-flex mt-3">
                 <div class="profile-tab-nav border-right">
                     <div class="p-4">
@@ -12,7 +14,7 @@
                                     <label for="upload_image" style="cursor: pointer;"><span class="profilepic__icon"><i class="fas fa-camera mr-1"></i></span>
                                     <span class="profilepic__text">Edit Profile</span></label>
                                 </form>
-                                <a class="remove-pro {{#if user.propic}}{{else}}d-none{{/if}}" href="#"><span class="profilepic__text"><i class="fas fa-trash-alt mr-1"></i>Remove</span></label></a>
+                                <span id="remove-proBtn"><a class="remove-pro {{#if user.propic}}{{else}}d-none{{/if}}" href="#" onclick="removeproPic(event)"><span class="profilepic__text"><i class="fas fa-trash-alt mr-1"></i>Remove</span></label></a></span>
                             </div>
                         </div>
 
@@ -20,7 +22,7 @@
                             <img id="propic-round" src="images/site/loading.gif" alt="Image" class="shadow profilepic__image" height="200px" width="200px" style="object-fit: cover;">
                         </div>
 
-                        <h4 class="text-center mt-3">{{user.name}}</h4>
+                        <h4 id="profile-name" class="text-center mt-3">{{user.name}}</h4>
 
                       
 
@@ -64,15 +66,15 @@
                         <a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
                             <i class="fa fa-key text-center mr-1"></i> Password
                         </a>
-                        <a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab" aria-controls="security" aria-selected="false">
-                            <i class="fa fa-user text-center mr-1"></i> Skills
-                        </a>
+                        {{#if isWorker}}<a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab" aria-controls="security" aria-selected="false">
+                            <i class="fa fa-user text-center mr-1"></i> Skills settings
+                        </a>{{/if}}
                         <a class="nav-link" id="application-tab" data-toggle="pill" href="#application" role="tab" aria-controls="application" aria-selected="false">
-                            <i class="fa fa-tv text-center mr-1"></i> Application
+                            <i class="fas fa-sack-dollar mr-1"></i> Payment settings
                         </a>
-                        <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
+                        {{!-- <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
                             <i class="fa fa-bell text-center mr-1"></i> Notification
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
@@ -235,6 +237,9 @@
 
 
 
+  </div>
+  {{>user-footer}}
+</div>
 
 
       <div id="snackbar"></div>

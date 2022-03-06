@@ -13,6 +13,20 @@ const { promise } = require('bcrypt/promises');
 const { response } = require('express');
 const objectId = require('mongodb').ObjectId
 
+const Razorpay = require('razorpay')
+const paypal = require('paypal-rest-sdk');
+
+const instance = new Razorpay({
+    key_id: process.env.RAZOR_KEY_ID,
+    key_secret: process.env.RAZOR_SECRET,
+})
+
+paypal.configure({
+    'mode': 'sandbox',
+    'client_id': process.env.PAYPAL_CLIENT,
+    'client_secret': process.env.PAYPAL_SECRET
+});
+
 
 
 
@@ -448,7 +462,7 @@ exports.add_project = function(req, res, next) {
     // End notification
 
     projectHelpers.getSkills().then((skills) => {
-        res.render("user/addproject.hbs", { title: "Add project", skills, user: req.session.user, notification, notiCount })
+        res.render("user/addproject.hbs", { title: "Add project", skills, user: req.session.user, notification, notiCount, add: true })
     })
 
 }
@@ -770,6 +784,20 @@ exports.host_project = function(req, res, next) {
 }
 
 
+exports.completeProject = function(req, res, next) {
+
+    projectHelpers.load_HostActiveDetails(req.query.id, req.session.user._id).then((proDetails) => {
+        console.log(proDetails);
+
+        proDetails.fee = proDetails.bidAmount * 0.1;
+        proDetails.finalAmount = proDetails.bidAmount + proDetails.fee;
+        res.render('user/complete-project', { user: req.session.user, proDetails, pay: true })
+
+    })
+
+}
+
+
 
 
 
@@ -913,6 +941,16 @@ exports.sendMessage = function(req, res, next) {
 
 }
 
+exports.extendProjectDate = function(req, res, next) {
+    console.log(req.body);
+    projectHelpers.extendDate(req.body.pId, req.body.date).then((status) => {
+        if (status) {
+            res.send({ status: true, day: checkDays(req.body.date) })
+        }
+    })
+
+}
+
 exports.getFile = function(req, res, next) {
     console.log(req.body);
 
@@ -925,20 +963,35 @@ exports.getFile = function(req, res, next) {
 
 exports.userProfile = function(req, res, next) {
 
-    user = req.session.user
+    let user = req.session.user
+    let isWorker;
+
     projectHelpers.getAllSkills().then((skills) => {
 
-        userSkills = req.session.user.workProfile.skillsArray;
+        console.log(req.session.user.workProfile);
 
-        for (let i = 0; i < skills.length; i++) {
-            userSkills.forEach(elem => {
-                if (elem.code === skills[i].code) {
-                    skills[i].checked = true;
-                }
-            })
+        if (!req.session.user.workProfile) {
+
+            isWorker = false;
+
+            res.render('user/profile', { user, skills, isWorker })
+
+        } else {
+            console.log("else");
+            isWorker = true;
+            userSkills = req.session.user.workProfile.skillsArray;
+
+            for (let i = 0; i < skills.length; i++) {
+                userSkills.forEach(elem => {
+                    if (elem.code === skills[i].code) {
+                        skills[i].checked = true;
+                    }
+                })
+            }
+
+            res.render('user/profile', { user, skills, isWorker })
         }
 
-        res.render('user/profile', { user, skills })
 
     })
 
@@ -960,8 +1013,8 @@ exports.changeDp = function(req, res, next) {
             if (!req.session.user.propic) {
                 userHelpers.changeDpStatus(req.session.user._id).then((data) => {
                     if (data) {
-                        res.send({ status: true, image: req.session.user._id + ".jpg" })
                         req.session.user.propic = true
+                        res.send({ status: true, image: req.session.user._id + ".jpg" })
                     }
                 })
             } else {
@@ -977,6 +1030,26 @@ exports.changeDp = function(req, res, next) {
 
 }
 
+
+exports.removeDp = function(req, res, next) {
+
+    console.log("Hereeeeeeeeee");
+    userHelpers.removeProPic(req.session.user._id).then((response) => {
+        if (response) {
+
+            let dir = path.join(__dirname, '../public/images/profile-pics/' + req.session.user._id + ".jpg")
+            fs.unlink(dir, function(err) {
+                if (err) {
+                    res.send({ status: false })
+                } else {
+                    req.session.user.propic = false;
+                    res.send({ status: true })
+                }
+            });
+        }
+    })
+}
+
 exports.updateDetails = function(req, res, next) {
     userHelpers.updateUserDetails(req.session.user._id, req.body).then((response) => {
         if (response) {
@@ -990,7 +1063,7 @@ exports.updateDetails = function(req, res, next) {
 
             console.log(req.session.user);
 
-            res.send({ status: true })
+            res.send({ status: true, name: req.body.name })
         } else {
             res.send({ status: false })
 
@@ -1014,6 +1087,24 @@ exports.updateSkills = function(req, res, next) {
     })
 
 
+
+}
+
+exports.wallet = function(req, res, next) {
+
+    userHelpers.getTransactions(req.session.user._id).then((transactions) => {
+
+        for (let i = 0; i < transactions.length; i++) {
+            if ((transactions[i].sender).toString() === req.session.user._id) {
+                transactions[i].debit = transactions[i].amount
+            }
+            if ((transactions[i].receiver).toString() === req.session.user._id) {
+                transactions[i].credit = transactions[i].orgiAmount - (transactions[i].orgiAmount * 0.1)
+            }
+            transactions[i].date = transactions[i].date.toString().substring(0, 15)
+        }
+        res.render('user/wallet', { title: "Wallet", user: req.session.user, transactions })
+    })
 
 }
 

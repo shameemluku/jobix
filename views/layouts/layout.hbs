@@ -45,12 +45,16 @@
 
   <script src="javascripts/home.js"></script>
   <script src="/javascripts/sign.js"></script>
-  <script src="/javascripts/addproject.js"></script>
+  {{#if add}}<script src="/javascripts/addproject.js"></script>{{/if}}
   <script src="/javascripts/common.js"></script>
-  <script src="/javascripts/projects.js"></script>
+  <script src="/javascripts/projects.js"></script> 
   <script src="/javascripts/hiredash.js"></script>
   <script src="/javascripts/fileupload.js"></script>
   <script src="/javascripts/crop.js"></script>
+  {{#if pay}}
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="/javascripts/payment.js"></script>
+  {{/if}}
 
   </body>
 </html>

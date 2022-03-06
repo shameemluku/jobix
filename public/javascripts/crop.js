@@ -56,6 +56,7 @@ jQuery(document).ready(function($) {
                         $('#headerPropic').attr('src', "images/profile-pics/" + data.image);
                         $('.profilepic').show()
                         $('.profilepic-loading').hide()
+                        $('#remove-proBtn').html(`<a class="remove-pro {{#if user.propic}}{{else}}d-none{{/if}}" href="#" onclick="removeproPic(event)"><span class="profilepic__text"><i class="fas fa-trash-alt mr-1"></i>Remove</span></label></a>`)
 
                         $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Profile pic updated successfully');
                         $("#snackbar").addClass("show");
@@ -134,6 +135,8 @@ $("#bio-form").submit(function(e) {
         success: function(data) {
 
             $("#bio-form input,textarea,select").prop('disabled', false);
+            $('#profile-name').html(data.name)
+            $('#header-userName').html(data.name)
 
             $('#data-update-loading').hide()
             $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Details updated successfully');
@@ -145,3 +148,43 @@ $("#bio-form").submit(function(e) {
     });
 
 });
+
+
+function removeproPic(e) {
+    e.preventDefault()
+
+    $.ajax({
+        type: "get",
+        url: "/removedp",
+        beforeSend: function() {
+
+            $('.profilepic').hide()
+            $('.profilepic-loading').show()
+
+        },
+        success: function(data) {
+
+            if (data.status) {
+                $('#propic-round').attr('src', "images/site/default.jpg");
+                $('#headerPropic').attr('src', "images/site/default.jpg");
+                $('.profilepic').show()
+                $('.profilepic-loading').hide()
+                $('#remove-proBtn').html("")
+
+                $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Profile pic removed successfully');
+                $("#snackbar").addClass("show");
+                setTimeout(function() {
+                    $("#snackbar").removeClass("show");
+                }, 3000);
+            } else {
+                $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Error occured');
+                $("#snackbar").addClass("show");
+                setTimeout(function() {
+                    $("#snackbar").removeClass("show");
+                }, 3000);
+            }
+
+
+        }
+    });
+}

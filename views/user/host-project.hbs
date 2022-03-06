@@ -1,20 +1,7 @@
+<div id="page-container">
+  <div id="content-wrap">
 
-
-  <!-- Second Nav -->
-  <div class="container-fluid d-flex secNav">
-    <div class="mr-auto p-2 l-links">
-
-      <a class="p-2" href="/browse-project">Browse Project</a>
-      {{!-- <a class="p-2" href="/">Browse Contest</a> --}}
-      <a class="p-2" href="/">Freelancers</a>
-
-    </div>
-    <div class="p-2 r-link">
-      <i class="fal fa-wallet"></i><span>Wallet:</span>
-      <span class="bal">$10</span>
-    </div>
-
-  </div>
+    {{>sec-nav-worker}}
 
 
 <!-- //////////// CONTENT STARTS ///////////// -->
@@ -45,7 +32,7 @@
               <div class="col-md-9 pt-3">
     
                 <h3>{{activeProDetails.pheading}}</h3>
-                <div class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
+                <div id="remainDate" class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
               
               </div>
                 
@@ -55,8 +42,8 @@
                     Actions
                   </button>
                 <div class="dropdown-menu action-drop-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item completeBtn" href="#">Complete Payment</a>
-                  <a class="dropdown-item" href="#">Extent date</a>
+                  <a class="dropdown-item completeBtn" href="/complete-project?id={{activeProDetails._id}}">Complete Payment</a>
+                  <a class="dropdown-item" href="#"  data-toggle="modal" data-target="#date-modal">Extent date</a>
                   <a class="dropdown-item" href="#" style="color: red;"><i class="far fa-window-close mr-2"></i>Cancel Project</a>
                 </div>
               </div>
@@ -92,6 +79,7 @@
 
           <hr>
 
+  
 
 
             {{!-- Row FILES --}}
@@ -235,10 +223,35 @@
 </div>
 
 <span id="pId" class="d-none">{{activeProDetails._id}}</span>
+
+  </div>
+</div>
 <!-- ///////////////////// -->
 
 
+<!-- Modal -->
+<div class="modal fade" id="date-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Extend date</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input class="w-100" style="padding: 10px;" type="date" id="dueDate" name="dueDate"  required></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick="extendDate('{{activeProDetails._id}}')" class="btn btn-primary">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+
+ <div id="snackbar"></div>
 <script>
 
     var amount = document.getElementById('amountTxt').innerHTML
