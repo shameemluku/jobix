@@ -1,9 +1,9 @@
-var db = require('../config/connection')
-var collection = require('../config/collections')
+const db = require('../config/connection')
+const collection = require('../config/collections')
 const req = require('express/lib/request')
-var notiHelpers = require('../helpers/notification-helpers')
+const notiHelpers = require('../helpers/notification-helpers')
 const async = require('hbs/lib/async')
-var objectId = require('mongodb').ObjectId
+const objectId = require('mongodb').ObjectId
 
 module.exports = {
 
@@ -20,6 +20,7 @@ module.exports = {
 
         projectDetails.amount = parseFloat(projectDetails.amount);
         projectDetails.started = false;
+        projectDetails.bidding = [];
         let ext = projectDetails.ext;
         projectDetails.host = objectId(projectDetails.host)
         delete projectDetails.ext;
@@ -33,7 +34,7 @@ module.exports = {
     getUserBasedPro: (skillArray, id) => {
 
 
-        console.log(objectId(id));
+
 
         return new Promise(async(resolve, reject) => {
 
@@ -184,7 +185,7 @@ module.exports = {
 
     getProjectDetails: (id, userId) => {
 
-        console.log(userId);
+
         return new Promise(async(resolve, reject) => {
 
             try {
@@ -229,7 +230,7 @@ module.exports = {
 
                 resolve(projectDetail[0])
             } catch (err) {
-                console.log(err);
+
             } finally {
                 reject()
             }
@@ -273,21 +274,21 @@ module.exports = {
 
     checkProposal: (pId, id) => {
 
-        console.log('project id:' + pId + '\nuser id: ' + id);
+
 
         return new Promise(async(resolve, reject) => {
 
             let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({ _id: objectId(pId), 'bidding.userId': objectId(id) }).toArray()
 
-            console.log("\nLength and details\n");
-            console.log(projects);
-            console.log(projects.length);
+
+
+
 
             if (projects.length === 0) {
-                console.log("\nNEW PROPOSAL\n");
+
                 resolve(false)
             } else {
-                console.log("\nALREADY\n");
+
                 resolve(true)
             }
 
@@ -325,107 +326,157 @@ module.exports = {
 
         return new Promise(async(resolve, reject) => {
 
-            console.log(userId);
+
             try {
-                let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
-                        $match: { _id: objectId(id), host: objectId(userId) }
-                    },
-                    // {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
+
+                let project = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({ _id: objectId(id), host: objectId(userId) }).toArray();
 
 
-                    {
-                        $lookup: {
-                            from: "skills",
-                            localField: "skills",
-                            foreignField: "code",
-                            as: "skillsArray"
-                        }
-                    },
+                if (project[0].hasOwnProperty('bidding')) {
+                    if (project[0].bidding.length != 0) {
 
-                    {
-                        $unwind: {
-                            path: '$bidding',
-                            preserveNullAndEmptyArrays: true,
-                        }
-                    },
+                        let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
+                                $match: { _id: objectId(id), host: objectId(userId) }
+                            },
+                            // {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
 
-                    {
-                        $lookup: {
-                            from: "workprofile",
-                            localField: "bidding.userId",
-                            foreignField: "userId",
-                            as: "bidWorkProfile"
-                        }
-                    },
-                    {
-                        $unwind: '$bidWorkProfile',
-                    },
-                    {
-                        $addFields: {
-                            'bidding.skills': '$bidWorkProfile.skills',
-                            'bidding.workId': '$bidWorkProfile._id',
-                            'bidding.reviews': '$bidWorkProfile.reviews',
-                            "bidding.rating": {
-                                $sum: "$bidWorkProfile.reviews.rating"
+
+                            {
+                                $lookup: {
+                                    from: "skills",
+                                    localField: "skills",
+                                    foreignField: "code",
+                                    as: "skillsArray"
+                                }
                             },
-                            //More will be added here, eg Rating
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: '$_id',
-                            pheading: {
-                                $first: '$pheading'
+
+                            {
+                                $unwind: {
+                                    path: '$bidding',
+                                    preserveNullAndEmptyArrays: true,
+                                }
                             },
-                            pdetails: {
-                                $first: '$pdetails'
+
+                            {
+                                $lookup: {
+                                    from: "workprofile",
+                                    localField: "bidding.userId",
+                                    foreignField: "userId",
+                                    as: "bidWorkProfile"
+                                }
                             },
-                            bidding: {
-                                $push: '$bidding'
+                            {
+                                $unwind: '$bidWorkProfile',
                             },
-                            skillsArray: {
-                                $first: "$skillsArray"
+                            {
+                                $addFields: {
+                                    'bidding.skills': '$bidWorkProfile.skills',
+                                    'bidding.workId': '$bidWorkProfile._id',
+                                    'bidding.reviews': '$bidWorkProfile.reviews',
+                                    "bidding.rating": {
+                                        $sum: "$bidWorkProfile.reviews.rating"
+                                    },
+                                    //More will be added here, eg Rating
+                                }
                             },
-                            dueDate: {
-                                $first: "$dueDate"
+                            {
+                                $group: {
+                                    _id: '$_id',
+                                    pheading: {
+                                        $first: '$pheading'
+                                    },
+                                    pdetails: {
+                                        $first: '$pdetails'
+                                    },
+                                    bidding: {
+                                        $push: '$bidding'
+                                    },
+                                    skillsArray: {
+                                        $first: "$skillsArray"
+                                    },
+                                    dueDate: {
+                                        $first: "$dueDate"
+                                    },
+                                    amount: {
+                                        $first: "$amount"
+                                    }
+                                }
                             },
-                            amount: {
-                                $first: "$amount"
+                            { "$addFields": { "bidCount": { $size: { "$ifNull": ["$bidding", []] } } } }
+
+                        ]).toArray()
+
+
+
+                        if (projectDetail[0].hasOwnProperty('bidding')) {
+
+                            let bidding = projectDetail[0].bidding;
+                            for (let i = 0; i < bidding.length; i++) {
+                                if (bidding[i].reviews) {
+                                    projectDetail[0].bidding[i].average = bidding[i].rating / bidding.length
+                                } else {
+                                    projectDetail[0].bidding[i].average = 0;
+                                }
                             }
                         }
-                    },
-                    { "$addFields": { "bidCount": { $size: { "$ifNull": ["$bidding", []] } } } }
 
-                ]).toArray()
+                        resolve(projectDetail[0])
 
+<<<<<<< Updated upstream
                 console.log(projectDetails);
 
                 let bidding = projectDetail[0].bidding;
                 for (let i = 0; i < bidding.length; i++) {
                     if (bidding[i].reviews) {
                         projectDetail[0].bidding[i].average = bidding[i].rating / bidding.length
+=======
+>>>>>>> Stashed changes
                     } else {
-                        projectDetail[0].bidding[i].average = 0;
+
+                        let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
+                                $match: { _id: objectId(id), host: objectId(userId) }
+                            },
+                            // {$lookup:{from:"users",localField:"host",foreignField:"_id",as:"host"}},
+
+
+                            {
+                                $lookup: {
+                                    from: "skills",
+                                    localField: "skills",
+                                    foreignField: "code",
+                                    as: "skillsArray"
+                                }
+                            },
+
+                            { "$addFields": { "bidCount": { $size: { "$ifNull": ["$bidding", []] } } } }
+
+
+                        ]).toArray()
+
+                        resolve(projectDetail[0])
+
                     }
                 }
 
-                console.log(projectDetail[0]);
+
+
+
 
                 // if (Array.isArray(projectDetail[0].bidding)) {
                 //     for (let i = 0; i < projectDetail[0].bidding.length; i++) {
                 //         projectDetail[0].bidding[i] = Object.assign({}, projectDetail[0].bidding[i], projectDetail[0].bidWorkProfile[i])
-                //         console.log(projectDetail[0].bidding[i]);
+                //         
                 //     }
 
                 //     delete projectDetail[0].bidWorkProfile;
                 // }
 
-                // console.log("-------------------------- FINISHED ---------------------");
-                // //console.log(projectDetail[0]);
-                resolve(projectDetail[0])
+                // 
+                // //
+
 
             } catch (err) {
-                console.log(err);
+
 
             } finally {
                 reject("Not accessible")
@@ -455,7 +506,7 @@ module.exports = {
                             url = '#';
 
                             notiHelpers.sendNotification(projectDetails.workerId.toString(), message, url).then((result) => {
-                                console.log("Success!");
+
                                 resolve(true)
                             })
 
@@ -583,7 +634,7 @@ module.exports = {
             let projectFiles = await db.get().collection(collection.PROJECTS_COLLECTION)
                 .aggregate([{ $match: { _id: objectId(id) } }, { $unwind: '$workfiles' }, { $sort: { "workfiles.id": -1 } }, { $project: { workfiles: 1 } }]).toArray()
 
-            console.log(projectFiles);
+
             resolve(projectFiles)
 
         })
@@ -695,7 +746,7 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
             db.get().collection(collection.REQUEST_COLLECTION).insertOne(data).then((result) => {
                 if (result) {
-                    console.log(result);
+
                     resolve(true)
                 }
             })

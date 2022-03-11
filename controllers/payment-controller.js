@@ -1,18 +1,15 @@
-var projectHelpers = require('../helpers/project-helpers')
-var userHelpers = require('../helpers/user-helpers')
-var notiHelpers = require('../helpers/notification-helpers')
-
-var path = require('path');
+const projectHelpers = require('../helpers/project-helpers')
+const userHelpers = require('../helpers/user-helpers')
+const notiHelpers = require('../helpers/notification-helpers')
+const path = require('path');
 require('dotenv').config();
 const fast2sms = require('fast-two-sms');
 const fs = require('fs');
 const objectId = require('mongodb').ObjectId
-var request = require('request');
-
+const request = require('request');
 const Razorpay = require('razorpay')
 const paypal = require('paypal-rest-sdk');
 const adminHelpers = require('../helpers/admin-helpers');
-
 const instance = new Razorpay({
     key_id: process.env.RAZOR_KEY_ID,
     key_secret: process.env.RAZOR_SECRET,
@@ -33,15 +30,15 @@ let DATA = {}
 exports.checkout = async function(req, res, next) {
 
     projectDetails = await projectHelpers.projectDetailsforCheckout(req.body.pId, req.session.user._id);
-    console.log(projectDetails);
+
     DATA.projectDetails = projectDetails;
     DATA.review = req.body;
 
     try {
-        console.log(req.body.payMethod);
-        console.log(req.body);
+
+
         let amount = parseFloat(projectDetails.bidAmount + (projectDetails.bidAmount * 0.1));
-        console.log(projectDetails.workerDetails[0].name);
+
 
         let method = req.body.payMethod
 
@@ -52,10 +49,10 @@ exports.checkout = async function(req, res, next) {
                 receipt: "" + projectDetails._id,
             }, (err, order) => {
                 if (err) {
-                    console.log(err);
+
                 } else {
                     try {
-                        console.log("Order generated : " + order);
+
                         res.json({
                             order,
                             type: "RAZOR",
@@ -67,7 +64,7 @@ exports.checkout = async function(req, res, next) {
                             project: req.body
                         })
                     } catch (err) {
-                        console.log(err);
+
                     }
                 }
 
@@ -114,7 +111,7 @@ exports.checkout = async function(req, res, next) {
 
 
     } catch (err) {
-        console.log(err);
+
     }
 
 }
@@ -122,7 +119,7 @@ exports.checkout = async function(req, res, next) {
 
 exports.verifyPayment = async function(req, res, next) {
     try {
-        console.log(req.body);
+
         if (req.body.type === "RAZOR") {
             let status = await userHelpers.varifyPayment(req.body)
             if (status) {
@@ -155,7 +152,7 @@ exports.verifyPayment = async function(req, res, next) {
                                 DATA = null
                                 res.send({ success: true, msg: "Payment successfull" })
                             }).catch((err) => {
-                                console.log(err);
+
                             })
 
 
@@ -184,12 +181,12 @@ exports.verifyPayment = async function(req, res, next) {
 
 exports.paypalSuccess = async function(req, res, next) {
 
-    console.log("here");
+
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
 
-    console.log(payerId);
-    console.log(paymentId);
+
+
 
     const execute_payment_json = {
         "payer_id": payerId,
@@ -203,12 +200,12 @@ exports.paypalSuccess = async function(req, res, next) {
 
     paypal.payment.execute(paymentId, execute_payment_json, function(error, payment) {
         if (error) {
-            console.log(error.response);
+
             throw error;
         } else {
 
-            // console.log(JSON.stringify(payment));
-            console.log(DATA);
+            // 
+
 
             let today = new Date().toLocaleDateString()
             var parts = today.split("/");
@@ -239,7 +236,7 @@ exports.paypalSuccess = async function(req, res, next) {
                             // res.send({ success: true, msg: "Payment successfull" })
                         res.render('user/success', { user: req.session.user })
                     }).catch((err) => {
-                        console.log(err);
+
                         DATA = null
                         res.send({ success: false, msg: "Payment failed" })
                     })
@@ -259,7 +256,7 @@ exports.cancel = function(req, res, next) {
 
 exports.sendPayout = async function(req, res, next) {
 
-    console.log(req.body);
+
 
     let today = new Date().toLocaleDateString()
     var parts = today.split("/");
@@ -290,12 +287,12 @@ exports.sendPayout = async function(req, res, next) {
                 var options = { authorization: process.env.API_KEY, message: '\nCongradulations! Your payout request for Rs.' + req.body.amount + ' is Aprroved!', numbers: [number.phone] }
                 const messageResponse = await fast2sms.sendMessage(options)
 
-                console.log("Hreeee");
-                console.log(messageResponse);
+
+
 
                 res.send({ success: true, msg: "Payment successfull" })
             }).catch((err) => {
-                console.log(err);
+
                 DATA = null
                 res.send({ success: false, msg: "Payment failed" })
             })

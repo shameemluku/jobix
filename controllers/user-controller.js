@@ -1,21 +1,17 @@
-var projectHelpers = require('../helpers/project-helpers')
-var userHelpers = require('../helpers/user-helpers')
-var notiHelpers = require('../helpers/notification-helpers')
-
-var path = require('path');
+const projectHelpers = require('../helpers/project-helpers')
+const userHelpers = require('../helpers/user-helpers')
+const notiHelpers = require('../helpers/notification-helpers')
+const path = require('path');
 const async = require('hbs/lib/async');
-var base64ToImage = require('base64-to-image');
-
+const base64ToImage = require('base64-to-image');
 require('dotenv').config();
 const fast2sms = require('fast-two-sms');
 const fs = require('fs');
 const { promise } = require('bcrypt/promises');
 const { response } = require('express');
 const objectId = require('mongodb').ObjectId
-
 const Razorpay = require('razorpay')
 const paypal = require('paypal-rest-sdk');
-
 const instance = new Razorpay({
     key_id: process.env.RAZOR_KEY_ID,
     key_secret: process.env.RAZOR_SECRET,
@@ -52,7 +48,7 @@ exports.login_POST = function(req, res, next) {
                         res.redirect('/hire-dashboard')
                     } else {
                         req.session.user.workProfile = workProfile[0];
-                        console.log(req.session.user.workProfile);
+
                         res.redirect('/work-dashboard')
                     }
 
@@ -73,12 +69,12 @@ exports.signup_POST = function(req, res, next) {
         .then((result) => {
             if (!result.status) {
 
-                console.log(req.body);
+
                 let userType = req.body.userType;
                 if (userType) {
 
                     var otp = Math.floor(Math.random() * 100000 + 1);
-                    console.log(otp);
+
                     req.body.userType = "hire";
                     req.body.otp = otp;
                     //sendOTP(otp,req.body.phone)
@@ -89,7 +85,7 @@ exports.signup_POST = function(req, res, next) {
                     })
                 } else {
                     var otp = Math.floor(Math.random() * 100000 + 1);
-                    console.log(otp);
+
                     req.body.userType = "work";
                     req.body.otp = otp;
                     //sendOTP(otp,req.body.phone)
@@ -109,17 +105,17 @@ exports.signup_POST = function(req, res, next) {
 }
 
 exports.loginPhone = function(req, res, next) {
-    console.log(req.body);
+
     userHelpers.findPhone(req.body.phone).then((response) => {
         if (response.status) {
             req.session.user = response.user
             var otp = Math.floor(Math.random() * 100000 + 1);
-            console.log(otp);
+
             OTP = otp;
             sendOTPfast(otp, req.body.phone)
             res.send({ status: true, phone: req.body.phone })
         } else {
-            console.log("No phone");
+
             res.send({ status: false, error: "Phone is not registered" })
         }
     })
@@ -129,7 +125,7 @@ exports.loginPhone = function(req, res, next) {
 
 exports.varify_POST = function(req, res, next) {
 
-    console.log(req.body);
+
     if (req.body.userType === 'work') {
         projectHelpers.getSkills().then((skills) => {
             res.render("user/worker-sign.hbs", {
@@ -138,7 +134,7 @@ exports.varify_POST = function(req, res, next) {
                 sign: true
             })
         })
-        console.log(req.body);
+
     } else if (req.body.userType === 'hire') {
 
         delete req.body.userType;
@@ -166,7 +162,7 @@ exports.varifyOTPLogin = function(req, res, next) {
     if (req.body.otp == OTP) {
 
         req.session.loggedIn = true
-        console.log("success");
+
 
         userHelpers.loadWorkProfile(req.session.user._id)
             .then((workProfile) => {
@@ -175,7 +171,7 @@ exports.varifyOTPLogin = function(req, res, next) {
                     res.send({ status: true, url: '/hire-dashboard' })
                 } else {
                     req.session.user.workProfile = workProfile[0];
-                    console.log(req.session.user.workProfile);
+
                     res.send({ status: true, url: '/work-dashboard' })
                 }
 
@@ -368,7 +364,7 @@ exports.browse_project = function(req, res, next) {
                     notiCount,
                     isHost
                 })
-                console.log(projects);
+
             } else {
                 res.render("user/browse-project.hbs", {
                     title: "User",
@@ -379,7 +375,7 @@ exports.browse_project = function(req, res, next) {
                     notification,
                     notiCount
                 })
-                console.log(projects);
+
             }
 
         })
@@ -401,7 +397,7 @@ exports.filter_skills = function(req, res, next) {
         skillArray.push(skillsQuery)
     }
 
-    console.log(skillArray);
+
 
     var amount = parseInt(req.query.amount);
 
@@ -453,9 +449,9 @@ exports.add_worker_post = function(req, res, next) {
         .catch((err) => {
             var key = Object.keys(err.keyPattern)
             if (key[0] === 'email') {
-                console.log("Email already exists");
+
             } else if (key[0] === 'phone') {
-                console.log("Mobile already exists");
+
             }
         })
 }
@@ -514,7 +510,7 @@ exports.add_project_post = function(req, res, next) {
     req.body.ext = ext
 
     req.body.dueDate = req.body.dueDate.toString().split("-").reverse().join("/")
-    console.log(req.body.dueDate);
+
 
     hostId = req.session.user._id // change with req.session.user._id
     req.body.host = hostId
@@ -574,7 +570,7 @@ exports.send_proposal = function(req, res, next) {
 
     projectHelpers.checkProposal(req.body.pId, req.body.id).then((status) => {
 
-        console.log(status);
+
         if (!status) {
             projectHelpers.sendProposal(req.body.pId, req.body.id, req.body.name, req.body.message, req.body.amount).then((data) => {
                 if (data.acknowledged) {
@@ -771,7 +767,7 @@ exports.worker_project = function(req, res, next) {
 
 
     }).catch((err) => {
-        console.log(err);
+
         res.status(404).render('error', { message: err });
     })
 
@@ -817,7 +813,7 @@ exports.host_project = function(req, res, next) {
 
 
     }).catch((err) => {
-        console.log(err);
+
         res.status(404).render('error', { message: err });
     })
 
@@ -828,7 +824,7 @@ exports.host_project = function(req, res, next) {
 exports.completeProject = function(req, res, next) {
 
     projectHelpers.load_HostActiveDetails(req.query.id, req.session.user._id).then((proDetails) => {
-        console.log(proDetails);
+
 
         if (proDetails.status === "ACTIVE") {
             proDetails.fee = proDetails.bidAmount * 0.1;
@@ -869,7 +865,7 @@ exports.loadBiddedProjects = function(req, res, next) {
 exports.removeBid = function(req, res, next) {
 
     pId = req.body.id;
-    console.log(pId);
+
 
     userHelpers.self_removeBid(req.session.user._id, pId).then((status) => {
 
@@ -913,7 +909,7 @@ exports.uploadProjectFiles = async function(req, res, next) {
         filesArray.forEach((file, i, array) => {
 
             let filename = file.name.split(" ").join("_");
-            console.log(filename);
+
 
             let dir = path.join(__dirname, '../public/files/project-files/work/' + req.body.pId + '/')
 
@@ -953,7 +949,7 @@ exports.uploadProjectFiles = async function(req, res, next) {
 
 
     } catch (err) {
-        console.log(err);
+
     }
 
 
@@ -987,7 +983,7 @@ exports.sendMessage = function(req, res, next) {
 }
 
 exports.extendProjectDate = function(req, res, next) {
-    console.log(req.body);
+
     projectHelpers.extendDate(req.body.pId, req.body.date).then((status) => {
         if (status) {
             res.send({ status: true, day: checkDays(req.body.date) })
@@ -997,7 +993,7 @@ exports.extendProjectDate = function(req, res, next) {
 }
 
 exports.getFile = function(req, res, next) {
-    console.log(req.body);
+
 
     projectHelpers.loadProjectFiles(req.body.pId).then((files) => {
         res.send(files)
@@ -1019,7 +1015,7 @@ exports.userProfile = function(req, res, next) {
 
     projectHelpers.getAllSkills().then((skills) => {
 
-        console.log(req.session.user.workProfile);
+
 
         if (!req.session.user.workProfile) {
 
@@ -1028,7 +1024,7 @@ exports.userProfile = function(req, res, next) {
             res.render('user/profile', { user, skills, isWorker })
 
         } else {
-            console.log("else");
+
             isWorker = true;
             userSkills = req.session.user.workProfile.skillsArray;
 
@@ -1059,7 +1055,7 @@ exports.changeDp = function(req, res, next) {
 
         var imageInfo = base64ToImage(base64Str, dir, optionalObj);
         if (imageInfo) {
-            console.log(req.session.user.propic);
+
 
             if (!req.session.user.propic) {
                 userHelpers.changeDpStatus(req.session.user._id).then((data) => {
@@ -1076,7 +1072,7 @@ exports.changeDp = function(req, res, next) {
         }
 
     } catch (err) {
-        console.log(err);
+
     }
 
 }
@@ -1084,7 +1080,7 @@ exports.changeDp = function(req, res, next) {
 
 exports.removeDp = function(req, res, next) {
 
-    console.log("Hereeeeeeeeee");
+
     userHelpers.removeProPic(req.session.user._id).then((response) => {
         if (response) {
 
@@ -1112,7 +1108,7 @@ exports.updateDetails = function(req, res, next) {
             req.session.user.phone = req.body.phone;
             req.session.user.bio = req.body.bio;
 
-            console.log(req.session.user);
+
 
             res.send({ status: true, name: req.body.name })
         } else {
@@ -1128,7 +1124,7 @@ exports.updateSkills = function(req, res, next) {
 
         userHelpers.loadWorkProfile(req.session.user._id).then((workProfile) => {
 
-            console.log(workProfile[0].skillsArray);
+
 
             req.session.user.workProfile.skillsArray = [...workProfile[0].skillsArray]
 
@@ -1141,7 +1137,7 @@ exports.updateSkills = function(req, res, next) {
 
 exports.updatePayment = function(req, res, next) {
 
-    console.log(req.body);
+
     if (req.session.user.hasOwnProperty("payments")) {
         req.session.user.payments.forEach(elem => {
             if (elem === req.body.email) {
@@ -1162,7 +1158,7 @@ exports.updatePayment = function(req, res, next) {
 
 exports.removePayment = function(req, res, next) {
 
-    console.log(req.body);
+
     userHelpers.removePayment(req.session.user._id, req.body.email).then((response) => {
         if (response) {
             req.session.user.payments.pop(req.body.email);
@@ -1191,7 +1187,7 @@ exports.wallet = function(req, res, next) {
 
                 transactions[i].date = transactions[i].date.toString().substring(0, 15)
             }
-            console.log(transactions);
+
             res.render('user/wallet', {
                 title: "Wallet",
                 user: req.session.user,
@@ -1206,7 +1202,7 @@ exports.wallet = function(req, res, next) {
 }
 
 exports.requestPayout = function(req, res, next) {
-    console.log(req.body);
+
     userHelpers.requestPayout(req.session.user._id, req.body).then((status) => {
 
     })
@@ -1236,7 +1232,7 @@ exports.freelancer = function(req, res, next) {
 exports.freelancerPost = function(req, res, next) {
 
     try {
-        console.log(req.body);
+
 
         if (!Array.isArray(req.body.skills)) {
             let skills = []
@@ -1254,7 +1250,7 @@ exports.freelancerPost = function(req, res, next) {
             }
         })
     } catch (err) {
-        console.log(err);
+
     }
 
 
@@ -1265,7 +1261,7 @@ exports.freelanceRequest = function(req, res, next) {
     req.body.dueDate = req.body.dueDate.toString().split("-").reverse().join("/")
     req.body.hostId = objectId(req.session.user._id);
     req.body.userId = objectId(req.body.userId)
-    console.log(req.body);
+
 
     projectHelpers.sendRequest(req.body).then((status) => {
         res.send({ status: status, uId: req.body.userId })
@@ -1312,7 +1308,7 @@ exports.search = function(req, res, next) {
 
         let searchResult = []
         let key = req.query.search;
-        console.log(key);
+
         projectHelpers.search().then(async(data) => {
 
             for (let i = 0; i < data.length; i++) {
@@ -1347,7 +1343,7 @@ exports.search = function(req, res, next) {
 
 
     exports.changePass = function(req, res, next) {
-        console.log(req.body);
+
 
         userHelpers.changePass(req.body, req.session.user._id).then((response) => {
             if (response.status) {
@@ -1409,7 +1405,7 @@ const getName = async(fileName, fileList) => {
         let curName = `${name}.${end}`;
         let exists = fileList.filter(f => f === curName).length;
         while (exists) {
-            console.log('curName:', curName, 'exists:', exists, 'num:', num);
+
             curName = `${name}(${++num}).${end}`;
             exists = fileList.filter(f => f === curName).length;
         }
