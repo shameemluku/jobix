@@ -91,7 +91,7 @@
                    <div class="col-md-12">
                        <div class="form-group">
                            <label>Enter payout amount</label>
-                           <input type="number" max="1000" name="amount" class="form-control">
+                           <input type="number" max="{{user.wallet}}" min="1000" name="amount" class="form-control">
                            <input type="number" name="wallet" class="form-control" value="{{user.wallet}}" hidden>
                        </div>
                    </div>

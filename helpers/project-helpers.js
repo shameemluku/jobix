@@ -398,6 +398,8 @@ module.exports = {
 
                 ]).toArray()
 
+                console.log(projectDetails);
+
                 let bidding = projectDetail[0].bidding;
                 for (let i = 0; i < bidding.length; i++) {
                     if (bidding[i].reviews) {
