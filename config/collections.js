@@ -7,5 +7,7 @@ module.exports = {
     SKILLS_COLLECTION: 'skills',
     NOTIFICATION_COLLECTION: 'notifications',
     ADMIN_COLLECTION: 'admin',
-    TRANSACTION_COLLECTION: 'transactions'
+    TRANSACTION_COLLECTION: 'transactions',
+    PAYOUT_COLLECTION: 'payouts',
+    REQUEST_COLLECTION: 'requests'
 }

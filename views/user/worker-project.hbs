@@ -1,7 +1,7 @@
 <div id="page-container">
   <div id="content-wrap">
 
-    {{>sec-nav-worker}}
+    {{#if isHost}}{{>sec-nav-host}}{{else}}{{>sec-nav-worker}}{{/if}}
 
 
 <!-- //////////// CONTENT STARTS ///////////// -->
@@ -33,8 +33,12 @@
               <div class="col-9">
     
                 <h3>{{activeProDetails.pheading}}</h3>
-                <div class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
-              
+                
+                {{#if (eq activeProDetails.status "COMPLETED")}}
+              <span style="color: #008134; font-weight:500; font-size:20px"><i class="fas fa-badge-check"></i> COMPLETED</span>
+         
+              {{else}}
+              <div class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>{{/if}}
               </div>
                 
               <div class="col-3 d-flex justify-content-end">

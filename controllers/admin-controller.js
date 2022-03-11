@@ -86,6 +86,7 @@ exports.blockUser = function(req, res, next) {
 exports.homeNumbers = function(req, res, next) {
 
     adminHelpers.loadNumbers().then((result) => {
+        console.log(result);
         res.send(result)
     })
 
@@ -96,4 +97,67 @@ exports.logout = function(req, res, next) {
     req.session.admin = null
     req.session.adminloggedIn = false;
     res.redirect('/admin/login')
+}
+
+exports.payouts = function(req, res, next) {
+
+    adminHelpers.getPayoutList("PENDING").then((response) => {
+        console.log(response.data);
+        res.render('admin/payouts', {
+            layout: 'adlayout',
+            title: 'Users',
+            page: "payout",
+            isNotEmpty: response.status,
+            payoutList: response.data
+        });
+    })
+
+}
+
+exports.transactions = async function(req, res, next) {
+    adminHelpers.getAlltransaction().then((data) => {
+
+        for (let i = 0; i < data.length; i++) {
+            data[i].date = data[i].date.toString().substring(0, 15)
+        }
+        res.render('admin/transactions', {
+            layout: 'adlayout',
+            title: 'Users',
+            page: "trans",
+            data
+        });
+    })
+}
+
+
+exports.transactionsFilter = function(req, res, next) {
+
+
+    console.log(req.body);
+    let dates = req.body.daterange.split(" - ")
+
+    let start = new Date(dates[0]);
+    start = start.toISOString();
+
+    let end = new Date(dates[1]);
+    end = end.toISOString();
+
+    adminHelpers.filterTransaction(start, end, req.body.method).then((data) => {
+        for (let i = 0; i < data.length; i++) {
+            data[i].date = data[i].date.toString().substring(0, 15)
+        }
+        res.send({ status: true, data: data })
+    })
+}
+
+
+exports.projects = function(req, res, next) {
+    adminHelpers.loadProjectList().then((data) => {
+        res.render('admin/projects', {
+            layout: 'adlayout',
+            title: 'Projects',
+            page: "projects",
+            data
+        });
+    })
 }

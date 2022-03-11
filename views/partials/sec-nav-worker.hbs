@@ -1,16 +1,22 @@
+
+
   <!-- Second Nav -->
+  
   <div class="container-fluid d-flex secNav">
     <div class="mr-auto p-2 l-links">
 
-      <a class="p-2" href="/browse-project">Browse Project</a>
+      <span id="sec-nav-btn">
+      <a class="p-2" href="/browse-project">
+        <i class="far fa-file-search mr-1"></i> Browse Project</a>
       {{!-- <a class="p-2" href="/">Browse Contest</a> --}}
-      <a class="p-2" href="/">Freelancers</a>
+      <a class="p-2" href="/freelancers"><i class="fal fa-user-hard-hat mr-1"></i>Freelancers</a></span>
 
     </div>
     <div class="p-2 r-link">
-      <a href="/wallet">
+      <a href="/wallet" class="wallet-side">
       <i class="fal fa-wallet"></i><span>Wallet:</span>
       <span class="bal">₹ {{user.wallet}}</span></a>
     </div>
 
   </div>
+  

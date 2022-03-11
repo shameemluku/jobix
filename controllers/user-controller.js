@@ -27,6 +27,10 @@ paypal.configure({
     'client_secret': process.env.PAYPAL_SECRET
 });
 
+let OTP;
+
+let isHost;
+
 
 
 
@@ -104,6 +108,23 @@ exports.signup_POST = function(req, res, next) {
         })
 }
 
+exports.loginPhone = function(req, res, next) {
+    console.log(req.body);
+    userHelpers.findPhone(req.body.phone).then((response) => {
+        if (response.status) {
+            req.session.user = response.user
+            var otp = Math.floor(Math.random() * 100000 + 1);
+            console.log(otp);
+            OTP = otp;
+            sendOTPfast(otp, req.body.phone)
+            res.send({ status: true, phone: req.body.phone })
+        } else {
+            console.log("No phone");
+            res.send({ status: false, error: "Phone is not registered" })
+        }
+    })
+}
+
 // Varify OTP POST
 
 exports.varify_POST = function(req, res, next) {
@@ -140,22 +161,42 @@ exports.varify_POST = function(req, res, next) {
 
 }
 
+
+exports.varifyOTPLogin = function(req, res, next) {
+    if (req.body.otp == OTP) {
+
+        req.session.loggedIn = true
+        console.log("success");
+
+        userHelpers.loadWorkProfile(req.session.user._id)
+            .then((workProfile) => {
+
+                if (workProfile.length == 0) {
+                    res.send({ status: true, url: '/hire-dashboard' })
+                } else {
+                    req.session.user.workProfile = workProfile[0];
+                    console.log(req.session.user.workProfile);
+                    res.send({ status: true, url: '/work-dashboard' })
+                }
+
+            })
+
+
+    } else {
+        res.send({ status: false, error: "Invalid OTP" })
+    }
+}
+
 ///////////////// WORKER DASHBOARD ////////////////////////////////
 
 exports.workDashboard = function(req, res, next) {
     let empty = {}
 
-    // Notification
-    let notification = [],
-        projectempty = {},
-        notiCount, notiEmpty = true;
 
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
-    // End notification
+    let reqCount = req.session.reqCount;
 
 
     var splitname = req.session.user.name.split(" ");
@@ -164,6 +205,7 @@ exports.workDashboard = function(req, res, next) {
         if (workProfile.length == 0) {
             res.redirect('/hire-dashboard')
         } else {
+            isHost = false
             req.session.user.workProfile = workProfile[0]
             userHelpers.loadActiveProjects(req.session.user._id).then((projects) => {
 
@@ -197,7 +239,9 @@ exports.workDashboard = function(req, res, next) {
                     completedPro,
                     empty,
                     notification,
-                    notiCount
+                    notiCount,
+                    reqCount,
+                    isHost
                 });
 
             })
@@ -212,15 +256,10 @@ exports.workDashboard = function(req, res, next) {
 
 exports.hire_dashboard = function(req, res, next) {
 
-    // Notification
-    let notification = [],
-        projectempty = {},
-        notiCount, notiEmpty = true;
-
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    let projectempty = {}
+        // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
     // End notification
 
@@ -258,6 +297,7 @@ exports.hire_dashboard = function(req, res, next) {
 
             if (workProfile.length == 0) {
                 work = false;
+                isHost = true;
                 res.render("user/hire-dashboard", {
                     title: "Dashboard Hire",
                     user: req.session.user,
@@ -294,14 +334,10 @@ exports.hire_dashboard = function(req, res, next) {
 
 exports.browse_project = function(req, res, next) {
 
-    // Notification
-    let notification = [],
-        notiCount, notiEmpty = true;
 
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
     // End notification
 
@@ -329,7 +365,8 @@ exports.browse_project = function(req, res, next) {
                     user,
                     saveCount,
                     notification,
-                    notiCount
+                    notiCount,
+                    isHost
                 })
                 console.log(projects);
             } else {
@@ -377,18 +414,22 @@ exports.filter_skills = function(req, res, next) {
         if (projects.length != 0) {
             skillsArray = projects[0].skillsName;
             res.render("user/cards.hbs", {
-                title: "User",
+                layout: 'empty',
                 skillsArray,
                 projects,
                 user,
                 saveCount
             })
+
+            // res.send({ projects })
         } else {
             res.render("user/cards.hbs", {
-                title: "User",
+                layout: 'empty',
                 projects,
                 user: req.session.user
             })
+
+            // res.send({ projects })
         }
 
     })
@@ -450,19 +491,15 @@ exports.unsave_project = function(req, res, next) {
 
 exports.add_project = function(req, res, next) {
 
-    // Notification
-    let notification = [],
-        notiCount, notiEmpty = true;
 
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
     // End notification
 
     projectHelpers.getSkills().then((skills) => {
-        res.render("user/addproject.hbs", { title: "Add project", skills, user: req.session.user, notification, notiCount, add: true })
+        res.render("user/addproject.hbs", { title: "Add project", skills, user: req.session.user, notification, notiCount, add: true, isHost })
     })
 
 }
@@ -499,13 +536,8 @@ exports.add_project_post = function(req, res, next) {
 exports.project_Details = function(req, res, next) {
 
     // Notification
-    let notification = [],
-        notiCount, notiEmpty = true;
-
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
     // End notification
 
@@ -524,7 +556,8 @@ exports.project_Details = function(req, res, next) {
             skills: proDetails.skillsArray,
             user: req.session.user,
             notification,
-            notiCount
+            notiCount,
+            isHost
         })
 
     }).catch((err) => {
@@ -567,13 +600,8 @@ exports.send_proposal = function(req, res, next) {
 exports.select_skills = function(req, res, next) {
 
     // Notification
-    let notification = [],
-        notiCount, notiEmpty = true;
-
-    notiHelpers.getNotification(req.session.user._id).then((result) => {
-        notification = result;
-        notiCount = notification.length
-    })
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
 
     // End notification
 
@@ -583,7 +611,7 @@ exports.select_skills = function(req, res, next) {
 
             if (workProfile.length == 0) {
                 req.session.user.workProfile = workProfile
-                res.render("user/skills", { title: "Home", user: req.session.user, skills, notification, notiCount });
+                res.render("user/skills", { title: "Home", user: req.session.user, skills, notification, notiCount, isHost });
             } else {
                 res.redirect('/work-dashboard')
             }
@@ -606,6 +634,7 @@ exports.registerHost_skills_post = function(req, res, next) {
 
     userHelpers.registerHostworker(req.session.user._id, skillArray).then((data) => {
         if (data) {
+            isHost = false;
             res.send({ success: true })
         }
     })
@@ -617,20 +646,15 @@ exports.registerHost_skills_post = function(req, res, next) {
 exports.bid_details = function(req, res, next) {
 
         // Notification
-        let notification = [],
-            notiCount, notiEmpty = true;
-
-        notiHelpers.getNotification(req.session.user._id).then((result) => {
-            notification = result;
-            notiCount = notification.length
-        })
+        notiCount = req.session.notiCount;
+        notification = req.session.notification;
 
         // End notification
 
 
         projectHelpers.bidDetails(req.query.id, req.session.user._id).then((projectDetail) => {
 
-                res.render('user/bid-details', { projectDetail, user: req.session.user, notification, notiCount })
+                res.render('user/bid-details', { projectDetail, user: req.session.user, notification, notiCount, isHost })
             })
             .catch((err) => {
                 res.status(500).render('error', { message: err })
@@ -711,6 +735,12 @@ exports.bid_details = function(req, res, next) {
 
 exports.worker_project = function(req, res, next) {
 
+    // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
+
+    // End notification
+
     pId = req.query.id;
 
 
@@ -730,7 +760,7 @@ exports.worker_project = function(req, res, next) {
                 }
             }
 
-            res.render("user/worker-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user })
+            res.render("user/worker-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user, notiCount, notification, isHost })
 
         })
 
@@ -749,6 +779,12 @@ exports.worker_project = function(req, res, next) {
 
 
 exports.host_project = function(req, res, next) {
+
+    // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
+
+    // End notification
 
     pId = req.query.id;
 
@@ -769,7 +805,7 @@ exports.host_project = function(req, res, next) {
                 }
             }
 
-            res.render("user/host-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user })
+            res.render("user/host-project", { activeProDetails, messages, remaining, pFiles, user: req.session.user, isHost })
 
         })
 
@@ -789,9 +825,13 @@ exports.completeProject = function(req, res, next) {
     projectHelpers.load_HostActiveDetails(req.query.id, req.session.user._id).then((proDetails) => {
         console.log(proDetails);
 
-        proDetails.fee = proDetails.bidAmount * 0.1;
-        proDetails.finalAmount = proDetails.bidAmount + proDetails.fee;
-        res.render('user/complete-project', { user: req.session.user, proDetails, pay: true })
+        if (proDetails.status === "ACTIVE") {
+            proDetails.fee = proDetails.bidAmount * 0.1;
+            proDetails.finalAmount = proDetails.bidAmount + proDetails.fee;
+            res.render('user/complete-project', { user: req.session.user, proDetails, pay: true })
+        } else {
+            res.redirect('/host-projects?id=' + proDetails._id)
+        }
 
     })
 
@@ -963,6 +1003,12 @@ exports.getFile = function(req, res, next) {
 
 exports.userProfile = function(req, res, next) {
 
+    // Notification
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
+
+    // End notification
+
     let user = req.session.user
     let isWorker;
 
@@ -1086,27 +1132,226 @@ exports.updateSkills = function(req, res, next) {
         })
     })
 
+}
 
+exports.updatePayment = function(req, res, next) {
 
+    console.log(req.body);
+    if (req.session.user.hasOwnProperty("payments")) {
+        req.session.user.payments.forEach(elem => {
+            if (elem === req.body.email) {
+                res.send({ status: false, err: "Email already exists" })
+            }
+        })
+    }
+
+    userHelpers.updatePayment(req.session.user._id, req.body.email).then((response) => {
+        if (response) {
+            req.session.user.payments.push(req.body.email);
+            res.send({ status: true, email: req.body.email })
+        } else {
+            res.send({ status: false, err: "Something went wrong" })
+        }
+    })
+}
+
+exports.removePayment = function(req, res, next) {
+
+    console.log(req.body);
+    userHelpers.removePayment(req.session.user._id, req.body.email).then((response) => {
+        if (response) {
+            req.session.user.payments.pop(req.body.email);
+            res.send({ status: true })
+        }
+    })
 }
 
 exports.wallet = function(req, res, next) {
 
-    userHelpers.getTransactions(req.session.user._id).then((transactions) => {
+    userHelpers.checkPayout(req.session.user._id).then((response) => {
 
-        for (let i = 0; i < transactions.length; i++) {
-            if ((transactions[i].sender).toString() === req.session.user._id) {
-                transactions[i].debit = transactions[i].amount
+        userHelpers.getTransactions(req.session.user._id).then((transactions) => {
+
+            for (let i = 0; i < transactions.length; i++) {
+                if (transactions[i].type === "PROJECT") {
+                    if ((transactions[i].sender).toString() === req.session.user._id) {
+                        transactions[i].debit = transactions[i].amount
+                    }
+                    if ((transactions[i].receiver).toString() === req.session.user._id) {
+                        transactions[i].credit = transactions[i].orgiAmount - (transactions[i].orgiAmount * 0.1)
+                    }
+                } else {
+                    transactions[i].debit = transactions[i].amount
+                }
+
+                transactions[i].date = transactions[i].date.toString().substring(0, 15)
             }
-            if ((transactions[i].receiver).toString() === req.session.user._id) {
-                transactions[i].credit = transactions[i].orgiAmount - (transactions[i].orgiAmount * 0.1)
-            }
-            transactions[i].date = transactions[i].date.toString().substring(0, 15)
-        }
-        res.render('user/wallet', { title: "Wallet", user: req.session.user, transactions })
+            console.log(transactions);
+            res.render('user/wallet', {
+                title: "Wallet",
+                user: req.session.user,
+                transactions,
+                isAlready: response.status,
+                payoutData: response.data
+            })
+        })
+
     })
 
 }
+
+exports.requestPayout = function(req, res, next) {
+    console.log(req.body);
+    userHelpers.requestPayout(req.session.user._id, req.body).then((status) => {
+
+    })
+}
+
+
+exports.freelancer = function(req, res, next) {
+
+    projectHelpers.getAllSkills().then((skills) => {
+
+        let skillsCode = []
+        skills.forEach(elem => {
+            skillsCode.push(elem.code)
+        })
+
+        projectHelpers.getFreelancers(skillsCode, 0, req.session.user._id).then((workers) => {
+            res.render('user/freelancers', { skills, workers, user: req.session.user, isHost })
+        })
+
+
+    })
+
+}
+
+// Filter freelancers
+
+exports.freelancerPost = function(req, res, next) {
+
+    try {
+        console.log(req.body);
+
+        if (!Array.isArray(req.body.skills)) {
+            let skills = []
+            skills.push(req.body.skills)
+            req.body.skills = skills
+        }
+
+        let rating = parseInt(req.body.rating)
+        projectHelpers.getFreelancers(req.body.skills, rating, req.session.user._id).then((workers) => {
+
+            if (workers.length != 0) {
+                res.render('user/card-freelancer', { layout: 'empty', workers })
+            } else {
+                res.render('user/card-freelancer', { layout: 'empty' })
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+
+
+}
+
+exports.freelanceRequest = function(req, res, next) {
+
+    req.body.dueDate = req.body.dueDate.toString().split("-").reverse().join("/")
+    req.body.hostId = objectId(req.session.user._id);
+    req.body.userId = objectId(req.body.userId)
+    console.log(req.body);
+
+    projectHelpers.sendRequest(req.body).then((status) => {
+        res.send({ status: status, uId: req.body.userId })
+    })
+
+}
+
+exports.requests = function(req, res, next) {
+    notiCount = req.session.notiCount;
+    notification = req.session.notification;
+
+    userHelpers.loadRequests(req.session.user._id).then(async(requests) => {
+        let isempty = false
+        if (requests.length == 0) {
+            isempty = true
+        }
+        let status = await userHelpers.markRead(req.session.user._id)
+        if (status) {
+            res.render('user/requests', { user: req.session.user, notification, notiCount, requests, isempty, isHost })
+        }
+
+    })
+
+}
+
+
+exports.acceptRequests = function(req, res, next) {
+
+    projectHelpers.acceptProjectRequest(req.query.id, req.session.user).then(async(data) => {
+        let status = await userHelpers.removeRequest(req.query.id)
+        if (status) {
+            res.send({ status: true })
+        }
+
+    })
+
+}
+
+
+exports.search = function(req, res, next) {
+
+        notiCount = req.session.notiCount;
+        notification = req.session.notification;
+
+        let searchResult = []
+        let key = req.query.search;
+        console.log(key);
+        projectHelpers.search().then(async(data) => {
+
+            for (let i = 0; i < data.length; i++) {
+                if ((data[i].pdetails.toUpperCase()).includes(key.toUpperCase())) {
+                    searchResult.push(data[i])
+                    continue
+                } else if ((data[i].pheading.toUpperCase()).includes(key.toUpperCase())) {
+                    searchResult.push(data[i])
+                    continue
+                } else if ((data[i].hostname.toUpperCase()).includes(key.toUpperCase())) {
+                    searchResult.push(data[i])
+                    continue
+                } else {
+                    for (let j = 0; j < data[i].skills.length; j++) {
+                        if ((data[i].skills[j].toUpperCase()).includes(key.toUpperCase())) {
+                            searchResult.push(data[i])
+                            continue
+                        }
+                    }
+                }
+            }
+
+            let isempty = false
+            if (searchResult.length == 0) {
+                isempty = true
+            }
+
+            res.render('user/search', { user: req.session.user, notification, notiCount, searchResult, isempty, key: key })
+
+        })
+    },
+
+
+    exports.changePass = function(req, res, next) {
+        console.log(req.body);
+
+        userHelpers.changePass(req.body, req.session.user._id).then((response) => {
+            if (response.status) {
+                res.send({ status: true })
+            } else {
+                res.send({ status: false, error: response.error })
+            }
+        })
+    }
 
 
 

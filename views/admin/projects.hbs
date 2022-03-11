@@ -1,0 +1,49 @@
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Project List</h1>
+    </div>
+    <div class="row">
+
+      <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+        <div class="card flex-fill">
+          <table class="table table-hover my-0" id="user_Table">
+            <thead>
+              <tr>
+                <th class="d-none d-xl-table-cell">Project Id</th>
+                <th>Title</th>
+                <th>Host</th>
+                <th class="d-none d-xl-table-cell">Due date</th>
+                <th class="d-none d-xl-table-cell">Reward</th>
+                <th class="d-none d-xl-table-cell">Skills</th>
+              </tr>
+            </thead>
+            <tbody>
+
+               {{#each data}}
+
+              <tr>
+                <td style="color: slategrey; font-size:10px">{{this._id}}</td>
+                <td class="d-none d-xl-table-cell">{{this.pheading}}</td>
+                <td class="d-none d-xl-table-cell" style="font-size: 12px;">{{this.host}}</td>
+                <td class="d-none d-xl-table-cell">{{this.dueDate}}</td>
+                <td class="d-none d-md-table-cell"><b style="color: rgb(0, 58, 0);">₹ {{this.amount}}</b></td>
+                <td class="d-none d-md-table-cell">
+
+                    {{#each this.skills}}
+                    <span style="padding: 3px; background-color:rgb(120, 150, 151); color:white">{{this}}</span>
+                    {{/each}}
+                  
+                </td>
+              </tr>
+
+               {{/each}}
+       
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

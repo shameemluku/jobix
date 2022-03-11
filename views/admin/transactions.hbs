@@ -1,0 +1,64 @@
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Transactions</h1>
+
+
+      <div style="float: right;">
+      <form id="trans-filter-form" method="">
+      <input id="date-range" type="text" name="daterange" value="01/01/2022 - 01/15/2022" />
+        <select name="method" id="method">
+          <option value="ALL">All</option>
+          <option value="PAYPAL">Paypal</option>
+          <option value="RAZOR">Razor</option>
+        </select>
+        <input type="submit" value="Apply"></input>
+      </form>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+        <div class="card flex-fill">
+          <table id="test" class="table table-hover my-0" id="user_Table">
+            <thead>
+              <tr>
+               <th class="d-none d-xl-table-cell">Payment Id</th>
+               <th>Date</th>
+                <th>Pay method</th>
+                <th class="d-none d-xl-table-cell">Purpose</th>
+                <th class="d-none d-xl-table-cell">Amount</th>
+                <th class="d-none d-xl-table-cell">Payer</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-table">
+
+               {{#each data}}
+
+              <tr>
+                <td style="color: slategrey; font-size:10px">{{this.payId}}</td>
+                <td class="d-none d-xl-table-cell">{{this.date}}</td>
+                <td class="d-none d-xl-table-cell">
+                  {{#if (eq this.method "PAYPAL")}}<img src="/images/site/paypal.svg" height="20px"> <b>PAYPAL</b>
+                  {{else}}<img src="/images/site/rayzor.png" height="30px"><b><i>RAZORPAY</i></b>{{/if}}
+                </td>
+                <td class="d-none d-xl-table-cell">
+                  {{#if (eq this.type "PAYOUT")}}
+                  <span style="background-color: rgb(230, 116, 96); padding:5px; color:white; border-radius:5px"> Payout request </span>
+                  {{else}}
+                  <span style="background-color: rgb(129, 185, 106); padding:5px; color:white; border-radius:5px"> Payment for Project </span>{{/if}}
+                </td>
+                <td class="d-none d-xl-table-cell"><b>₹ {{this.amount}}</b></td>
+                <td class="d-none d-md-table-cell">{{this.sender}}</td>
+              </tr>
+
+               {{/each}}
+       
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

@@ -85,11 +85,16 @@ $("#checkout-form").submit(function(e) {
         url: '/checkout',
         data: form.serialize(),
 
+        beforeSend: function() {
+            $('#processing-div').show()
+            $('#payment-div').hide()
+        },
 
         success: function(data) {
 
-            if (data.type === "rayzor") {
+            if (data.type === "RAZOR") {
                 console.log(data.order);
+
                 rayzoPay(data)
             } else {
                 console.log(data);
@@ -134,7 +139,13 @@ function rayzoPay(data) {
 
             varifyPayment(response, data.order, data)
         },
-        modal: { escape: false, ondismiss: function() { alert("CLOSE") } },
+        modal: {
+            escape: false,
+            ondismiss: function() {
+                $('#failed-div').show()
+                $('#processing-div').hide()
+            }
+        },
         "prefill": {
             "name": data.name,
             "email": data.email,
@@ -149,13 +160,15 @@ function rayzoPay(data) {
     };
     var rzp1 = new Razorpay(options);
     rzp1.on('payment.failed', function(response) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+        $('#failed-div').show()
+        $('#processing-div').hide()
     });
     rzp1.open();
 }
@@ -174,7 +187,8 @@ function varifyPayment(payment, order, details) {
         method: 'post',
         success: function(data) {
             if (data.success) {
-                alert("Success")
+                $('#success-div').show()
+                $('#processing-div').hide()
             }
         }
     })

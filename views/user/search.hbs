@@ -1,0 +1,110 @@
+<div id="page-container">
+   <div id="content-wrap">
+     {{>sec-nav-worker}}
+      <section>
+         <div id="request-container" class="container mb-4 mt-4"  style="width:65%">
+            
+
+            {{!-- ///////////////////////// --}}
+
+            <p style="font-size:18px">Showing results for : <span style="color: brown; font-weight:600" class="ml-1">{{key}}</span></p>
+
+            {{#each searchResult}}
+            
+            <div id="{{this._id}}" class="row mt-1">
+               <div class="col-12 d-flex">
+                  <div class="card card-custom" style="width: 100%">
+                     <div class="card-body">
+                        <div class="container">
+                           <div class="row">
+                              <div class="col-8">
+                                 <span class="proTitle">{{this.pheading}}</span>
+                              </div>
+                              <div class="d-flex col-4 justify-content-end align-items-start">
+                                 <h4><b>₹ {{this.amount}}</b></h4>
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col-sm-9">
+                                 <span class="descTxt">
+
+                                     <div class="skills-list pColor p-0 mb-2">
+                                         {{#each skills}}
+                                         <span>{{this}}</span>
+                                         {{/each}}
+                                     </div>
+
+                                    <i class="fas fa-user-circle mr-1" style="font-size: 16px;"></i>{{this.hostname}}
+                                    </p>
+                                 </span>
+                                 <span>
+                                    <p class="mt-4">{{this.pdetails}}</p>
+                                 </span>
+                              </div>
+                              <div class="d-flex col-sm-3 justify-content-end align-items-end amount">
+                                 
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col">
+                              </div>
+                              <span id="request-card-btns">
+                              <a  class="learnmoreBtn ml-2" href="/project-details?id={{this._id}}" style="border-radius: 0;">View details</a>
+                              </span>
+                              <span id="accept-load"  style="display: none;"><i class="fa fa-spinner fa-spin ml-2 mr-2" style="font-size: 20px;"></i>Please wait</span>
+                              
+                           </div>
+                        </div>
+
+                        <input type="hidden" id="id" value="{{this._id}}"/>
+                        <input type="hidden" id="pheading" value="{{this.pheading}}"/>
+                        <input type="hidden" id="pdetails" value="{{this.pdetails}}"/>
+                        <input type="hidden" id="dueDate" value="{{this.dueDate}}"/>
+                        <input type="hidden" id="bidAmount" value="{{this.amount}}"/>
+                        <input type="hidden" id="hostId" value="{{this.hostId}}"/>
+                        <input type="hidden" id="hostname" value="{{this.hostname}}"/>
+                        
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {{/each}}
+
+
+            {{#if isempty}}
+            <div class="w-100 text-center">
+               <img height="350px" src="images/site/empty.png" draggable="false">
+            </div>
+            {{/if}}
+
+
+            {{!-- //////////////// --}}
+
+
+
+         </div>
+
+   </section>
+</div>
+{{>user-footer}}
+</div>
+<div id="snackbar"></div>
+<script>
+   function openPayout(amount){
+      amount = parseFloat(amount)
+      if(amount>=0){
+         $('#payout-modal').modal('show');
+      }else{
+   
+         $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Sorry, Your wallet amount is below 1000');
+         $("#snackbar").addClass("show");
+         setTimeout(function() {
+             $("#snackbar").removeClass("show");
+         }, 3000);
+      }
+      
+   }
+   
+   
+</script>

@@ -12,7 +12,7 @@
 
         <!-- SIDE BAR RIGHT -->
 
-        <div class="col-md-3" style="margin-top:20px">
+        <div class="col-lg-3" style="margin-top:20px">
 
           <div class="holder project-contest">
 
@@ -129,14 +129,16 @@
         </div>
         <!-- SIDE BAR ENDS -->
 
-        <div class="col-md-9">
+        <div class="col-lg-9">
 
           <div class="container wrapper">
             <h1 class="windowHeading"><i class="fas fa-list-ul"></i>Browse Projects</h1>
           </div>
 
+          <div id="round-loader" class="container w-100 text-center" style="display:none"><div class="lds-ripple"><div></div><div></div></div></div>
+
         <div id="card-Holder">
-        
+
         {{#each projects}}
           <!-- Project card 1 -->
           <div class="card card-custom" style="width: 100%">

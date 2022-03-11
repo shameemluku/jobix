@@ -90,7 +90,7 @@ $("#regForm").submit(function(e) {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function(evt) {
                 if (evt.lengthComputable) {
-                    var percentComplete = ((evt.loaded / evt.total) * 100);
+                    var percentComplete = ((evt.loaded / evt.total) * 100).toFixed(2);
                     $(".progress-bar").width(percentComplete + '%');
                     $(".progress-bar").html(percentComplete + '%');
                 }
@@ -107,15 +107,29 @@ $("#regForm").submit(function(e) {
 
         beforeSend: function() {
             $(".progress-bar").width('0%');
-            $('#successMsg').html('Sending......')
+            $('#regForm').hide()
+            $('#loading-div').show()
         },
         error: function() {
+            $('#loading-div').hide()
             $('#successMsg').html('Error Added')
         },
         success: function(resp) {
             if (resp.success) {
                 $('#regForm')[0].reset();
-                $('#successMsg').html('Successfully Added');
+                $('#loading-div').hide()
+                $('#success-addpro').show()
+
+                Swal.fire(
+                    'Good job!',
+                    'Your project is hosted!',
+                    'success'
+                )
+
+                setTimeout(() => {
+                    window.location.href = "/hire-dashboard"
+                }, 3000)
+
             } else if (!resp.success) {
                 $('#successMsg').html('Error Added')
             }

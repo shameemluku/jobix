@@ -69,6 +69,22 @@ $(document).ready(function() {
     dataTableStyle("#complete_table_id_wrapper div:first-child")
 
 
+
+
+    $('.first-button').on('click', function() {
+
+        $('.animated-icon1').toggleClass('open');
+    });
+    $('.second-button').on('click', function() {
+
+        $('.animated-icon2').toggleClass('open');
+    });
+    $('.third-button').on('click', function() {
+
+        $('.animated-icon3').toggleClass('open');
+    });
+
+
 });
 
 
@@ -230,6 +246,14 @@ function sayHi(id) {
 
         }
     });
+}
+
+
+
+function openRequest() {
+    $('#reqCount').html("")
+
+    window.location.href = "/requests"
 }
 
 /////////////////////// BIDS PAGE ////////////////////////////
@@ -406,7 +430,7 @@ function loadBids(e) {
                       <div class="row">\
                         <div class="col mt-3">\
                           <a href="#" class="removeBtn w-sm-100" style="float: right;" onclick="removeBid(&apos;' + elem._id + '&apos;,event)">Remove</a>\
-                          <a href="/bid-details?id={{this._id}}" class="t-viewBtn w-sm-100 mr-1" style="float: right;">view details</a> \
+                          <a href="/project-details?id=' + elem._id + '" class="t-viewBtn w-sm-100 mr-1" style="float: right;">view details</a> \
                         </div>\
                         \
                       </div>\
@@ -421,6 +445,11 @@ function loadBids(e) {
 
 
                 })
+
+
+                if (data.list.length == 0) {
+                    $('#empty-div').show()
+                }
 
             }
 
@@ -510,9 +539,151 @@ function removeBid(id, e) {
         }
     })
 
+}
 
 
 
+$("#payout-form").submit(function(e) {
+
+    alert("Submit");
+
+    e.preventDefault()
+    var form = $(this);
+
+    $.ajax({
+        type: "POST",
+        url: '/payout-request',
+        data: form.serialize(),
+        success: function(data) {
+
+        }
+    });
+
+})
+
+
+$("#filterForm-freelance").submit(function(e) {
+
+
+    e.preventDefault()
+    var form = $(this);
+
+    $.ajax({
+        type: "POST",
+        url: '/freelancers',
+        data: form.serialize(),
+
+        beforeSend: function() {
+            $('#freelance-card-Holder').html("")
+            $('#round-loader').show()
+        },
+        success: function(data) {
+
+            $('#round-loader').hide()
+            $('#freelance-card-Holder').html(data)
+        }
+    });
+
+})
+
+
+function submitRequest(id, e) {
+
+    var form = $('#freelance-request-form-' + id);
+    e.preventDefault()
+
+    console.log(form.serialize());
+
+    $.ajax({
+        type: "POST",
+        url: '/send-request',
+        data: form.serialize(),
+        beforeSend: function() {
+            $("#req-btn").hide()
+            $("#req-load").show()
+        },
+        success: function(data) {
+
+            $("#req-btn").show()
+            $("#req-load").hide()
+            if (data.status) {
+
+                $('#freelancer-modal-' + data.uId).modal('hide');
+
+                Swal.fire(
+                    'Success!',
+                    'Request send successfully!',
+                    'success'
+                )
+            }
+        }
+    });
+}
+
+
+
+
+// $("#freelance-request-form").submit(function(e) {
+
+//     alert("Submit");
+
+//     e.preventDefault()
+//     var form = $(this);
+
+//     $.ajax({
+//         type: "POST",
+//         url: '/send-request',
+//         data: form.serialize(),
+//         beforeSend: function() {
+//             $("#req-btn").hide()
+//             $("#req-load").show()
+//         },
+//         success: function(data) {
+
+//             $("#req-btn").show()
+//             $("#req-load").hide()
+//             if (data.status) {
+
+//                 $('#freelancer-modal-' + data.uId).modal('hide');
+
+//                 Swal.fire(
+//                     'Success!',
+//                     'Request send successfully!',
+//                     'success'
+//                 )
+//             }
+//         }
+//     });
+
+// })
+
+
+function acceptRequest(id, e) {
+
+    e.preventDefault()
+    $.ajax({
+        type: "get",
+        url: '/accept-request?id=' + id,
+        beforeSend: function() {
+            $("#request-card-btns").hide()
+            $("#accept-load").show()
+        },
+        success: function(data) {
+
+
+            $("#request-card-btns").show()
+            $("#accept-load").hide()
+            if (data) {
+
+                $('#' + id).hide()
+                Swal.fire(
+                    'Success!',
+                    'Request accepted successfully!',
+                    'success'
+                )
+            }
+        }
+    });
 
 
 }

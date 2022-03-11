@@ -1,0 +1,70 @@
+{{#each workers}}
+                  <div class="col-md-4">
+                     <div class="our-team">
+                        <div class="picture">
+                           <img class="img-fluid" src="images/profile-pics/{{this.userId}}.jpg" onerror="this.src='images/site/default.jpg'" draggable="false" />
+                        </div>
+                        <div class="team-content" style="margin-bottom:0">
+                           <h3 class="username">{{this.name}}</h3>
+                        </div>
+                        <div class="Stars" style="--rating: {{this.rating}};" aria-label="Rating of this product is 2.3 out of 5."></div>
+                        <hr>
+                        <div class="w-100 mt-2 d-flex justify-content-center">
+                           <p class="mb-0"><span style="font-size: 14px;">{{this.email}}</span></p>
+                        </div>
+                 
+                        <a class="btn-hire" href="#" data-toggle="modal" data-target="#freelancer-modal-{{this.userId}}">
+                           <ul class="social w-100">
+                              <li>View more</li>
+                           </ul>
+                        </a>
+                     </div>
+                  </div>
+
+
+                  {{!-- MODAL --}}
+
+                  <div class="modal fade send-request" id="freelancer-modal-{{this.userId}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                                 <h5 class="modal-title" id="exampleModalLongTitle">Send Request</h5>
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                 <span aria-hidden="true">&times;</span>
+                                 </button>
+                              </div>
+                              <div class="modal-body">
+                                <form id="freelance-request-form-{{this.userId}}" method="post">
+                                  <div class="container">
+                                    <input type="hidden" name="userId" value="{{this.userId}}">
+                                  <p><textarea class="variElem w-100" type="textarea" placeholder="Project heading here.." oninput="this.className = ''" name="pheading"></textarea></p>
+       
+                                  <p><textarea class="variElem w-100" placeholder="Describe project here.." oninput="this.className = ''" name="pdetails"></textarea></p>
+                              
+                                  <p><input type="date" id="dueDate" name="dueDate"  required></p>
+                                  <p><input type="number" min="1" step="any" name="amount"/></p>
+                                  <div class="rightButton mb-3 mt-2" style="float: right;">
+                                      <input id="req-btn" type="submit" onclick="submitRequest('{{this.userId}}',event)" class="postBtn mx-0" value="Send request"/>
+                                      <span id="req-load" style="display: none;" ><i class="fa fa-spinner fa-spin mr-2" style="font-size: 20px;"></i>Sending</span>
+                                  </div>
+                                  </div>
+                              </form>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                  {{!-- END MODAL --}}
+                  {{/each}}
+
+          {{#if workers}}
+          {{else}}
+          <div class="container w-100 d-flex justify-content-center pt-5">
+              <div class="row">
+                <div class="col">
+                      <img width="200px" src="/images/site/empty-pro.png">
+                  <p class="text-center" style="color: rgb(87, 87, 87);">No freelancers found<p>
+                </div>
+              </div>
+          </div>
+          {{/if}}

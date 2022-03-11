@@ -56,9 +56,16 @@ $("#filterForm").submit(function(e) {
         url: '/filter-projects?filter=true',
         data: form.serialize(),
 
+        beforeSend: function() {
+            $("#card-Holder").html("");
+            $('#round-loader').show()
+        },
+
         //success
         success: function(data) {
+
             $("#card-Holder").html(data);
+            $('#round-loader').hide()
 
             $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Filter applied');
             $("#snackbar").addClass("show");

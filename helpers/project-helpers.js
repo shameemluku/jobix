@@ -624,6 +624,191 @@ module.exports = {
                     reject(false)
                 })
         })
+    },
+
+    getFreelancers: (skills, rating, id) => {
+        return new Promise(async(resolve, reject) => {
+
+            let workers = await db.get().collection(collection.WORKER_COLLECTION).aggregate([{
+                    $match: {
+                        skills: { $in: skills },
+                        userId: { $ne: objectId(id) }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "userId",
+                        foreignField: "_id",
+                        as: "userData"
+                    }
+                },
+                { $unwind: '$userData' },
+                {
+                    $addFields: {
+                        'name': '$userData.name',
+                        'email': '$userData.email',
+                        'phone': '$userData.phone',
+                        "rating": {
+                            $avg: "$reviews.rating"
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        userId: 1,
+                        skills: 1,
+                        name: 1,
+                        email: 1,
+                        phone: 1,
+                        "rating": {
+                            $cond: {
+                                if: { $eq: ["$rating", null] },
+                                then: 0,
+                                else: "$rating"
+                            }
+                        }
+                    }
+                },
+                {
+                    $match: {
+                        rating: { $gte: rating }
+                    }
+                }
+            ]).toArray()
+
+            for (let i = 0; i < workers.length; i++) {
+
+                workers[i].rating = (workers[i].rating).toFixed(2)
+                workers[i].rating = parseFloat(workers[i].rating);
+
+            }
+            resolve(workers)
+        })
+    },
+
+    sendRequest: (data) => {
+        data.amount = parseFloat(data.amount)
+        data.read = false;
+        return new Promise(async(resolve, reject) => {
+            db.get().collection(collection.REQUEST_COLLECTION).insertOne(data).then((result) => {
+                if (result) {
+                    console.log(result);
+                    resolve(true)
+                }
+            })
+        })
+    },
+
+    acceptProjectRequest: (id, user) => {
+        return new Promise(async(resolve, reject) => {
+            let data = await db.get().collection(collection.REQUEST_COLLECTION).aggregate([
+                { $match: { _id: objectId(id) } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "hostId",
+                        foreignField: "_id",
+                        as: "hostDetails"
+                    }
+                },
+                {
+                    $addFields: {
+                        "hostname": { "$arrayElemAt": ["$hostDetails.name", 0] },
+                        "hostemail": { "$arrayElemAt": ["$hostDetails.email", 0] }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        userId: 1,
+                        pheading: 1,
+                        pdetails: 1,
+                        dueDate: 1,
+                        amount: 1,
+                        hostId: 1,
+                        read: 1,
+                        hostname: 1,
+                        hostemail: 1
+                    }
+                }
+            ]).toArray()
+
+            data[0].worker = user.name;
+            data[0].workerId = objectId(user._id);
+            data[0].orgiAmount = parseFloat(data[0].amount);
+            data[0].bidAmount = parseFloat(data[0].amount);
+            data[0].hostName = data[0].hostname;
+            data[0].status = "ACTIVE";
+            data[0].messages = [];
+
+            delete data[0].read;
+            delete data[0].userId;
+            delete data[0].hostname;
+            delete data[0].amount
+
+            await db.get().collection(collection.PROJECTS_COLLECTION).insertOne(data[0]).then((response) => {
+                resolve(data)
+            })
+
+        })
+    },
+
+
+    search: () => {
+        return new Promise(async(resolve, reject) => {
+            let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{
+                    $lookup: {
+                        from: "users",
+                        localField: "host",
+                        foreignField: "_id",
+                        as: "hostDetails"
+                    }
+                },
+
+                {
+                    $addFields: {
+                        "hostname": { "$arrayElemAt": ["$hostDetails.name", 0] }
+                    }
+
+                },
+                {
+                    $lookup: {
+                        from: "skills",
+                        localField: "skills",
+                        foreignField: "code",
+                        as: "skillsArray"
+                    }
+                },
+                {
+                    $project: {
+                        pheading: 1,
+                        pdetails: 1,
+                        amount: 1,
+                        hostname: 1,
+                        skillsArray: 1
+                    }
+                }
+            ]).toArray()
+
+
+            for (let i = 0; i < projects.length; i++) {
+                projects[i].skills = []
+                if (Array.isArray(projects[i].skillsArray)) {
+                    projects[i].skillsArray.forEach(elem => {
+                        projects[i].skills.push(elem.name)
+                    })
+                } else {
+                    projects[i].skills.push(projects[i].skillsArray)
+                    delete projects[i].skillsArray;
+                }
+
+            }
+
+
+            resolve(projects)
+
+        })
     }
 
 }

@@ -1,3 +1,4 @@
+let table;
 $(document).ready(function() {
 
     if (window.location.pathname == '/admin') {
@@ -13,6 +14,22 @@ $(document).ready(function() {
 
         dataTableStyle("#user_Table_wrapper div:first-child")
     }
+
+
+    if (window.location.pathname == '/admin/transactions') {
+
+        $('#test').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+    }
+
+
+
+
 
 
 });
@@ -91,7 +108,9 @@ function loadHomeNumbers() {
             $('#hostCount').html(data.hireCount);
             $('#workerCount').html(data.workerCount);
             $('#projectCount').html(data.projectCount);
-            console.log(data);
+            $('#earningsCount').html("₹ " + data.earnings);
+            console.log(data)
+
         },
 
         error: function(error) {
@@ -100,3 +119,97 @@ function loadHomeNumbers() {
         }
     });
 }
+
+
+
+
+
+$(function() {
+    $('input[name="daterange"]').daterangepicker({
+        opens: 'left'
+    }, function(start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+
+
+
+    });
+});
+
+
+
+$("#trans-filter-form").submit(function(e) {
+
+    e.preventDefault();
+    var form = $(this);
+
+    $.ajax({
+        type: "post",
+        url: '/admin/filter-transaction',
+        data: form.serialize(),
+
+
+        success: function(response) {
+
+            if (response.status) {
+                let Tdata = response.data;
+
+
+                $('#test').DataTable().destroy();
+
+                $('#transaction-table').html("")
+
+                Tdata.forEach(data => {
+
+                    if (data.method == "PAYPAL") {
+                        data.method = `<img src="/images/site/paypal.svg" height="20px"> <b>PAYPAL</b>`
+                    } else if (data.method == "RAZOR") {
+                        data.method = `<img src="/images/site/rayzor.png" height="30px"><b><i>RAZORPAY</i></b>`
+                    }
+                    if (data.type == 'PROJECT') {
+                        data.type = `<span style="background-color: rgb(129, 185, 106); padding:5px; color:white; border-radius:5px"> Payment for Project </span>`
+                    } else if (data.type == 'PAYOUT') {
+                        data.type = `<span style="background-color: rgb(230, 116, 96); padding:5px; color:white; border-radius:5px"> Payout request </span>`
+                    }
+
+
+                    $('#test').find('tbody').append(`<tr>
+                    <td style="display:none"></td>
+                    <td style="color: slategrey; font-size:10px">${data.payId}</td>
+                    <td class="">${data.date}</td>
+                    <td class="">${data.method}</td>
+                    <td class="">${data.type}</td>
+                    <td class=""><b>₹ ${data.amount}</b></td>
+                    <td class="">${data.sender}</td>
+                  </tr>`)
+
+                })
+
+
+
+
+
+
+
+
+
+
+                $('#test').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+
+
+            }
+
+        },
+        error: function(error) {
+
+
+        }
+    });
+
+
+})
