@@ -1,20 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
 
-var hbs = require('express-handlebars')
-var db = require('./config/connection')
-var fileUpload = require('express-fileupload')
-var session = require('express-session')
+const hbs = require('express-handlebars')
+const db = require('./config/connection')
+const fileUpload = require('express-fileupload')
+const session = require('express-session')
 const MongoStore = require('connect-mongo');
 
-var adminRouter = require('./routes/admin');
-var usersRouter = require('./routes/users');
-
-var app = express();
+const adminRouter = require('./routes/admin');
+const usersRouter = require('./routes/users');
+const app = express();
 
 
 // view engine setup

@@ -1,8 +1,8 @@
-var db = require('../config/connection')
-var collection = require('../config/collections')
+const db = require('../config/connection')
+const collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongodb')
-var objectId = require('mongodb').ObjectId
+const objectId = require('mongodb').ObjectId
 const crypto = require('crypto');
 const async = require('hbs/lib/async')
 
@@ -146,7 +146,7 @@ module.exports = {
             ]).toArray()
 
             if (user[0].status === "ACTIVE") {
-                console.log(user);
+
                 resolve({ status: true, wallet: user[0].wallet })
             } else {
                 resolve({ status: false })
@@ -183,7 +183,7 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
 
             // let workProfile = await db.get().collection(collection.WORKER_COLLECTION).find({userId:objectId(id)}).toArray()      
-            // console.log(workProfile.skills); 
+            // 
 
             let workProfile = await db.get().collection(collection.WORKER_COLLECTION).aggregate([
                 { $match: { userId: objectId(id) } },
@@ -259,7 +259,7 @@ module.exports = {
 
             ]).toArray()
 
-            // console.log(workProfile)  
+            // 
 
             skills = []
 
@@ -356,7 +356,7 @@ module.exports = {
                 }
             ]).toArray();
 
-            console.log(userDetail[0]);
+
 
             resolve(userDetail[0])
 
@@ -376,8 +376,8 @@ module.exports = {
 
     removeSaved: (idArray, pId) => {
 
-        console.log("\n\nInside user helper");
-        console.log(idArray);
+
+
 
         for (let i = 0; i < idArray.length; i++) {
             idArray[i] = objectId(idArray[i])
@@ -430,7 +430,7 @@ module.exports = {
                 }
             ]).toArray()
 
-            console.log(bidList);
+
 
             resolve(bidList);
 
@@ -560,25 +560,25 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
             try {
 
-                console.log("here");
+
                 let hmac = crypto.createHmac('sha256', process.env.RAZOR_SECRET)
 
-                console.log(process.env.RAZOR_SECRET);
-                console.log(details.payment.razorpay_order_id);
-                console.log(details.payment.razorpay_payment_id);
-                console.log(details.payment.razorpay_signature);
+
+
+
+
 
                 hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
                 hmac = hmac.digest('hex')
                 if (hmac == details.payment.razorpay_signature) {
-                    console.log("Resolve");
+
                     resolve(true)
                 } else {
-                    console.log("Reject");
+
                     reject(false)
                 }
             } catch (err) {
-                console.log(err);
+
                 reject(false)
             }
         })
@@ -624,7 +624,7 @@ module.exports = {
                 },
                 { $project: { phone: 1 } }
             ]).toArray()
-            console.log(user[0]);
+
             resolve(user[0]);
         })
     },
@@ -652,7 +652,7 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
 
             let result = await db.get().collection(collection.PAYOUT_COLLECTION).find({ userId: objectId(id), status: "PENDING" }).toArray()
-            console.log(result);
+
             if (result.length != 0) {
                 resolve({ status: true, data: result[0] })
             } else {
@@ -668,7 +668,7 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
 
             db.get().collection(collection.PAYOUT_COLLECTION).insertOne(data).then((result) => {
-                console.log(result);
+
                 if (result.acknowledged) {
                     resolve(true)
                 } else {
@@ -743,14 +743,14 @@ module.exports = {
     changePass: (data, id) => {
         return new Promise(async(resolve, reject) => {
             let user = await db.get().collection(collection.USERS_COLLECTION).findOne({ _id: objectId(id) })
-            console.log(user);
+
 
             bcrypt.compare(data.old, user.password).then(async(status) => {
                 if (status) {
                     if (data.old === data.new) {
                         resolve({ status: false, error: "Old and new password should not be same" })
                     } else {
-                        console.log("success");
+
                         data.new = await bcrypt.hash(data.new, 10)
                         await db.get().collection(collection.USERS_COLLECTION).updateOne({ _id: objectId(id) }, { $set: { password: data.new } })
                         resolve({ status: true })
@@ -758,7 +758,7 @@ module.exports = {
                     }
                 } else {
 
-                    console.log("Failed");
+
                     resolve({ status: false, error: "Password does not match" })
                 }
             })

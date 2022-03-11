@@ -27,7 +27,7 @@ module.exports = {
     },
 
     setNotiRead: (id) => {
-        console.log("\n\n\n\nHEREEEEEEEEE\n\n" + id + "\n\n");
+
         return new Promise(async(resolve, reject) => {
             await db.get().collection(collection.NOTIFICATION_COLLECTION).updateMany({ recieveId: { $in: [objectId(id)] } }, { $set: { read: true } }).then((data) => {
                 resolve(data)

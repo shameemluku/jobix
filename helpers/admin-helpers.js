@@ -1,8 +1,8 @@
-var db = require('../config/connection')
-var collection = require('../config/collections')
+const db = require('../config/connection')
+const collection = require('../config/collections')
 const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongodb')
-var objectId = require('mongodb').ObjectId
+const objectId = require('mongodb').ObjectId
 
 module.exports = {
 
@@ -10,7 +10,6 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
             let user = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ email: data.email })
             if (user) {
-                console.log(user);
                 if (user.password === data.password) {
                     resolve({ status: true, user: user })
                 } else {
