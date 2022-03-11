@@ -1,0 +1,61 @@
+<main class="content">
+   <div class="container-fluid p-0">
+      <div class="mb-3">
+         <h1 class="h3 d-inline align-middle">Users</h1>
+      </div>
+      <div class="row">
+         <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+            <div class="card flex-fill">
+               <table class="table table-hover my-0" id="user_Table">
+                  <thead>
+                     <tr>
+                        <th class="d-none d-xl-table-cell">User Id</th>
+                        <th>Pay address</th>
+                        <th>Request amount</th>
+                        <th class="d-none d-xl-table-cell">Status</th>
+                        <th class="d-none d-md-table-cell">Action</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {{#each payoutList}}
+                     <tr>
+                        <td style="color: slategrey; font-size:10px">{{this.userId}}</td>
+                        <td><img class="mr-2" src="/images/site/paypal.svg" height="20px">{{this.paymail}}</td>
+                        <td class="d-none d-xl-table-cell" style="color: rgb(0, 107, 27);"><b>₹ {{this.amount}}</b></td>
+                        {{#if (eq this.status "PENDING")}}
+                        <td><span class="badge bg-warning">Pending</span></td>
+                        {{/if}}
+                        {{#if (eq this.status "PAID")}}
+                        <td><span class="badge bg-success">Paid</span></td>
+                        {{/if}}
+                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" onclick="approvePayout('{{this._id}}','{{this.amount}}','{{this.paymail}}','{{this.userId}}')">Approve</button></td>
+                     </tr>
+                     <!-- Modal -->
+                     <div class="modal fade" id="admin-payout-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                                 <h5 class="modal-title" id="exampleModalLongTitle">Approve payout</h5>
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                 <span aria-hidden="true">&times;</span>
+                                 </button>
+                              </div>
+                              <div class="modal-body">
+                                 <p>Paying <span style="font-size:20px;">{{this.amount}}</span></p>
+                                 <p>Paying to {{this.paymail}}</p>
+                                 <div id="paypal-button-container"></div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {{/each}}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+</main>
+
+
+ <script src="https://www.paypal.com/sdk/js?client-id=ASXAnDuDn8rexPVsZq4gJOxMVJQX4WDvGdSZwTM-4WZoyzWM-1O7M4fAyFtGb-s86CCkjjf_NLxjPZfI&currency=USD"></script>

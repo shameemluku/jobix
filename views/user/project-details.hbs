@@ -10,7 +10,7 @@
     <div id="detailsCard" class="container mt-4">
       <div class="row">
 
-        <div class="col-md-9">
+        <div class="col-lg-9">
 
 
           <!-- Project card 1 -->
@@ -94,7 +94,7 @@
 
         <!-- SIDE BAR RIGHT -->
 
-        <div class="col-md-3">
+        <div class="col-lg-3">
 
           <div class="holder project-contest sticky ">
 
@@ -134,15 +134,11 @@
               <div class="card-body">
                 <div class="container client-details ml-2">
 
-                  <span>{{hostDetails.name}}</span>
-                  <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star"></i>
-                  </div>
-
+                  <span>
+                    <img class="pro-pic" style="height: 30px; width:30px" src="/images/profile-pics/{{hostDetails._id}}.jpg" alt="" onerror="this.src='images/site/default.jpg'" draggable="false">
+                  </span>
+                  <span class="ml-2">{{hostDetails.name}}</span>
+    
                   <div><i class="far fa-map-marker-alt mr-2 mb-3 mt-3"></i>{{hostDetails.country}}</div>
                   <div><i class="far fa-clipboard-check mr-2"></i>71 Jobs Posted</div>
                   <div><i class="far fa-shield-check mr-2" style="color:#00B548;"></i>Payment varified</div>
@@ -173,7 +169,7 @@
     <div id="sendCard" class="container mt-4">
       <div class="row">
 
-        <div class="col-md-9">
+        <div class="col-lg-9">
 
 
           <!-- Project card 1 -->
@@ -247,7 +243,7 @@
 
         <!-- SIDE BAR RIGHT -->
 
-        <div class="col-md-3">
+        <div class="col-lg-3">
 
           <div class="holder project-contest sticky ">
 

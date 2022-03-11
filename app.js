@@ -34,6 +34,10 @@ app.engine('hbs', hbs.engine({
 
         json: function(context) {
             return JSON.stringify(context);
+        },
+
+        inc: function(value, options) {
+            return parseInt(value) + 1;
         }
     }
 }));

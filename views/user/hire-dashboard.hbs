@@ -6,11 +6,11 @@
 
 <!-- Home starts -->
 <div class="container mt-4">
-   <h1 class="windowHeading"><i class="fal fa-tasks-alt mr-3"></i>Dashboard <span id="dash-heading" style="color: #7E7E7E; font-size:15px">&gt; Hired Projects</span></h1>
+   <h1 class="windowHeading d-none d-md-block"><i class="fal fa-tasks-alt mr-3"></i>Dashboard <span id="dash-heading" style="color: #7E7E7E; font-size:15px">&gt; Hired Projects</span></h1>
 </div>
 <div class="container mb-5">
    <div class="row">
-      <div class="col-md-9">
+      <div class="col-lg-9 order-2 order-md-1">
 
          {{! ///////////////////////////////////////////// }}
          <div class="container p-0" id="hire_table">
@@ -53,11 +53,11 @@
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-10">
+                        <div class="col-sm-10">
                            <p class="mb-0 t-card-head">{{this.pheading}}</p> 
                            <p class="mb-0">Project Id: {{this._id}}</p> 
                         </div>
-                        <div class="col-2">
+                        <div class="col-sm-2">
                             <span style="color: rgba(143, 89, 18, 0.788); font-weight:600; font-size:19px">₹ {{this.bidAmount}}</span>
                         </div>
                     </div>
@@ -240,7 +240,7 @@
       </div>
 
       <!-- SIDE BAR RIGHT -->
-      <div class="col-md-3">
+      <div class="col-lg-3  order-1 order-md-2 mb-2">
          <div class="holder project-contest sticky">
             <!-- Working On -->
             <div class="card card-custom proHireCard" style="width: 100%;">

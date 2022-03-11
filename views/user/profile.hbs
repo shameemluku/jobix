@@ -69,7 +69,7 @@
                         {{#if isWorker}}<a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab" aria-controls="security" aria-selected="false">
                             <i class="fa fa-user text-center mr-1"></i> Skills settings
                         </a>{{/if}}
-                        <a class="nav-link" id="application-tab" data-toggle="pill" href="#application" role="tab" aria-controls="application" aria-selected="false">
+                        <a class="nav-link" id="application-tab" data-toggle="pill" href="#payment" role="tab" aria-controls="application" aria-selected="false">
                             <i class="fas fa-sack-dollar mr-1"></i> Payment settings
                         </a>
                         {{!-- <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
@@ -85,7 +85,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{user.name}}">
+                                    <input type="text" name="name" class="form-control" value="{{user.name}}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -97,19 +97,19 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="text" name="email" class="form-control" value="{{user.email}}">
+                                    <input type="text" name="email" class="form-control" value="{{user.email}}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Phone number</label>
-                                    <input type="text" name="phone" class="form-control" value="{{user.phone}}">
+                                    <input type="text" name="phone" class="form-control" value="{{user.phone}}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Country</label>
-                                    <select id="country" name="country" class="form-control">
+                                    <select id="country" name="country" class="form-control" required>
                                             {{>country}}
                                     </select>
                                 </div>
@@ -127,19 +127,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-100t" style="float: right;">
+                        <div class="w-100 d-flex justify-content-end" style="float: right;">
                             <button class="btn btn-primary" type="submit"><span id="data-update-loading" style="display: none;"><i class="fa fa-spinner fa-spin mr-2"></i></span>Update</button>
-                            <button class="btn btn-light">Cancel</button>
                         </div>
                         </form>
                     </div>
+
+
                     <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                        <form id="password-form" onsubmit="return checkPass()">
                         <h3 class="mb-4">Password Settings</h3>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Old password</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" name="old" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -147,20 +149,21 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>New password</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" name="new" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Confirm new password</label>
-                                    <input type="password" class="form-control">
+                                    <input type="password" name="new-confirm" class="form-control">
+                                    <p id="passErr" class="m-0" style="color: rgb(196, 31, 31);"></p>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-primary">Update</button>
-                            <button class="btn btn-light">Cancel</button>
+                            <button class="btn btn-primary"><span id="password-loading" style="display: none;"><i class="fa fa-spinner fa-spin mr-2"></i></span>Update</button>
                         </div>
+                        </form>
                     </div>
                     <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
                         <h3 class="mb-3">Skill Settings</h3>
@@ -216,13 +219,59 @@
                                    </div>
                                 <div>
                                     <button class="btn btn-primary"><span id="skill-update-loading"><i class="fa fa-spinner fa-spin mr-2"></i></span>Update</button>
-                                    <button class="btn btn-light">Cancel</button>
                                 </div>
 
                             </div>
                             </form>
                             
                         </div>
+                        
+                    </div>
+
+
+                    <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="security-tab">
+                        
+                        <h3 class="mb-4">Payment Settings</h3>
+                        <div class="row w-100">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+
+                                    <p>Add payment methods for payout request :</p>
+                                    {{!-- <input type="password" class="form-control"> --}}
+                                    <img class="mr-2" height="30px" src="images/site/paypal.svg"></img><span><b>Paypal</b></span><br><br>
+                                    {{!-- <span style="color: rgb(145, 145, 145);">Currenlty we support paypal payments only</span><br><br> --}}
+
+                                    
+                                    <form id="payment-form" class="w-100" method="post" action="/add-payment">
+                                    <div class="row">
+                                        <div class="col"><input type="text" name="email" class="form-control" placeholder="Paypal email" required></div>
+                                        <div class="col p-0"><button class="btn btn-primary"><span id="paypal-update-loading" style="display: none;"><i class="fa fa-spinner fa-spin mr-2"></i></span>Add</button><br></div>
+                                    </div>
+                                    </form>
+                                    
+                                    <br>
+                                    <div class="subTitle">Your paypal accounts</div>
+                                    
+                                     <div class="row">
+                                         <ul class="paypal-list p-0">
+                                             {{#each user.payments}}
+                                             <li id="{{inc @index}}">
+                                                 <div class="skills-list pColor">
+                                                <span>{{this}}</span><a href="#" onclick="deletePaypal('{{this}}','{{inc @index}}',event)"><i class="fas fa-times-circle ml-2"></i></a>
+                                                </div>
+                                             </li>
+                                             {{/each}}
+                                         </ul>
+                                   </div>
+
+                                   {{#if user.payments}}{{else}}<div id="empty-div">No emails added</div>{{/if}}
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                            
                         
                     </div>
 

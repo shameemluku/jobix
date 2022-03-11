@@ -1,4 +1,4 @@
- <div class="nav-cont container-fluid fixed-top bg-dark">
+ <div id="big-nav" class="nav-cont container-fluid fixed-top bg-dark">
    {{!-- <div class="container"> --}}
     <nav class="navbar navbar-expand-lg">
       <a class="navbar-brand" href="/work-dashboard"><img class="logo" src="images/site/logo.svg"></a>
@@ -10,18 +10,30 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <form class="searchForm" action="/">
+            <form class="searchForm" method="get" action="/search">
               <div class="form-group has-search">
                 <span class="fa fa-search form-control-feedback"></span>
-                <input class="form-control mr-sm-2 searchBox ml-3" type="search" placeholder="Search jobs"
+                <input class="form-control mr-sm-2 searchBox ml-3" name="search" type="search" placeholder="Search jobs"
                   aria-label="Search">
             </form>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <div class="rightButton">
-            <a href="/add-project" class="postBtn">Post a Work</a>
+            <a href="/add-project" class="postBtn"><i class="far fa-plus-circle mr-2"></i>Post a Work</a>
           </div>
+
+        {{!-- REQUESTS --}}
+
+         <div class="notidropdown mr-4" onclick="openRequest()" style="cursor: pointer;">
+            
+           <i class="fal fa-user-plus" style="font-size:20px"></i>
+            <span class="badge" id="reqCount">{{#if (eq reqCount 0)}}{{else}}{{reqCount}}{{/if}}</span>
+            
+          </div>
+        </div>
+
+        {{!--  --}}
 
         <div class="notidropdown mr-4" onclick="showNotiFunction('{{user._id}}')">
             {{!-- <i class="fal fa-bell notiBtn mr-0"></i>{{#if notiEmpty}}<span class="mr-3"></span>{{else}}<sup><span id="notiCount" class="mr-3 notiCount">{{notiCount}}</span></sup>{{/if}} --}}
@@ -76,6 +88,96 @@
     </nav>
     {{!-- </div> --}}
   </div>
+
+
+
+  {{!-- //////////////////////////////////////////////////// --}}
+
+
+ <div id="mobile-nav" class="nav-cont container-fluid fixed-top bg-dark p-0" style="display:none">
+
+
+
+<!--Navbar-->
+<nav class="navbar navbar-light amber lighten-4 mb-4 mt-2">
+
+  <!-- Navbar brand -->
+  <a class="navbar-brand ml-2" href="/work-dashboard"><img class="logo" src="images/site/logo.svg"></a>
+  
+
+  <!-- Collapse button -->
+  <button class="navbar-toggler first-button" type="button" data-toggle="collapse" style="outline: none; border:none" data-target="#navbarSupportedContent20"
+    aria-controls="navbarSupportedContent20" aria-expanded="false" aria-label="Toggle navigation">
+    <div class="animated-icon1"><span></span><span></span><span></span></div>
+  </button>
+
+  <!-- Collapsible content -->
+  <div class="collapse navbar-collapse" id="navbarSupportedContent20">
+
+    <!-- Links -->
+    <ul class="navbar-nav mr-auto">
+
+      
+      <li class="nav-item">
+        <form class="searchForm" method="get" action="/search">
+              <div class="form-group has-search">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input class="form-control mr-sm-2 searchBox searchBox2" name="search" type="search" placeholder="Search jobs"
+                  aria-label="Search">
+            </form>
+      </li>
+
+      <li class="nav-item mt-2 d-flex justify-content-center">
+        <a href="/profile" class="dropbtn">{{#if user.propic}}<img id="headerPropic" class="profileImg" src="images/profile-pics/{{user._id}}.jpg" class="postBtn">{{else}}<img id="headerPropic" class="profileImg" src="images/site/default.jpg" class="postBtn">{{/if}}</a><br>
+      </li>
+
+      <li class="nav-item text-center d-flex justify-content-center">
+        <a class="nav-link drop-nav-item" href="/profile">{{user.name}}</a>
+        <a class="nav-link drop-nav-item ml-2" style="font-size: 15px !important; " href="/signout"><i class="fas fa-sign-out mr-2"></i></a>
+      </li>
+
+      
+      <div class="line"></div>
+
+  
+      <li class="nav-item text-center mt-3">
+        <a class="nav-link drop-nav-item" href="/browse-project"><i class="far fa-file-search mr-1"></i>Browse Projects</a>
+      </li>
+    
+      
+    
+      <li class="nav-item d-flex justify-content-center">
+        <form class="form-inline my-2 my-lg-0">
+          <div class="rightButton">
+            <a href="/add-project" class="postBtn m-0"><i class="far fa-plus mr-2"></i>Post a Work</a>
+          </div>
+          </form>
+      </li>
+
+       <li class="nav-item text-center mb-3">
+        
+      </li>
+    </ul>
+    <!-- Links -->
+
+  </div>
+  <!-- Collapsible content -->
+
+</nav>
+<!--/.Navbar-->
+
+ </div>
+
+
+
+
+
+
+
+
+
+
+  {{!-- //////////////////////////////////////////////////// --}}
 
 
 <script>

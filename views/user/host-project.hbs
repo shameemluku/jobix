@@ -1,7 +1,7 @@
 <div id="page-container">
   <div id="content-wrap">
 
-    {{>sec-nav-worker}}
+    {{#if isHost}}{{>sec-nav-host}}{{else}}{{>sec-nav-worker}}{{/if}}
 
 
 <!-- //////////// CONTENT STARTS ///////////// -->
@@ -32,9 +32,24 @@
               <div class="col-md-9 pt-3">
     
                 <h3>{{activeProDetails.pheading}}</h3>
-                <div id="remainDate" class=" mt-2 mb-3"><span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> <span style="color: {{remaining.color}};">Left to complete the project</span></div>
+                {{#if (eq activeProDetails.status "COMPLETED")}}
+                
+                {{else}}
+                <div id="remainDate" class=" mt-2 mb-3">
+                  <span class="t-bidCount" style="background-color:{{remaining.color}} !important;">{{remaining.days}} &nbsp;days</span> 
+                  <span style="color: {{remaining.color}};">Left to complete the project</span>
+                </div>
+                
+                {{/if}}
               
               </div>
+
+              {{#if (eq activeProDetails.status "COMPLETED")}}
+              <div class="col-md-3 d-flex justify-content-end">
+              <span style="color: #008134; font-weight:500; font-size:20px"><i class="fas fa-badge-check"></i> COMPLETED</span>
+             </div>
+              {{else}}
+              
                 
               <div class="col-md-3 d-flex justify-content-end">
                 <div class="dropdown">
@@ -48,6 +63,10 @@
                 </div>
               </div>
               </div>
+
+              {{/if}}
+
+
             </div>
 
             <div class="row mt-3">

@@ -127,3 +127,182 @@ function unsaveProject(pId) {
         }
     });
 }
+
+
+
+// LOGIN
+
+let phone;
+
+
+function showPhone(e) {
+    e.preventDefault()
+    $('#login-div').hide()
+    $('#otp-div').show()
+    startCount()
+}
+
+$('#otp-form').submit(function(e) {
+
+    e.preventDefault();
+    var form = $(this);
+
+
+    $.ajax({
+        type: "post",
+        url: '/login-phone',
+        data: form.serialize(),
+
+        beforeSend: function() {
+            $('#sendOtpbtn').html('Sending OTP...')
+        },
+
+        //success
+        success: function(data) {
+            if (data.status) {
+                phone = data.phone
+                $('#otp-form').hide()
+                $('#varify-form').show()
+                $('#phoneText').html(phone)
+            } else {
+
+                $('#sendOtpbtn').html('Send OTP')
+                $('#otp-form').show()
+                $('#varify-form').hide()
+                $('#varify-error').show()
+                $('#varify-error').html(data.error)
+
+                setTimeout(function() {
+                    $("#varify-error").hide()
+                }, 3000);
+            }
+        },
+        //error
+        error: function(error) {
+
+
+        }
+    });
+
+
+})
+
+
+
+$('#varify-form').submit(function(e) {
+
+    e.preventDefault();
+    var form = $(this);
+
+
+    $.ajax({
+        type: "post",
+        url: '/varify-otp-login',
+        data: form.serialize(),
+
+        beforeSend: function() {
+            $('#verifyBtn').html('verifying.....')
+        },
+
+        //success
+        success: function(data) {
+            if (data.status) {
+                $('#verifyBtn').html('Success! Redirecting.....')
+                window.location.href = data.url
+            } else {
+
+                $('#varify-error').show()
+                $('#varify-error').html(data.error)
+
+                setTimeout(function() {
+                    $("#varify-error").hide()
+                }, 3000);
+
+            }
+        },
+        //error
+        error: function(error) {
+
+
+        }
+    });
+
+
+})
+
+
+function resendOtp() {
+
+    $.ajax({
+        type: "post",
+        url: '/login-phone',
+        data: { phone: phone },
+
+        beforeSend: function() {
+            $('#resendBtn').html('Resending.....')
+        },
+
+        //success
+        success: function(data) {
+            if (data.status) {
+                startCount()
+                $('#otp-txt').show()
+                $('#resendBtn').hide()
+                $('#verifyBtn').show()
+            } else {
+
+
+            }
+        },
+        //error
+        error: function(error) {
+
+
+        }
+    });
+}
+
+
+function showForgot(e) {
+    e.preventDefault()
+
+    $("#snackbar").html('<i class="far fa-exclamation-circle mr-2" style="color:white"></i> Login with your phone and change from settings');
+    $("#snackbar").addClass("show");
+    setTimeout(function() {
+        $("#snackbar").removeClass("show");
+    }, 3000);
+}
+
+let timeLeft;
+let elem;
+let timerId;
+
+function startCount() {
+    try {
+        timeLeft = 30;
+        elem = document.getElementById('verifyBtn');
+        timerId = setInterval(countdown, 1000);
+    } catch (err) {
+        alert(err)
+    }
+
+}
+
+
+
+function countdown() {
+    if (timeLeft == -1) {
+        clearTimeout(timerId);
+        doSomething();
+    } else {
+        elem.innerHTML = "Verify (" + timeLeft + ")"
+        timeLeft--;
+    }
+}
+
+function doSomething() {
+    document.getElementById('resendBtn').style.display = "block"
+    document.getElementById('verifyBtn').style.display = "none"
+    document.getElementById('otp-txt').style.display = "none"
+
+}

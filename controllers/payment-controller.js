@@ -11,6 +11,7 @@ var request = require('request');
 
 const Razorpay = require('razorpay')
 const paypal = require('paypal-rest-sdk');
+const adminHelpers = require('../helpers/admin-helpers');
 
 const instance = new Razorpay({
     key_id: process.env.RAZOR_KEY_ID,
@@ -53,17 +54,21 @@ exports.checkout = async function(req, res, next) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log("Order generated : " + order);
-                    res.json({
-                        order,
-                        type: "rayzor",
-                        key: process.env.RAZOR_KEY_ID,
-                        user: projectDetails.workerDetails[0].name,
-                        email: projectDetails.workerDetails[0].email,
-                        phone: projectDetails.workerDetails[0].phone,
-                        workerId: projectDetails.workerDetails[0]._id,
-                        project: req.body
-                    })
+                    try {
+                        console.log("Order generated : " + order);
+                        res.json({
+                            order,
+                            type: "RAZOR",
+                            key: process.env.RAZOR_KEY_ID,
+                            user: projectDetails.workerDetails[0].name,
+                            email: projectDetails.workerDetails[0].email,
+                            phone: projectDetails.workerDetails[0].phone,
+                            workerId: projectDetails.workerDetails[0]._id,
+                            project: req.body
+                        })
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
 
             })
@@ -128,7 +133,7 @@ exports.verifyPayment = async function(req, res, next) {
                 let data = {
                     payId: req.body.payment.razorpay_payment_id,
                     date: today,
-                    method: "RAYZOR",
+                    method: "RAZOR",
                     amount: req.body.order.amount / 100,
                     orgiAmount: DATA.projectDetails.bidAmount,
                     sender: objectId(req.session.user._id),
@@ -178,6 +183,7 @@ exports.verifyPayment = async function(req, res, next) {
 
 
 exports.paypalSuccess = async function(req, res, next) {
+
     console.log("here");
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
@@ -230,7 +236,8 @@ exports.paypalSuccess = async function(req, res, next) {
                         userHelpers.updateWallet(DATA.projectDetails.workerId, walletAmount)
                     ]).then(() => {
                         DATA = null
-                        res.send({ success: true, msg: "Payment successfull" })
+                            // res.send({ success: true, msg: "Payment successfull" })
+                        res.render('user/success', { user: req.session.user })
                     }).catch((err) => {
                         console.log(err);
                         DATA = null
@@ -241,4 +248,62 @@ exports.paypalSuccess = async function(req, res, next) {
 
         }
     });
+}
+
+
+exports.cancel = function(req, res, next) {
+    res.render('user/failed', { user: req.session.user })
+}
+
+
+
+exports.sendPayout = async function(req, res, next) {
+
+    console.log(req.body);
+
+    let today = new Date().toLocaleDateString()
+    var parts = today.split("/");
+    today = new Date(parts[1] + "/" + parts[0] + "/" + parts[2]);
+
+    let data = {
+        payId: req.body.paydetails.orderID,
+        date: today,
+        method: "PAYPAL",
+        amount: req.body.amount,
+        sender: objectId(req.session.admin._id),
+        receiver: objectId(req.body.userId),
+        type: "PAYOUT"
+    }
+
+
+    projectHelpers.createTransaction(data).then(async(response) => {
+        if (response.status) {
+
+
+            Promise.all([
+                userHelpers.updateWallet(req.body.userId, -req.body.amount),
+                adminHelpers.completePayout(req.body.id, response.tId)
+            ]).then(async() => {
+                DATA = null
+                let number = await userHelpers.getNumber(req.body.userId)
+
+                var options = { authorization: process.env.API_KEY, message: '\nCongradulations! Your payout request for Rs.' + req.body.amount + ' is Aprroved!', numbers: [number.phone] }
+                const messageResponse = await fast2sms.sendMessage(options)
+
+                console.log("Hreeee");
+                console.log(messageResponse);
+
+                res.send({ success: true, msg: "Payment successfull" })
+            }).catch((err) => {
+                console.log(err);
+                DATA = null
+                res.send({ success: false, msg: "Payment failed" })
+            })
+
+
+        }
+
+        // res.send({ status: "success" });
+    })
+
 }

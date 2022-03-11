@@ -93,14 +93,109 @@ module.exports = {
             let hireCount = await db.get().collection(collection.HIRE_COLLECTION).count()
             let projectCount = await db.get().collection(collection.PROJECTS_COLLECTION).count()
 
+            let earnings = await db.get().collection(collection.PROJECTS_COLLECTION).aggregate([{
+                    $match: {
+                        status: "COMPLETED"
+                    }
+                }, {
+                    $addFields: {
+                        "total": {
+                            $multiply: ["$bidAmount", 0.2]
+                        }
+                    }
+                },
+                { $project: { total: 1 } },
+                {
+                    $group: {
+                        _id: "",
+                        earning: { $sum: "$total" }
+                    }
+                }
+            ]).toArray()
+
+
+
             let numbers = {
                 workerCount: workerCount,
                 hireCount: hireCount,
-                projectCount: projectCount
+                projectCount: projectCount,
+                earnings: earnings[0].earning
             }
 
             resolve(numbers)
 
         })
+    },
+
+    getPayoutList: (status) => {
+        return new Promise(async(resolve, reject) => {
+
+            let payoutList = await db.get().collection(collection.PAYOUT_COLLECTION).find({ status: status }).toArray()
+
+            if (payoutList.length != 0) {
+                resolve({ status: true, data: payoutList })
+            } else {
+                resolve({ status: false })
+            }
+
+        })
+    },
+
+    completePayout: (id, tId) => {
+        return new Promise(async(resolve, reject) => {
+
+            await db.get().collection(collection.PAYOUT_COLLECTION).updateOne({ _id: objectId(id) }, {
+                $set: {
+                    status: "PAID",
+                    tId: objectId(tId)
+                }
+            }).then((result) => {
+                resolve(true)
+            })
+
+        })
+    },
+
+    getAlltransaction: () => {
+        return new Promise(async(resolve, reject) => {
+            let transactions = await db.get().collection(collection.TRANSACTION_COLLECTION).find({}).sort({ _id: -1 }).toArray()
+            if (transactions) {
+                resolve(transactions)
+            }
+
+        })
+    },
+
+
+    filterTransaction: (start, end, method) => {
+
+        return new Promise(async(resolve, reject) => {
+
+            if (method === 'ALL') {
+                let transactions = await db.get().collection(collection.TRANSACTION_COLLECTION).aggregate([{
+                    $match: { date: { $gte: new Date(start), $lt: new Date(end) } }
+                }]).toArray()
+                if (transactions) {
+                    resolve(transactions);
+                }
+            } else {
+                let transactions = await db.get().collection(collection.TRANSACTION_COLLECTION).aggregate([{
+                    $match: { method: method, date: { $gte: new Date(start), $lt: new Date(end) } }
+                }]).toArray()
+                if (transactions) {
+                    resolve(transactions);
+                }
+            }
+
+
+        })
+    },
+
+    loadProjectList: () => {
+        return new Promise(async(resolve, reject) => {
+            let projects = await db.get().collection(collection.PROJECTLIST_COLLECTION).find({}).toArray()
+            resolve(projects)
+        })
     }
+
 }

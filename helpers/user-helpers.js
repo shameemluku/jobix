@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongodb')
 var objectId = require('mongodb').ObjectId
 const crypto = require('crypto');
+const async = require('hbs/lib/async')
 
 module.exports = {
 
@@ -22,6 +23,8 @@ module.exports = {
 
             delete userData.skills;
             userData.status = "ACTIVE";
+            userData.payments = []
+            userData.wallet = 0
 
             userData.password = await bcrypt.hash(userData.password, 10)
             db.get().collection(collection.USERS_COLLECTION).insertOne(userData).then((data) => {
@@ -79,6 +82,21 @@ module.exports = {
     },
 
 
+    findPhone: (phone) => {
+
+        return new Promise(async(resolve, reject) => {
+
+            let user = await db.get().collection(collection.USERS_COLLECTION).findOne({ phone: phone })
+            if (user) {
+                resolve({ status: true, user: user })
+            } else {
+                resolve({ status: false })
+            }
+        })
+
+    },
+
+
 
     addHireUser: (userData) => {
 
@@ -86,6 +104,8 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
 
             userData.status = "ACTIVE";
+            userData.payments = [];
+            userData.wallet = 0;
             userData.password = await bcrypt.hash(userData.password, 10)
             db.get().collection(collection.USERS_COLLECTION).insertOne(userData).then((data) => {
 
@@ -115,6 +135,23 @@ module.exports = {
                     resolve({ status: true, error: "Mobile already exists" })
                 } else { resolve({ status: false }) }
             }
+        })
+    },
+
+    checkStatus: (id) => {
+        return new Promise(async(resolve, reject) => {
+            let user = await db.get().collection(collection.USERS_COLLECTION).aggregate([
+                { $match: { _id: objectId(id) } },
+                { $project: { status: 1, _id: 0, wallet: 1 } }
+            ]).toArray()
+
+            if (user[0].status === "ACTIVE") {
+                console.log(user);
+                resolve({ status: true, wallet: user[0].wallet })
+            } else {
+                resolve({ status: false })
+            }
+
         })
     },
 
@@ -496,6 +533,29 @@ module.exports = {
         })
     },
 
+
+    updatePayment: (id, email) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.USERS_COLLECTION).update({ _id: objectId(id) }, { $addToSet: { 'payments': email } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
+    removePayment: (id, email) => {
+        return new Promise(async(resolve, reject) => {
+            await db.get().collection(collection.USERS_COLLECTION).update({ _id: objectId(id) }, { $pull: { 'payments': email } })
+                .then((result) => {
+                    resolve(true)
+                }).catch(() => {
+                    reject(false)
+                })
+        })
+    },
+
     varifyPayment: (details) => {
         return new Promise(async(resolve, reject) => {
             try {
@@ -557,6 +617,19 @@ module.exports = {
     },
 
 
+    getNumber: (id) => {
+        return new Promise(async(resolve, reject) => {
+            let user = await db.get().collection(collection.USERS_COLLECTION).aggregate([{
+                    $match: { _id: objectId(id) }
+                },
+                { $project: { phone: 1 } }
+            ]).toArray()
+            console.log(user[0]);
+            resolve(user[0]);
+        })
+    },
+
+
     getTransactions: (id) => {
         return new Promise(async(resolve, reject) => {
 
@@ -568,10 +641,131 @@ module.exports = {
                         receiver: objectId(id)
                     }
                 ]
-            }).toArray()
+            }).sort({ _id: -1 }).toArray()
 
             resolve(transactions)
         })
-    }
+    },
+
+    checkPayout: (id) => {
+
+        return new Promise(async(resolve, reject) => {
+
+            let result = await db.get().collection(collection.PAYOUT_COLLECTION).find({ userId: objectId(id), status: "PENDING" }).toArray()
+            console.log(result);
+            if (result.length != 0) {
+                resolve({ status: true, data: result[0] })
+            } else {
+                resolve({ status: false })
+            }
+        })
+    },
+
+
+    requestPayout: (id, data) => {
+        data.userId = objectId(id);
+        data.status = "PENDING";
+        return new Promise(async(resolve, reject) => {
+
+            db.get().collection(collection.PAYOUT_COLLECTION).insertOne(data).then((result) => {
+                console.log(result);
+                if (result.acknowledged) {
+                    resolve(true)
+                } else {
+                    reject(false)
+                }
+            })
+
+        })
+    },
+
+    loadRequests: (id) => {
+        return new Promise(async(resolve, reject) => {
+            let data = await db.get().collection(collection.REQUEST_COLLECTION).aggregate([
+                { $match: { userId: objectId(id) } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "hostId",
+                        foreignField: "_id",
+                        as: "hostDetails"
+                    }
+                },
+                {
+                    $addFields: {
+                        "hostname": { "$arrayElemAt": ["$hostDetails.name", 0] },
+                        "hostemail": { "$arrayElemAt": ["$hostDetails.email", 0] }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        userId: 1,
+                        pheading: 1,
+                        pdetails: 1,
+                        dueDate: 1,
+                        amount: 1,
+                        hostId: 1,
+                        read: 1,
+                        hostname: 1,
+                        hostemail: 1
+                    }
+                }
+            ]).toArray()
+
+            resolve(data)
+        })
+    },
+
+
+    markRead: (id) => {
+        return new Promise(async(resolve, reject) => {
+            db.get().collection(collection.REQUEST_COLLECTION).updateMany({ userId: objectId(id) }, {
+                $set: {
+                    read: true
+                }
+            }).then(() => {
+                resolve(true)
+            })
+        })
+    },
+
+
+    removeRequest: (id) => {
+        return new Promise(async(resolve, reject) => {
+            db.get().collection(collection.REQUEST_COLLECTION).deleteOne({ _id: objectId(id) }).then(() => {
+                resolve(true)
+            })
+        })
+    },
+
+
+    changePass: (data, id) => {
+        return new Promise(async(resolve, reject) => {
+            let user = await db.get().collection(collection.USERS_COLLECTION).findOne({ _id: objectId(id) })
+            console.log(user);
+
+            bcrypt.compare(data.old, user.password).then(async(status) => {
+                if (status) {
+                    if (data.old === data.new) {
+                        resolve({ status: false, error: "Old and new password should not be same" })
+                    } else {
+                        console.log("success");
+                        data.new = await bcrypt.hash(data.new, 10)
+                        await db.get().collection(collection.USERS_COLLECTION).updateOne({ _id: objectId(id) }, { $set: { password: data.new } })
+                        resolve({ status: true })
+
+                    }
+                } else {
+
+                    console.log("Failed");
+                    resolve({ status: false, error: "Password does not match" })
+                }
+            })
+
+        })
+    },
+
+
 
 }

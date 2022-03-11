@@ -185,6 +185,173 @@ function removeproPic(e) {
             }
 
 
+        },
+        error: function(data) {
+            $('#paypal-update-loading').hide()
+            $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Error adding data');
+            $("#snackbar").addClass("show");
+            setTimeout(function() {
+                $("#snackbar").removeClass("show");
+            }, 3000);
         }
     });
 }
+
+
+
+$("#payment-form").submit(function(e) {
+
+    e.preventDefault();
+    var form = $(this);
+    var actionUrl = form.attr('action');
+
+    $.ajax({
+        type: "POST",
+        url: actionUrl,
+        data: form.serialize(),
+        beforeSend: function() {
+
+            $('#paypal-update-loading').show()
+            $("#payment-form input").prop('disabled', true);
+
+        },
+        success: function(data) {
+
+            if (data.status) {
+
+                if ($(".paypal-list li").length == 0) {
+                    $('#empty-div').hide()
+                }
+
+                let index = $(".paypal-list li").length + 1;
+
+
+                $("#payment-form input").prop('disabled', false);
+                let html = $(".paypal-list").html()
+                $(".paypal-list").html(html + `<li id="${index}">
+                        <div class="skills-list pColor">
+                        <span>${data.email}</span><a href="#" onclick="deletePaypal('${data.email}',${index},event)"><i class="fas fa-times-circle ml-2"></i></a>
+                        </div>
+                     </li>`)
+
+                $('#paypal-update-loading').hide()
+                $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>New paypal account added successfully');
+                $("#snackbar").addClass("show");
+                setTimeout(function() {
+                    $("#snackbar").removeClass("show");
+                }, 3000);
+            } else {
+                $("#payment-form input").prop('disabled', false);
+                $('#paypal-update-loading').hide()
+                $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>' + data.err);
+                $("#snackbar").addClass("show");
+                setTimeout(function() {
+                    $("#snackbar").removeClass("show");
+                }, 3000);
+            }
+
+        },
+        error: function(data) {
+            $("#payment-form input").prop('disabled', false);
+            $('#paypal-update-loading').hide()
+            $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Error adding data');
+            $("#snackbar").addClass("show");
+            setTimeout(function() {
+                $("#snackbar").removeClass("show");
+            }, 3000);
+        }
+    });
+
+});
+
+
+
+function deletePaypal(email, index, e) {
+    e.preventDefault()
+    index = parseInt(index)
+
+    $.ajax({
+        type: "POST",
+        url: '/remove-payment',
+        data: { email: email },
+        beforeSend: function() {
+
+
+
+        },
+        success: function(data) {
+
+            $("#" + index).remove()
+
+            if ($(".paypal-list li").length == 0) {
+                $('#empty-div').show()
+            }
+
+            $("#snackbar").html('<i class="far fa-check-circle mr-2" style="color:white"></i>Removed successfully');
+            $("#snackbar").addClass("show");
+            setTimeout(function() {
+                $("#snackbar").removeClass("show");
+            }, 3000);
+        }
+    });
+
+}
+
+
+
+function checkPass() {
+    let newpass = document.forms["password-form"]["new"].value;
+    let newConfirm = document.forms["password-form"]["new-confirm"].value;
+
+    if (newpass === newConfirm) {
+
+        $('#passErr').html("")
+        return true;
+    } else {
+        $('#passErr').html("Password must match")
+        return false;
+    }
+}
+
+
+
+
+$("#password-form").submit(function(e) {
+
+    e.preventDefault()
+
+    var form = $(this);
+
+    $.ajax({
+        type: "POST",
+        url: '/change-password',
+        data: form.serialize(),
+
+        beforeSend: function() {
+            $('#password-loading').show()
+            $("#password-form input").prop('disabled', true);
+
+        },
+
+        success: function(data) {
+
+            $("#password-form input").prop('disabled', false);
+            $('#password-loading').hide()
+
+
+            if (data.status) {
+
+                Swal.fire({
+                    title: 'Great !',
+                    text: 'Password changed successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'Done'
+                })
+
+            } else {
+                $('#passErr').html(data.error)
+            }
+        }
+    });
+
+})
