@@ -69,7 +69,6 @@ exports.blockUser = function(req, res, next) {
         if (result) {
 
 
-            console.log(req.session);
             if (req.session.loggedIn) {
                 if (req.session.user._id == req.body.id) {
                     req.session.user = null;
@@ -86,7 +85,7 @@ exports.blockUser = function(req, res, next) {
 exports.homeNumbers = function(req, res, next) {
 
     adminHelpers.loadNumbers().then((result) => {
-        console.log(result);
+
         res.send(result)
     })
 
@@ -102,7 +101,7 @@ exports.logout = function(req, res, next) {
 exports.payouts = function(req, res, next) {
 
     adminHelpers.getPayoutList("PENDING").then((response) => {
-        console.log(response.data);
+
         res.render('admin/payouts', {
             layout: 'adlayout',
             title: 'Users',
@@ -133,7 +132,7 @@ exports.transactions = async function(req, res, next) {
 exports.transactionsFilter = function(req, res, next) {
 
 
-    console.log(req.body);
+
     let dates = req.body.daterange.split(" - ")
 
     let start = new Date(dates[0]);

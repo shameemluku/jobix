@@ -645,6 +645,8 @@ exports.registerHost_skills_post = function(req, res, next) {
 
 exports.bid_details = function(req, res, next) {
 
+    try {
+
         // Notification
         notiCount = req.session.notiCount;
         notification = req.session.notification;
@@ -659,75 +661,78 @@ exports.bid_details = function(req, res, next) {
             .catch((err) => {
                 res.status(500).render('error', { message: err })
             })
+    } catch (err) {
+        console.log(err);
+    }
 
 
-    },
+}
 
 
-    exports.bid_userData = function(req, res, next) {
-
-
-
-        userHelpers.bid_UserDetails(req.body.userId).then((userDetail) => {
-
-            res.send(userDetail);
-
-        })
-
-
-    },
-
-
-    exports.hire_user = function(req, res, next) {
-
-        req.body.hostId = req.session.user._id;
-        req.body.hostName = req.session.user.name;
-        req.body.status = "ACTIVE"
-
-        allBids = Array.from(req.body.bidding)
-        biddingUser = Array.from(req.body.bidding)
+exports.bid_userData = function(req, res, next) {
 
 
 
-        //Getting all bidding users to send notification except got hired user
+    userHelpers.bid_UserDetails(req.body.userId).then((userDetail) => {
 
-        const index = biddingUser.indexOf(req.body.workerId);
-        if (index > -1) {
-            biddingUser.splice(index, 1);
-        }
+        res.send(userDetail);
 
-        req.body.bidding = biddingUser;
+    })
 
 
-        projectHelpers.hireUser(req.body, req.session.user.name).then((status) => {
-
-            if (status) {
-
-                // Acknowledge all bidded users
-                message = "Sorry! " + req.session.user.name + " hired another user for his project. Better luck next time! Don't worry you can find new jobs";
-                url = '/browse-project';
-                notiHelpers.sendBidFailNotificaton(biddingUser, message, url).then((result) => {
+}
 
 
+exports.hire_user = function(req, res, next) {
 
-                    userHelpers.removeSaved(allBids, req.body._id).then((result) => {
+    req.body.hostId = req.session.user._id;
+    req.body.hostName = req.session.user.name;
+    req.body.status = "ACTIVE"
 
-                        //Removing user name from bidding list
-                        userHelpers.removeuserFromBidding(req.body._id, req.body.workerId).then((status) => {
-                            console.log("Done");
-                            res.send("done");
-                        })
+    allBids = Array.from(req.body.bidding)
+    biddingUser = Array.from(req.body.bidding)
 
+
+
+    //Getting all bidding users to send notification except got hired user
+
+    const index = biddingUser.indexOf(req.body.workerId);
+    if (index > -1) {
+        biddingUser.splice(index, 1);
+    }
+
+    req.body.bidding = biddingUser;
+
+
+    projectHelpers.hireUser(req.body, req.session.user.name).then((status) => {
+
+        if (status) {
+
+            // Acknowledge all bidded users
+            message = "Sorry! " + req.session.user.name + " hired another user for his project. Better luck next time! Don't worry you can find new jobs";
+            url = '/browse-project';
+            notiHelpers.sendBidFailNotificaton(biddingUser, message, url).then((result) => {
+
+
+
+                userHelpers.removeSaved(allBids, req.body._id).then((result) => {
+
+                    //Removing user name from bidding list
+                    userHelpers.removeuserFromBidding(req.body._id, req.body.workerId).then((status) => {
+                        console.log("Done");
+                        res.send("done");
                     })
-
 
                 })
 
-            }
 
-        })
+            })
 
-    }
+        }
+
+    })
+
+}
 
 
 // Work user Project side Page RENDER
