@@ -5,7 +5,7 @@ const state = {
 }
 
 module.exports.connect = function(done) {
-    const url = process.env.MONGO_URL
+    const url = "mongodb+srv://shameemlukman:shameemmongo123@cluster0.gvq0l.mongodb.net/jobix?retryWrites=true&w=majority"
     const dbname = 'jobix'
 
     mongoClient.connect(url, (err, data) => {
