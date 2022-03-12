@@ -422,15 +422,6 @@ module.exports = {
 
                         resolve(projectDetail[0])
 
-<<<<<<< Updated upstream
-                console.log(projectDetails);
-
-                let bidding = projectDetail[0].bidding;
-                for (let i = 0; i < bidding.length; i++) {
-                    if (bidding[i].reviews) {
-                        projectDetail[0].bidding[i].average = bidding[i].rating / bidding.length
-=======
->>>>>>> Stashed changes
                     } else {
 
                         let projectDetail = await db.get().collection(collection.PROJECTLIST_COLLECTION).aggregate([{

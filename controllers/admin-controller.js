@@ -69,10 +69,6 @@ exports.blockUser = function(req, res, next) {
         if (result) {
 
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             if (req.session.loggedIn) {
                 if (req.session.user._id == req.body.id) {
                     req.session.user = null;
